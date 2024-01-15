@@ -29,11 +29,7 @@ class StationsAdapter(private val stationsList: MutableList<Station>,
         holder.bind(currentStation)
 
         holder.itemView.setOnClickListener {
-            if (db.getAllStations().isNotEmpty()){
-                stationsBrowserActivity.startBrowseHivesActivity(currentStation.id)
-            }else{
-                stationsBrowserActivity.startAddStationActivity()
-            }
+            stationsBrowserActivity.startBrowseHivesActivity(currentStation.name, currentStation.id)
         }
     }
 

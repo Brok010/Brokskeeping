@@ -9,6 +9,7 @@ import com.example.brokskeeping.Classes.Beehive
 
 class HivesAdapter(private val hivesList: MutableList<Beehive>,
                    private val stationId: Int,
+                   private val stationName: String,
                   private val db: DatabaseHelper,
                   private val hivesBrowserActivity: HivesBrowserActivity
 ) : RecyclerView.Adapter<HivesAdapter.HiveViewHolder>() {
@@ -30,7 +31,7 @@ class HivesAdapter(private val hivesList: MutableList<Beehive>,
         holder.bind(currentHive)
 
         holder.itemView.setOnClickListener {
-            hivesBrowserActivity.startHiveActivity()
+            hivesBrowserActivity.startHiveActivity(stationId, currentHive.id)
         }
     }
 
@@ -40,11 +41,9 @@ class HivesAdapter(private val hivesList: MutableList<Beehive>,
 
     inner class HiveViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val tvStationName: TextView = itemView.findViewById(R.id.tv_value_hives_name)
-        private val tvHiveNotes: TextView = itemView.findViewById(R.id.tv_value_hive_notes)
 
         fun bind(hive: Beehive) {
             tvStationName.text = hive.id.toString()
-            tvHiveNotes.text = hive.notes
         }
     }
 }

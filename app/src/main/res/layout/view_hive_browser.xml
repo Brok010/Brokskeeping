@@ -1,48 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:clickable="true"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginStart="16dp"
-    android:layout_marginTop="8dp"
-    android:layout_marginEnd="16dp"
-    android:layout_weight="3"
-    android:background="#AEA5A5"
     android:padding="8dp"
-    android:orientation="vertical"
-    android:id="@+id/relative_layout"
-    android:clickable="true">
+    android:paddingTop="16dp"
+    android:background="@color/black">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/tv_label_hive_name"
-        android:text="Hive Name:"
-        android:textSize="14dp"/>
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_weight="3"
+        android:background="@color/gray"
+        android:orientation="vertical"
+        android:padding="8dp">
 
-    <TextView
-        android:id="@+id/tv_label_hive_notes"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_label_hive_name"
-        android:text="Hive notes:"
-        android:textSize="14dp" />
+        <!-- First Horizontal LinearLayout -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/gray_light"
+            android:id="@+id/first_linear_layout"
+            android:orientation="horizontal">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tv_value_hives_name"
-        android:layout_alignParentEnd="true"
-        android:text="Value Hives_name"
-        android:textSize="14dp"/>
+            <TextView
+                android:id="@+id/tv_label_hive_name"
+                android:text="Hive Name:"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingHorizontal="8dp"
+                android:textSize="18dp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tv_value_hive_notes"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@id/tv_value_hives_name"
-        android:text="Value hive notes"
-        android:textSize="14dp"/>
+            <TextView
+                android:id="@+id/tv_value_hives_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingHorizontal="8dp"
+                android:text="Value Hives_name"
+                android:gravity="end"
+                android:textSize="18dp" />
 
+        </LinearLayout>
+    </RelativeLayout>
 </RelativeLayout>
