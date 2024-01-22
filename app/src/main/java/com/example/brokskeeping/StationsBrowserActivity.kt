@@ -58,4 +58,9 @@ class StationsBrowserActivity : AppCompatActivity() {
         intent.putExtra("stationId", stationId)
         startActivity(intent)
     }
+    fun startAdjustStationActivity(stationId: Int) {
+        val intent = Intent(this, AdjustStationActivity::class.java)
+        intent.putExtra("stationId", stationId)
+        startActivity(intent)
+    }
 }

@@ -74,38 +74,23 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return stations
     }
 
-    fun saveStation(newStation: Station) {
-        // Get a writable database
+    fun deleteStation(stationId: Int) {
         val db = writableDatabase
-        // Start a transaction
         db.beginTransaction()
 
         try {
-            // Insert station details into tbl_stations
-            val stationValues = ContentValues().apply {
-                put(COL_STATION_NAME, newStation.name)
-                put(COL_STATION_PLACE, newStation.location)
-                put(COL_BEEHIVE_NUM, newStation.beehiveNum)
-            }
-            val stationId = db.insert(TABLE_STATIONS, null, stationValues)
+            // Delete hives associated with the station
+            db.delete(TABLE_HIVES, "$COL_STATION_ID_FK = ?", arrayOf(stationId.toString()))
 
-            // Check if station insertion was successful
-            if (stationId != -1L) {
-                // Insert hives into tbl_hives based on beehiveNumber
-                for (i in 1..newStation.beehiveNum) {
-                    val hiveValues = ContentValues().apply {
-                        put(COL_HIVE_NOTES, "Hive $i for Station $stationId")
-                        put(COL_STATION_ID_FK, stationId)
-                    }
-                    db.insert(TABLE_HIVES, null, hiveValues)
-                }
-                // Set the transaction as successful
+            // Delete the station
+            val rowsDeleted = db.delete(TABLE_STATIONS, "$COL_STATION_ID = ?", arrayOf(stationId.toString()))
+
+            // Check if deletion was successful
+            if (rowsDeleted > 0) {
                 db.setTransactionSuccessful()
-
             } else {
-                // Handle station insertion failure
-                // For example, show an error message or log the failure
-                Log.e("DatabaseHelper", "Failed to insert station into tbl_stations")
+                // Handle deletion failure
+                Log.e("DatabaseHelper", "Failed to delete station with ID $stationId")
             }
         } catch (e: Exception) {
             // Handle any exceptions that may occur during the transaction
@@ -116,6 +101,162 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         }
     }
 
+    fun deleteHive(stationId: Int, hiveId: Int) {
+        val db = writableDatabase
+        db.beginTransaction()
+
+        try {
+            // Delete the hive
+            val rowsDeleted = db.delete(TABLE_HIVES, "$COL_HIVE_ID = ? AND $COL_STATION_ID_FK = ?",
+                arrayOf(hiveId.toString(), stationId.toString()))
+
+            // Check if deletion was successful
+            if (rowsDeleted > 0) {
+                db.setTransactionSuccessful()
+            } else {
+                // Handle deletion failure
+                Log.e("DatabaseHelper", "Failed to delete hive with ID $hiveId for station with ID $stationId")
+            }
+        } catch (e: Exception) {
+            // Handle any exceptions that may occur during the transaction
+            e.printStackTrace()
+        } finally {
+            // End the transaction
+            db.endTransaction()
+        }
+        //subtract a hive from the sum
+        updateHiveNumber(stationId, -1)
+    }
+
+    fun getStationsAttributes(stationId: Int): Station? {
+        val query = "SELECT * FROM $TABLE_STATIONS WHERE $COL_STATION_ID = ?"
+        val selectionArgs = arrayOf(stationId.toString())
+
+        val cursor = readableDatabase.rawQuery(query, selectionArgs)
+
+        return try {
+            if (cursor.moveToFirst()) {
+                createStationFromCursor(cursor)
+            } else {
+                null
+            }
+        } finally {
+            cursor.close()
+        }
+    }
+
+    fun updateStation(stationId: Int, updatedStation: Station) {
+        val db = writableDatabase
+        db.beginTransaction()
+
+        try {
+            val values = ContentValues().apply {
+                put(COL_STATION_NAME, updatedStation.name)
+                put(COL_STATION_PLACE, updatedStation.location)
+                put(COL_BEEHIVE_NUM, updatedStation.beehiveNum)
+            }
+
+            val rowsUpdated = db.update(TABLE_STATIONS, values, "$COL_STATION_ID = ?",
+                arrayOf(stationId.toString()))
+
+            if (rowsUpdated > 0) {
+                db.setTransactionSuccessful()
+            } else {
+                Log.e("DatabaseHelper", "Failed to update station with ID $stationId")
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            db.endTransaction()
+        }
+    }
+
+    fun updateHiveNumber(stationId: Int, number: Int) {
+        val db = writableDatabase
+        db.beginTransaction()
+
+        try {
+            // Get the current hive count for the station
+            val currentHiveCount = getHiveCount(stationId)
+
+            // Calculate the new hive count
+            val newHiveCount = currentHiveCount + number
+
+            // Update the hive count in the tbl_stations table
+            val values = ContentValues().apply {
+                put(COL_BEEHIVE_NUM, newHiveCount)
+            }
+
+            val rowsUpdated = db.update(TABLE_STATIONS, values, "$COL_STATION_ID = ?",
+                arrayOf(stationId.toString()))
+
+            // Check if the update was successful
+            if (rowsUpdated > 0) {
+                db.setTransactionSuccessful()
+            } else {
+                // Handle update failure
+                Log.e("DatabaseHelper", "Failed to update hive count for station with ID $stationId")
+            }
+        } catch (e: Exception) {
+            // Handle any exceptions that may occur during the transaction
+            e.printStackTrace()
+        } finally {
+            // End the transaction
+            db.endTransaction()
+        }
+    }
+
+
+    fun saveStation(newStation: Station) {
+        val db = writableDatabase
+        db.beginTransaction()
+        var stationId = -1
+
+        try {
+            // Insert station details into tbl_stations
+            val stationValues = ContentValues().apply {
+                put(COL_STATION_NAME, newStation.name)
+                put(COL_STATION_PLACE, newStation.location)
+                put(COL_BEEHIVE_NUM, newStation.beehiveNum)
+            }
+            stationId = db.insert(TABLE_STATIONS, null, stationValues).toInt()
+
+            // Check if station insertion was successful
+            if (stationId != -1) {
+                // Set the transaction as successful
+                db.setTransactionSuccessful()
+
+            } else {
+                // Handle station insertion failure
+                Log.e("DatabaseHelper", "Failed to insert station into tbl_stations")
+            }
+        } catch (e: Exception) {
+            // Handle any exceptions that may occur during the transaction
+            e.printStackTrace()
+        } finally {
+            // End the transaction
+            db.endTransaction()
+
+            // Close the database
+            db.close()
+
+            // Insert hives into tbl_hives based on beehiveNumber
+            createHivesForStation(stationId, newStation.beehiveNum)
+        }
+    }
+
+    fun createHivesForStation(stationId: Int, hiveCount: Int) {
+        val db = writableDatabase
+
+        for (i in 1..hiveCount) {
+            val hiveValues = ContentValues().apply {
+                put(COL_HIVE_NOTES, "Hive $i for Station $stationId")
+                put(COL_STATION_ID_FK, stationId)
+            }
+            db.insert(TABLE_HIVES, null, hiveValues)
+        }
+        db.close()
+    }
     private fun createStationFromCursor(cursor: Cursor): Station {
         val id = cursor.getInt(cursor.getColumnIndexOrThrow(COL_STATION_ID))
         val name = cursor.getString(cursor.getColumnIndexOrThrow(COL_STATION_NAME))

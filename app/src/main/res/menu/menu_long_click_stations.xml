@@ -1,0 +1,8 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_long_click_stations_delete"
+        android:title="Delete" />
+    <item
+        android:id="@+id/menu_long_click_stations_adjust"
+        android:title="Adjust" />
+</menu>

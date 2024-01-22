@@ -39,7 +39,7 @@ class AddStationActivity : AppCompatActivity() {
         // Check if the beehive number is a valid number between 0 and 100
         if (beehiveNumberText.isNotBlank() && beehiveNumberText.toIntOrNull() != null && stationName.isNotBlank()) {
             val beehiveNumber = beehiveNumberText.toInt()
-            if (beehiveNumber in 0..100) {
+            if (Utils.correctHiveCount(beehiveNumber)) {
                 // Beehive number is valid, process the information
                 processStationInformation(stationName, stationLocation, beehiveNumber)
             } else {
