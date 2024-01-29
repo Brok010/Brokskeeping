@@ -1,21 +1,17 @@
 package com.example.brokskeeping
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.example.brokskeeping.Classes.Beehive
-import com.example.brokskeeping.Classes.Station
 
 class HivesAdapter(private val hivesList: MutableList<Beehive>,
                    private val stationId: Int,
-                   private val stationName: String,
-                  private val db: DatabaseHelper,
-                  private val hivesBrowserActivity: HivesBrowserActivity
+                   private val db: DatabaseHelper,
+                   private val hivesBrowserActivity: HivesBrowserActivity
 ) : RecyclerView.Adapter<HivesAdapter.HiveViewHolder>() {
 
     fun updateData(newHivesList: List<Beehive>) {
@@ -35,7 +31,7 @@ class HivesAdapter(private val hivesList: MutableList<Beehive>,
         holder.bind(currentHive)
 
         holder.itemView.setOnClickListener {
-            hivesBrowserActivity.startHiveActivity(stationId, currentHive.id)
+            hivesBrowserActivity.startHiveActivity(stationId, currentHive.id, currentHive.nameTag)
         }
         holder.itemView.setOnLongClickListener() {
             showContextMenu(holder.itemView, currentHive)
@@ -51,13 +47,13 @@ class HivesAdapter(private val hivesList: MutableList<Beehive>,
         private val tvStationName: TextView = itemView.findViewById(R.id.tv_value_hives_name)
 
         fun bind(hive: Beehive) {
-            tvStationName.text = hive.id.toString()
+            tvStationName.text = hive.nameTag
         }
     }
 
     private fun showContextMenu(view: View, hive: Beehive) {
         val popupMenu = PopupMenu(view.context, view)
-        popupMenu.menuInflater.inflate(R.menu.menu_long_click_stations, popupMenu.menu)
+        popupMenu.menuInflater.inflate(R.menu.menu_long_click_browser, popupMenu.menu)
 
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {

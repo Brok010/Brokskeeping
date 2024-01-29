@@ -2,10 +2,11 @@ package com.example.brokskeeping
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.brokskeeping.R
 
-class HiveActivity : AppCompatActivity() {
+class AddNoteActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_hive)
+        setContentView(R.layout.activity_add_note)
     }
 }

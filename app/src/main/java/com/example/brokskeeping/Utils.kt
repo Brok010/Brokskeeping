@@ -23,4 +23,8 @@ object Utils {
         return number in 0..100
     }
 
+    fun notesFormat(notes: String): Boolean {
+        return true
+    }
+
 }

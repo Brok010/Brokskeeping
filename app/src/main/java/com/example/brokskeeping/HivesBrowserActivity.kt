@@ -25,7 +25,7 @@ class HivesBrowserActivity : AppCompatActivity() {
         stationName = intent.getStringExtra("stationName") ?: ""
         stationId = intent.getIntExtra("stationId", -1)
         db = DatabaseHelper(this)
-        hivesAdapter = HivesAdapter(mutableListOf(), stationId, stationName, db, this)
+        hivesAdapter = HivesAdapter(mutableListOf(), stationId, db, this)
 
 
         // Set the text of the TextView to the stationName
@@ -57,13 +57,17 @@ class HivesBrowserActivity : AppCompatActivity() {
         hivesAdapter.updateData(updatedStationList)
     }
 
-    fun startHiveActivity(stationId: Int, hiveId: Int) {
-        val intent = Intent(this, HiveActivity::class.java)
+    fun startHiveActivity(stationId: Int, hiveId: Int, nameTag: String) {
+        val intent = Intent(this, NotesBrowserActivity::class.java)
+        intent.putExtra("stationId", stationId)
+        intent.putExtra("hiveId", hiveId)
+        intent.putExtra("hiveNameTag", nameTag)
         startActivity(intent)
     }
 
     fun startAddHiveActivity() {
         val intent = Intent(this, AddHiveActivity::class.java)
+        intent.putExtra("stationId", stationId)
         startActivity(intent)
     }
     fun startAdjustHiveActivity(stationId: Int, hiveId: Int) {

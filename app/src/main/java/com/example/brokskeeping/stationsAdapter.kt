@@ -55,7 +55,7 @@ class StationsAdapter(private val stationsList: MutableList<Station>,
     }
     private fun showContextMenu(view: View, station: Station) {
         val popupMenu = PopupMenu(view.context, view)
-        popupMenu.menuInflater.inflate(R.menu.menu_long_click_stations, popupMenu.menu)
+        popupMenu.menuInflater.inflate(R.menu.menu_long_click_browser, popupMenu.menu)
 
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
