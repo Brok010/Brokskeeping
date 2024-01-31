@@ -7,6 +7,7 @@
     android:paddingTop="16dp"
     android:paddingRight="16dp"
     android:paddingBottom="16dp"
+    android:background="@color/gray_light"
     tools:context=".AdjustStationActivity">
 
     <EditText
@@ -32,19 +33,28 @@
         android:inputType="number"
         android:hint="Hive Count"/>
 
-    <Button
-        android:id="@+id/btn_adjust_station_save"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/et_adjust_station_hive_count"
-        android:layout_marginTop="16dp"
-        android:text="Save"/>
+        android:orientation="horizontal"
+        android:gravity="center">
 
-    <Button
-        android:id="@+id/btn_adjust_station_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btn_adjust_station_save"
-        android:layout_marginTop="8dp"
-        android:text="Back"/>
+        <Button
+            android:id="@+id/btn_adjust_station_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/black"
+            android:layout_margin="8dp"
+            android:text="Save"/>
+
+        <Button
+            android:id="@+id/btn_adjust_station_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:backgroundTint="@color/black"
+            android:text="Back" />
+
+    </LinearLayout>
 </RelativeLayout>

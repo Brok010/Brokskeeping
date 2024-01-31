@@ -50,7 +50,7 @@ class StationsAdapter(private val stationsList: MutableList<Station>,
         fun bind(station: Station) {
             tvStationName.text = station.name
             tvStationLocation.text = station.location
-            tvHiveCount.text = db.getHiveCount(station.id).toString()
+            tvHiveCount.text = StationsFunctionality.getHiveCount(db, station.id).toString()
         }
     }
     private fun showContextMenu(view: View, station: Station) {
@@ -66,8 +66,8 @@ class StationsAdapter(private val stationsList: MutableList<Station>,
                     ) { confirmed ->
                         if (confirmed) {
                             // User confirmed the deletion
-                            db.deleteStation(station.id)
-                            updateData(db.getAllStations())
+                            StationsFunctionality.deleteStation(db, station.id)
+                            updateData(StationsFunctionality.getAllStations(db))
                         }
                     }
 

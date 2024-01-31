@@ -30,7 +30,8 @@ class NotesBrowserActivity : AppCompatActivity() {
         notesAdapter = NotesAdapter(mutableListOf(), hiveId, db, this)
 
         // Set the text of the TextView to the stationName
-        binding.tvHiveLabel.text = hiveNameTag
+        val label = "$hiveNameTag notes"
+        binding.tvNotesLabel.text = label
 
         // Set up the RecyclerView
         binding.recyclerView.apply {
@@ -52,6 +53,12 @@ class NotesBrowserActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        val updatedNotesList = NotesFunctionality.getAllNotes(db, hiveId)
+        notesAdapter.updateData(updatedNotesList)
+    }
+
 
     fun startLogsBrowserActivity(hiveId: Int) {
         val intent = Intent(this, LogsBrowserActivity::class.java)
@@ -62,17 +69,23 @@ class NotesBrowserActivity : AppCompatActivity() {
     fun startNoteActivity(noteId: Int) {
         val intent = Intent(this, NoteActivity::class.java)
         intent.putExtra("stationId", stationId)
+        intent.putExtra("hiveId", hiveId)
+        intent.putExtra("noteId", noteId)
         startActivity(intent)
     }
 
     fun startAdjustNotesActivity(noteId: Int) {
         val intent = Intent(this, AdjustNoteActivity::class.java)
+        intent.putExtra("stationId", stationId)
+        intent.putExtra("hiveId", hiveId)
         intent.putExtra("noteId", noteId)
         startActivity(intent)
     }
 
     fun startAddNoteActivity() {
         val intent = Intent(this, AddNoteActivity::class.java)
+        intent.putExtra("hiveId", hiveId)
+        intent.putExtra("stationId", stationId)
         startActivity(intent)
     }
 }

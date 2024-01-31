@@ -29,7 +29,8 @@ class HivesBrowserActivity : AppCompatActivity() {
 
 
         // Set the text of the TextView to the stationName
-        binding.tvHivesLabel.text = stationName
+        val hivesLabel = "$stationName hives"
+        binding.tvHivesLabel.text = hivesLabel
 
         // Set up the RecyclerView
         binding.recyclerView.apply {
@@ -53,8 +54,8 @@ class HivesBrowserActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        val updatedStationList = db.getAllHives(stationId)
-        hivesAdapter.updateData(updatedStationList)
+        val updatedHivesList = HivesFunctionality.getAllHives(db, stationId)
+        hivesAdapter.updateData(updatedHivesList)
     }
 
     fun startHiveActivity(stationId: Int, hiveId: Int, nameTag: String) {

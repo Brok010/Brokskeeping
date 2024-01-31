@@ -44,7 +44,7 @@ class StationsBrowserActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        val updatedStationList = db.getAllStations()
+        val updatedStationList = StationsFunctionality.getAllStations(db)
         stationsAdapter.updateData(updatedStationList)
     }
 

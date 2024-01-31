@@ -31,7 +31,7 @@ class AdjustStationActivity : AppCompatActivity() {
         etHiveCount = findViewById(R.id.et_adjust_station_hive_count)
 
         // Load existing station data
-        var existingStation = db.getStationsAttributes(stationId)
+        var existingStation = StationsFunctionality.getStationsAttributes(db, stationId)
         if (existingStation == null) {
             Toast.makeText(this, "Station is null $stationId", Toast.LENGTH_SHORT).show()
             finish()
@@ -75,9 +75,9 @@ class AdjustStationActivity : AppCompatActivity() {
 
                     if (newHiveCount > existingStation.beehiveNum) {
                         val newHives = newHiveCount - existingStation.beehiveNum
-                        db.createHivesForStation(stationId, newHives)
+                        StationsFunctionality.createHivesForStation(db, stationId, newHives)
                     }
-                    db.updateStation(stationId, updatedStation)
+                    StationsFunctionality.adjustStation(db, stationId, updatedStation)
                     finish()
                 } else {
                     // not confirmed, dialog window closes

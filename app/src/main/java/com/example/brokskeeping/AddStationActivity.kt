@@ -54,7 +54,7 @@ class AddStationActivity : AppCompatActivity() {
 
     private fun processStationInformation(stationName: String, stationLocation: String, beehiveNumber: Int) {
         val newStation = Station(name = stationName, location = stationLocation, beehiveNum = beehiveNumber)
-        db.saveStation(newStation)
+        StationsFunctionality.saveStation(db, newStation)
 
         // You can add additional logic as needed
         Toast.makeText(this, "Station saved successfully", Toast.LENGTH_SHORT).show()

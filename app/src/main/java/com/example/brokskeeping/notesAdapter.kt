@@ -8,7 +8,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.brokskeeping.Classes.HiveNotes
 
-//TODO: remake
 class NotesAdapter(private val notesList: MutableList<HiveNotes>,
                    private val hiveId: Int,
                    private val db: DatabaseHelper,
@@ -50,8 +49,8 @@ class NotesAdapter(private val notesList: MutableList<HiveNotes>,
         private val tvNotesDate: TextView = itemView.findViewById(R.id.tv_note_date)
 
         fun bind(note: HiveNotes) {
-            tvNotesText.text = note.notesText
-            tvNotesDate.text = note.date.toString()
+            tvNotesText.text = note.noteText
+            tvNotesDate.text = note.noteDate.toString()
         }
     }
     private fun showContextMenu(view: View, note: HiveNotes) {
@@ -67,8 +66,8 @@ class NotesAdapter(private val notesList: MutableList<HiveNotes>,
                     ) { confirmed ->
                         if (confirmed) {
                             // User confirmed the deletion
-                            db.deleteNotes(note.id)
-                            updateData(db.getAllNotes(hiveId))
+                            NotesFunctionality.deleteNote(db, note.id, hiveId)
+                            updateData(NotesFunctionality.getAllNotes(db, hiveId))
                         }
                     }
                     true

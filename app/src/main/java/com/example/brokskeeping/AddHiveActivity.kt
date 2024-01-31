@@ -95,7 +95,7 @@ class AddHiveActivity : AppCompatActivity() {
         // Check if the notes and file are valid
         if (Utils.notesFormat(notes) && isValidFile(selectedFile, fileData)) {
             // Call the database function to create a new hive
-            db.saveHive(stationId, nameTag, notes, fileData)
+            HivesFunctionality.saveHive(db, stationId, nameTag, notes, fileData)
             Toast.makeText(this, "New hive added", Toast.LENGTH_SHORT).show()
             finish()
 
