@@ -45,12 +45,6 @@ class LogsBrowserActivity : AppCompatActivity() {
         binding.AddLogBt.setOnClickListener {
             startAddLogActivity()
         }
-
-        //quit button
-        val logsButton: Button = findViewById(R.id.logs_bt)
-        logsButton.setOnClickListener {
-            //
-        }
     }
 
     override fun onResume() {
@@ -59,16 +53,8 @@ class LogsBrowserActivity : AppCompatActivity() {
         logsAdapter.updateData(updatedLogsList)
     }
 
-    fun startAdjustLogsActivity(noteId: Int) {
-        val intent = Intent(this, AdjustNoteActivity::class.java)
-        intent.putExtra("stationId", stationId)
-        intent.putExtra("hiveId", hiveId)
-        intent.putExtra("noteId", noteId)
-        startActivity(intent)
-    }
-
     fun startAddLogActivity() {
-        val intent = Intent(this, AddNoteActivity::class.java)
+        val intent = Intent(this, AddLogActivity::class.java)
         intent.putExtra("hiveId", hiveId)
         intent.putExtra("stationId", stationId)
         startActivity(intent)

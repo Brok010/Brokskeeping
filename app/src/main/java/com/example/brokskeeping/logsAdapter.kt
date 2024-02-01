@@ -53,11 +53,11 @@ class LogsAdapter(private val logsList: MutableList<HumTempData>,
     }
     private fun showContextMenu(view: View, log: HumTempData) {
         val popupMenu = PopupMenu(view.context, view)
-        popupMenu.menuInflater.inflate(R.menu.menu_long_click_browser, popupMenu.menu)
+        popupMenu.menuInflater.inflate(R.menu.menu_delete, popupMenu.menu)
 
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
-                R.id.menu_long_click_stations_delete -> {
+                R.id.menu_delete -> {
                     Utils.showConfirmationDialog(
                         view.context,
                         "Are you sure you want to delete this log?"

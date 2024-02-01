@@ -55,7 +55,6 @@ object HumTempDataFunctionality {
         db.close()
     }
 
-    //TODO: prob would be optimal to get first and last dates out the data and insert them too
     fun addDataLogs(dbHelper: DatabaseHelper, data: HumTempData) {
         val db = dbHelper.writableDatabase
 
@@ -64,12 +63,12 @@ object HumTempDataFunctionality {
             put(DatabaseHelper.COL_STATION_ID_FK_DATA_LOGS, data.stationId)
             put(DatabaseHelper.COL_HIVE_ID_FK_DATA_LOGS, data.hiveId)
             put(DatabaseHelper.COL_DATA_LOG_DATA, data.logText)
-            // Additional columns if needed
+            put(DatabaseHelper.COL_DATA_LOG_FIRST_DATE, data.firstDate.time)
+            put(DatabaseHelper.COL_DATA_LOG_LAST_DATE, data.lastDate.time)
         }
 
         // Insert the data into the DATA_LOGS table
         db.insert(DatabaseHelper.TABLE_DATA_LOGS, null, values)
-
         db.close()
     }
 }

@@ -63,6 +63,8 @@ class NotesBrowserActivity : AppCompatActivity() {
     fun startLogsBrowserActivity(hiveId: Int) {
         val intent = Intent(this, LogsBrowserActivity::class.java)
         intent.putExtra("hiveId", hiveId)
+        intent.putExtra("stationId", stationId)
+        intent.putExtra("hiveNameTag", hiveNameTag)
         startActivity(intent)
     }
 
