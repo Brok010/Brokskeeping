@@ -2,13 +2,13 @@ package com.example.brokskeeping
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.content.Intent
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import com.example.brokskeeping.Classes.Station
-import com.example.brokskeeping.DatabaseHelper
-import com.example.brokskeeping.R
+import com.example.brokskeeping.DataClasses.Station
+import com.example.brokskeeping.DbFunctionality.DatabaseHelper
+import com.example.brokskeeping.DbFunctionality.StationsFunctionality
+import com.example.brokskeeping.DbFunctionality.Utils
 
 class AdjustStationActivity : AppCompatActivity() {
     private lateinit var db: DatabaseHelper

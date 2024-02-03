@@ -1,4 +1,4 @@
-package com.example.brokskeeping.Classes
+package com.example.brokskeeping.DataClasses
 
 data class Station(
     val id :Int = -1,

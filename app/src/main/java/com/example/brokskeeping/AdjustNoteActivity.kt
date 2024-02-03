@@ -3,11 +3,12 @@ package com.example.brokskeeping
 import android.app.DatePickerDialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.ContactsContract.CommonDataKinds.Note
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import com.example.brokskeeping.Classes.HiveNotes
+import com.example.brokskeeping.DataClasses.HiveNotes
+import com.example.brokskeeping.DbFunctionality.DatabaseHelper
+import com.example.brokskeeping.DbFunctionality.NotesFunctionality
 import com.example.brokskeeping.databinding.ActivityAdjustNoteBinding
 import java.text.SimpleDateFormat
 import java.util.Calendar

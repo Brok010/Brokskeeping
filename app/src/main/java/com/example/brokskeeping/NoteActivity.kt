@@ -3,8 +3,9 @@ package com.example.brokskeeping
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.EditText
 import android.widget.TextView
+import com.example.brokskeeping.DbFunctionality.DatabaseHelper
+import com.example.brokskeeping.DbFunctionality.NotesFunctionality
 import com.example.brokskeeping.databinding.ActivityNoteBinding
 
 class NoteActivity : AppCompatActivity() {

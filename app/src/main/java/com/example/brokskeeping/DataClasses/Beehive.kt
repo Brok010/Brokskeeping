@@ -1,4 +1,4 @@
-package com.example.brokskeeping.Classes
+package com.example.brokskeeping.DataClasses
 
 data class Beehive(
     var id: Int = -1,

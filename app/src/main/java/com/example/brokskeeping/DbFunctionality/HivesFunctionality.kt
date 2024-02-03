@@ -1,13 +1,11 @@
-package com.example.brokskeeping
+package com.example.brokskeeping.DbFunctionality
 
 import android.content.ContentValues
-import android.content.ContentValues.TAG
 import android.database.Cursor
-import android.provider.ContactsContract.CommonDataKinds.Note
 import android.util.Log
-import com.example.brokskeeping.Classes.Beehive
-import com.example.brokskeeping.Classes.HiveNotes
-import com.example.brokskeeping.Classes.HumTempData
+import com.example.brokskeeping.DataClasses.Beehive
+import com.example.brokskeeping.DataClasses.HiveNotes
+import com.example.brokskeeping.DataClasses.HumTempData
 
 object HivesFunctionality {
 

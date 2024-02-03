@@ -1,4 +1,4 @@
-package com.example.brokskeeping.Classes
+package com.example.brokskeeping.DataClasses
 
 import java.util.Date
 

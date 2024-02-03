@@ -6,11 +6,14 @@ import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.brokskeeping.Classes.Station
+import com.example.brokskeeping.DataClasses.Station
+import com.example.brokskeeping.DbFunctionality.DatabaseHelper
+import com.example.brokskeeping.DbFunctionality.StationsFunctionality
+import com.example.brokskeeping.DbFunctionality.Utils
 
 class StationsAdapter(private val stationsList: MutableList<Station>,
-                  private val db: DatabaseHelper,
-                  private val stationsBrowserActivity: StationsBrowserActivity
+                      private val db: DatabaseHelper,
+                      private val stationsBrowserActivity: StationsBrowserActivity
 ) : RecyclerView.Adapter<StationsAdapter.StationViewHolder>() {
 
     fun updateData(newStationsList: List<Station>) {

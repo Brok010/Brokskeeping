@@ -1,9 +1,9 @@
-package com.example.brokskeeping
+package com.example.brokskeeping.DbFunctionality
 
 import android.content.ContentValues
 import android.database.Cursor
 import android.util.Log
-import com.example.brokskeeping.Classes.Station
+import com.example.brokskeeping.DataClasses.Station
 
 object StationsFunctionality {
 
@@ -113,7 +113,7 @@ object StationsFunctionality {
         }
     }
 
-    fun adjustStation(dbHelper: DatabaseHelper ,stationId: Int, updatedStation: Station) {
+    fun adjustStation(dbHelper: DatabaseHelper, stationId: Int, updatedStation: Station) {
         val db = dbHelper.writableDatabase
         db.beginTransaction()
 
@@ -166,7 +166,7 @@ object StationsFunctionality {
             db.endTransaction()
         }
     }
-    fun updateHiveNumber(dbHelper: DatabaseHelper ,stationId: Int, number: Int) {
+    fun updateHiveNumber(dbHelper: DatabaseHelper, stationId: Int, number: Int) {
         val db = dbHelper.writableDatabase
         db.beginTransaction()
 

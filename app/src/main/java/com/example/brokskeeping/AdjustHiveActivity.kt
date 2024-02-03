@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import com.example.brokskeeping.DbFunctionality.DatabaseHelper
+import com.example.brokskeeping.DbFunctionality.HivesFunctionality
 
 class AdjustHiveActivity : AppCompatActivity() {
     private lateinit var etAdjustHiveNametag: EditText

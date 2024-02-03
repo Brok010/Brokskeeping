@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.brokskeeping"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -38,8 +38,9 @@ android {
     }
 }
 
-dependencies {
 
+dependencies {
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.10.0")

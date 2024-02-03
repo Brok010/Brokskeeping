@@ -6,7 +6,10 @@ import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.brokskeeping.Classes.HiveNotes
+import com.example.brokskeeping.DataClasses.HiveNotes
+import com.example.brokskeeping.DbFunctionality.DatabaseHelper
+import com.example.brokskeeping.DbFunctionality.NotesFunctionality
+import com.example.brokskeeping.DbFunctionality.Utils
 
 class NotesAdapter(private val notesList: MutableList<HiveNotes>,
                    private val hiveId: Int,

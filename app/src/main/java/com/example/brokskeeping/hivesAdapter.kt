@@ -6,7 +6,10 @@ import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.brokskeeping.Classes.Beehive
+import com.example.brokskeeping.DataClasses.Beehive
+import com.example.brokskeeping.DbFunctionality.DatabaseHelper
+import com.example.brokskeeping.DbFunctionality.HivesFunctionality
+import com.example.brokskeeping.DbFunctionality.Utils
 
 class HivesAdapter(private val hivesList: MutableList<Beehive>,
                    private val stationId: Int,

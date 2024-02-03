@@ -3,9 +3,10 @@ package com.example.brokskeeping
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.brokskeeping.DbFunctionality.DatabaseHelper
+import com.example.brokskeeping.DbFunctionality.HumTempDataFunctionality
 import com.example.brokskeeping.databinding.ActivityLogsBrowserBinding
 
 
@@ -57,6 +58,12 @@ class LogsBrowserActivity : AppCompatActivity() {
         val intent = Intent(this, AddLogActivity::class.java)
         intent.putExtra("hiveId", hiveId)
         intent.putExtra("stationId", stationId)
+        startActivity(intent)
+    }
+
+    fun startLogActivity(logId: Int) {
+        val intent = Intent(this, LogActivity::class.java)
+        intent.putExtra("logId", logId)
         startActivity(intent)
     }
 }

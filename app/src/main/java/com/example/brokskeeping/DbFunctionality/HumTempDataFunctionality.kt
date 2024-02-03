@@ -1,12 +1,27 @@
-package com.example.brokskeeping
+package com.example.brokskeeping.DbFunctionality
 
 import android.content.ContentValues
 import android.database.Cursor
-import com.example.brokskeeping.Classes.HiveNotes
-import com.example.brokskeeping.Classes.HumTempData
+import com.example.brokskeeping.DataClasses.HumTempData
 import java.util.Date
 
 object HumTempDataFunctionality {
+
+    fun getHumTempData(dbHelper: DatabaseHelper, logId: Int): HumTempData {
+        val db = dbHelper.readableDatabase
+        var humTempData = HumTempData()
+
+        val query = "SELECT * FROM ${DatabaseHelper.TABLE_DATA_LOGS} WHERE " +
+                "${DatabaseHelper.COL_DATA_LOG_ID} = ?"
+        val selectionArgs = arrayOf(logId.toString())
+
+        db.rawQuery(query, selectionArgs).use { cursor ->
+            if (cursor.moveToFirst()) {
+                humTempData = getLogFromCursor(cursor)
+            }
+        }
+        return humTempData
+    }
 
     fun getAllHumTempData(dbHelper: DatabaseHelper, hiveId: Int): MutableList<HumTempData> {
         val humTempList = mutableListOf<HumTempData>()
@@ -40,7 +55,7 @@ object HumTempDataFunctionality {
     //TODO: test if it works
     fun deleteHivesHumTempData(dbHelper: DatabaseHelper, hiveId: Int) {
         val db = dbHelper.writableDatabase
-        db.delete(DatabaseHelper.TABLE_DATA_LOGS, "${DatabaseHelper}.COL_HIVE_ID_FK_DATA_LOGS = ?", arrayOf(hiveId.toString()))
+        db.delete(DatabaseHelper.TABLE_DATA_LOGS, "$DatabaseHelper.COL_HIVE_ID_FK_DATA_LOGS = ?", arrayOf(hiveId.toString()))
         db.close()
     }
 

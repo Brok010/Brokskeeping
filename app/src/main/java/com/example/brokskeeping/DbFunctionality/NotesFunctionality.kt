@@ -1,12 +1,9 @@
-package com.example.brokskeeping
+package com.example.brokskeeping.DbFunctionality
 
 import android.content.ContentValues
 import android.database.Cursor
 import android.util.Log
-import android.widget.Toast
-import com.example.brokskeeping.Classes.HiveNotes
-import com.example.brokskeeping.Classes.HumTempData
-import com.example.brokskeeping.Classes.Station
+import com.example.brokskeeping.DataClasses.HiveNotes
 import java.util.Date
 
 object NotesFunctionality {

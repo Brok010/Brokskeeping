@@ -1,16 +1,8 @@
-package com.example.brokskeeping
+package com.example.brokskeeping.DbFunctionality
 
-import android.content.ContentValues
 import android.content.Context
-import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import android.util.Log
-import com.example.brokskeeping.Classes.Beehive
-import com.example.brokskeeping.Classes.HiveNotes
-import com.example.brokskeeping.Classes.HumTempData
-import com.example.brokskeeping.Classes.Station
-import java.util.Date
 
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 

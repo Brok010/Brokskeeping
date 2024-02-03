@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.brokskeeping.DbFunctionality.DatabaseHelper
+import com.example.brokskeeping.DbFunctionality.HivesFunctionality
 import com.example.brokskeeping.databinding.ActivityHivesBrowserBinding
 
 class HivesBrowserActivity : AppCompatActivity() {

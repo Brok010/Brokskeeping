@@ -6,15 +6,15 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.OpenableColumns
 import android.widget.Button
-import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import com.example.brokskeeping.Classes.DateRange
-import com.example.brokskeeping.Classes.HumTempData
+import com.example.brokskeeping.DataClasses.HumTempData
+import com.example.brokskeeping.DbFunctionality.DatabaseHelper
+import com.example.brokskeeping.DbFunctionality.HumTempDataFunctionality
+import com.example.brokskeeping.DbFunctionality.Utils
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
-import java.util.Date
 
 class AddLogActivity : AppCompatActivity() {
     private lateinit var buttonChooseFile: Button

@@ -6,12 +6,17 @@ import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.brokskeeping.Classes.HumTempData
+import com.example.brokskeeping.DataClasses.HumTempData
+import com.example.brokskeeping.DbFunctionality.DatabaseHelper
+import com.example.brokskeeping.DbFunctionality.HumTempDataFunctionality
+import com.example.brokskeeping.DbFunctionality.Utils
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class LogsAdapter(private val logsList: MutableList<HumTempData>,
-                   private val hiveId: Int,
-                   private val db: DatabaseHelper,
-                   private val logsBrowserActivity: LogsBrowserActivity
+                  private val hiveId: Int,
+                  private val db: DatabaseHelper,
+                  private val logsBrowserActivity: LogsBrowserActivity
 ) : RecyclerView.Adapter<LogsAdapter.HumTempDataViewHolder>() {
 
     fun updateData(newLogsList: List<HumTempData>) {
@@ -31,7 +36,7 @@ class LogsAdapter(private val logsList: MutableList<HumTempData>,
         holder.bind(currentHumTempData)
 
         holder.itemView.setOnClickListener {
-            //
+            logsBrowserActivity.startLogActivity(currentHumTempData.id)
         }
 
         holder.itemView.setOnLongClickListener() {
@@ -48,7 +53,11 @@ class LogsAdapter(private val logsList: MutableList<HumTempData>,
         private val tvLogsDateRange: TextView = itemView.findViewById(R.id.tv_date_range)
 
         fun bind(log: HumTempData) {
-            tvLogsDateRange.text = "${log.firstDate} to ${log.lastDate}"
+            val dateFormat = SimpleDateFormat("MMM dd, yyyy HH:mm:ss", Locale.getDefault())
+            val formattedFirstDate = dateFormat.format(log.firstDate)
+            val formattedLastDate = dateFormat.format(log.lastDate)
+
+            tvLogsDateRange.text = "$formattedFirstDate to $formattedLastDate"
         }
     }
     private fun showContextMenu(view: View, log: HumTempData) {
