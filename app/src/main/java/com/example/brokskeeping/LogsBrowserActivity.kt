@@ -14,7 +14,6 @@ class LogsBrowserActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLogsBrowserBinding
     private lateinit var db: DatabaseHelper
     private lateinit var logsAdapter: LogsAdapter
-    private var hiveNameTag: String = ""
     private var hiveId: Int = -1
     private var stationId: Int = -1
 
@@ -25,14 +24,12 @@ class LogsBrowserActivity : AppCompatActivity() {
 
         stationId = intent.getIntExtra("stationId", -1)
         hiveId = intent.getIntExtra("hiveId", -1)
-        hiveNameTag = intent.getStringExtra("hiveNameTag") ?: "Default Name"
 
         db = DatabaseHelper(this)
         logsAdapter = LogsAdapter(mutableListOf(), hiveId, db, this)
 
         // Set the text of the TextView to the stationName
-        val label = "$hiveNameTag logs"
-        binding.tvLogsLabel.text = label
+        binding.tvLogsLabel.text = "Station $stationId Hive $hiveId"
 
         // Set up the RecyclerView
         binding.recyclerView.apply {

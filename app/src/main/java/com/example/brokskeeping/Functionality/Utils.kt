@@ -1,75 +1,43 @@
-package com.example.brokskeeping.DbFunctionality
+package com.example.brokskeeping.Functionality
 
 import android.content.Context
 import androidx.appcompat.app.AlertDialog
 import com.example.brokskeeping.DataClasses.DateRange
 import com.example.brokskeeping.DataClasses.MaxMins
-import com.example.brokskeeping.DataClasses.SensorData
-import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.math.abs
 
 object Utils {
 
-    fun compressData(data: String, firstDate: Date, lastDate: Date): MutableList<SensorData> {
-        val lines = data.split("\n").drop(1) // Skip the first line
-        val dataTimeDiff = getDataTimeDiff(lines[1], lines[2])
-        val stepTimeInSec = getStepTime(firstDate, lastDate)
-
-        val lineStep = (stepTimeInSec / dataTimeDiff).toInt()
-        // parsing
-        return dataParsing(lines, lineStep)
-    }
-
-    private fun getDataTimeDiff(str1: String, str2: String): Long {
-        val time1 = getTime(str1)
-        val time2 = getTime(str2)
-        return time2 - time1
-    }
-
-    private fun getTime(line: String): Long {
-        val dateFormat = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault())
-        val parts = line.split(", ")
-        val dateString = parts[0]
-        val date = dateFormat.parse(dateString) ?: return 0 // Parsing failed, return 0
-        return date.time / 1000
-    }
-
-    private fun getStepTime(date1: Date, date2: Date): Int {
-        val timeDiffInMillis = date2.time - date1.time
-        val timeDiffInSecs = timeDiffInMillis / 1000
-
-        // if diff is bigger then a day i want a value every 30 min else every 5 min
-        return if (timeDiffInSecs <= (24 * 60 * 60)) (5 * 60) else (30 * 60)
-    }
-
-
-    private fun dataParsing(lines: List<String>, lineStep: Int): MutableList<SensorData> {
-        val sensorDataList = mutableListOf<SensorData>()
-        val dateFormat = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault())
-
-        for ((counter, line) in lines.withIndex()) {
-            if (counter == 0 || counter % lineStep == 0) {
-                val parts = line.split(", ")
-                val dateString = parts[0]
-                val temp = parts[1].toDouble()
-                val hum = parts[2].toDouble()
-
-                val date = try {
-                    dateFormat.parse(dateString)
-                } catch (e: ParseException) {
-                    Date(0) // If parsing fails, use the default date
-                }
-                val sensorData = SensorData(date, temp, hum)
-                sensorDataList.add(sensorData)
+    fun getNewData(data: String, firstDateTime: Long, lastDateTime: Long): String {
+        val lines = data.split("\n")
+        val filteredLines = lines.filter { line ->
+            val parts = line.split(", ")
+            if (parts.size == 3) {
+                val timeString = parts[0]
+                val time = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault()).parse(timeString)?.time ?: 0L
+                time in firstDateTime..lastDateTime
+            } else {
+                false
             }
         }
-        return sensorDataList
+        return filteredLines.joinToString("\n")
+    }
+
+    fun isMoreThanDay(date1: Date, date2: Date):Boolean {
+        val differenceInMillis = abs(date2.time - date1.time)
+
+        // Calculate the duration of 24 hours in milliseconds
+        val oneDayInMillis = 24 * 60 * 60 * 1000L // 24 hours * 60 minutes * 60 seconds * 1000 milliseconds
+
+        // Check if the difference is greater than 24 hours
+        return differenceInMillis > oneDayInMillis
     }
 
     fun getMaxMinTempHum(data: String): MaxMins {
-        val lines = data.split("\n").drop(1) // Skip the first line
+        val lines = data.split("\n")
         var maxTemp = Double.MIN_VALUE
         var minTemp = Double.MAX_VALUE
         var maxHum = Double.MIN_VALUE
@@ -77,7 +45,7 @@ object Utils {
 
         for (line in lines) {
             val values = line.split(", ")
-            if (values.size >= 3) {
+            if (values.size == 3) {
                 val temp = values[1].toDouble()
                 val hum = values[2].toDouble()
                 maxTemp = maxOf(maxTemp, temp)

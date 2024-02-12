@@ -60,11 +60,10 @@ class HivesBrowserActivity : AppCompatActivity() {
         hivesAdapter.updateData(updatedHivesList)
     }
 
-    fun startHiveActivity(stationId: Int, hiveId: Int, nameTag: String) {
+    fun startHiveActivity(stationId: Int, hiveId: Int) {
         val intent = Intent(this, NotesBrowserActivity::class.java)
         intent.putExtra("stationId", stationId)
         intent.putExtra("hiveId", hiveId)
-        intent.putExtra("hiveNameTag", nameTag)
         startActivity(intent)
     }
 

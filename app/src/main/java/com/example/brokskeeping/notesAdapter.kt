@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.brokskeeping.DataClasses.HiveNotes
 import com.example.brokskeeping.DbFunctionality.DatabaseHelper
 import com.example.brokskeeping.DbFunctionality.NotesFunctionality
-import com.example.brokskeeping.DbFunctionality.Utils
+import com.example.brokskeeping.Functionality.Utils
 
 class NotesAdapter(private val notesList: MutableList<HiveNotes>,
                    private val hiveId: Int,

@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.brokskeeping.DataClasses.Station
 import com.example.brokskeeping.DbFunctionality.DatabaseHelper
 import com.example.brokskeeping.DbFunctionality.StationsFunctionality
-import com.example.brokskeeping.DbFunctionality.Utils
+import com.example.brokskeeping.Functionality.Utils
 
 class StationsAdapter(private val stationsList: MutableList<Station>,
                       private val db: DatabaseHelper,

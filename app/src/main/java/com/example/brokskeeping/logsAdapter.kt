@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.brokskeeping.DataClasses.HumTempData
 import com.example.brokskeeping.DbFunctionality.DatabaseHelper
 import com.example.brokskeeping.DbFunctionality.HumTempDataFunctionality
-import com.example.brokskeeping.DbFunctionality.Utils
+import com.example.brokskeeping.Functionality.Utils
 import java.text.SimpleDateFormat
 import java.util.Locale
 

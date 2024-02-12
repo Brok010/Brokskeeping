@@ -11,7 +11,7 @@ import android.widget.Toast
 import com.example.brokskeeping.DataClasses.HumTempData
 import com.example.brokskeeping.DbFunctionality.DatabaseHelper
 import com.example.brokskeeping.DbFunctionality.HumTempDataFunctionality
-import com.example.brokskeeping.DbFunctionality.Utils
+import com.example.brokskeeping.Functionality.Utils
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader

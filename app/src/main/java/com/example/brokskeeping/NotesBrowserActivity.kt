@@ -15,7 +15,6 @@ class NotesBrowserActivity : AppCompatActivity() {
     private lateinit var binding: ActivityNotesBrowserBinding
     private lateinit var db: DatabaseHelper
     private lateinit var notesAdapter: NotesAdapter
-    private var hiveNameTag: String = ""
     private var hiveId: Int = -1
     private var stationId: Int = -1
 
@@ -26,14 +25,12 @@ class NotesBrowserActivity : AppCompatActivity() {
 
         stationId = intent.getIntExtra("stationId", -1)
         hiveId = intent.getIntExtra("hiveId", -1)
-        hiveNameTag = intent.getStringExtra("hiveNameTag") ?: "Default Name"
 
         db = DatabaseHelper(this)
         notesAdapter = NotesAdapter(mutableListOf(), hiveId, db, this)
 
         // Set the text of the TextView to the stationName
-        val label = "$hiveNameTag notes"
-        binding.tvNotesLabel.text = label
+        binding.tvNotesStation.text = "Station $stationId Hive $hiveId"
 
         // Set up the RecyclerView
         binding.recyclerView.apply {
@@ -49,10 +46,17 @@ class NotesBrowserActivity : AppCompatActivity() {
         }
 
         //quit button
+        val addToDoButton: Button = findViewById(R.id.logs_bt)
+        addToDoButton.setOnClickListener {
+            startAddToDoActivity()
+        }
+
+        //quit button
         val logsButton: Button = findViewById(R.id.logs_bt)
         logsButton.setOnClickListener {
-            startLogsBrowserActivity(hiveId)
+            startLogsBrowserActivity()
         }
+        startToDoActivity()
     }
 
     override fun onResume() {
@@ -62,11 +66,24 @@ class NotesBrowserActivity : AppCompatActivity() {
     }
 
 
-    fun startLogsBrowserActivity(hiveId: Int) {
+    fun startLogsBrowserActivity() {
         val intent = Intent(this, LogsBrowserActivity::class.java)
         intent.putExtra("hiveId", hiveId)
         intent.putExtra("stationId", stationId)
-        intent.putExtra("hiveNameTag", hiveNameTag)
+        startActivity(intent)
+    }
+
+    fun startAddToDoActivity() {
+        val intent = Intent(this, AddToDo::class.java)
+        intent.putExtra("hiveId", hiveId)
+        intent.putExtra("stationId", stationId)
+        startActivity(intent)
+    }
+
+    fun startToDoActivity() {
+        val intent = Intent(this, ToDoActivity::class.java)
+        intent.putExtra("hiveId", hiveId)
+        intent.putExtra("stationId", stationId)
         startActivity(intent)
     }
 

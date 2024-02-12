@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.brokskeeping.DataClasses.Beehive
 import com.example.brokskeeping.DbFunctionality.DatabaseHelper
 import com.example.brokskeeping.DbFunctionality.HivesFunctionality
-import com.example.brokskeeping.DbFunctionality.Utils
+import com.example.brokskeeping.Functionality.Utils
 
 class HivesAdapter(private val hivesList: MutableList<Beehive>,
                    private val stationId: Int,
@@ -34,7 +34,7 @@ class HivesAdapter(private val hivesList: MutableList<Beehive>,
         holder.bind(currentHive)
 
         holder.itemView.setOnClickListener {
-            hivesBrowserActivity.startHiveActivity(stationId, currentHive.id, currentHive.nameTag)
+            hivesBrowserActivity.startHiveActivity(stationId, currentHive.id)
         }
         holder.itemView.setOnLongClickListener() {
             showContextMenu(holder.itemView, currentHive)

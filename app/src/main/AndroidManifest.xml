@@ -13,6 +13,12 @@
         android:theme="@style/Theme.Brokskeeping"
         tools:targetApi="31">
         <activity
+            android:name=".ToDoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AddToDo"
+            android:exported="false" />
+        <activity
             android:name=".LogActivity"
             android:exported="false" />
         <activity
