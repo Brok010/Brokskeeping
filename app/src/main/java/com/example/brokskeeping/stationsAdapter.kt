@@ -62,7 +62,7 @@ class StationsAdapter(private val stationsList: MutableList<Station>,
 
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
-                R.id.menu_long_click_stations_delete -> {
+                R.id.menu_long_click_delete -> {
                     Utils.showConfirmationDialog(
                         view.context,
                         "Are you sure you want to delete this station?"
@@ -76,7 +76,7 @@ class StationsAdapter(private val stationsList: MutableList<Station>,
 
                     true
                 }
-                R.id.menu_long_click_stations_adjust -> {
+                R.id.menu_long_click_adjust -> {
                     // Handle adjust action
                     stationsBrowserActivity.startAdjustStationActivity(station.id)
                     true

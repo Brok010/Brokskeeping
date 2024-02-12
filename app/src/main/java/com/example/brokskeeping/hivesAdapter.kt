@@ -60,7 +60,7 @@ class HivesAdapter(private val hivesList: MutableList<Beehive>,
 
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
-                R.id.menu_long_click_stations_delete -> {
+                R.id.menu_long_click_delete -> {
                     Utils.showConfirmationDialog(
                         view.context,
                         "Are you sure you want to delete this hive?"
@@ -73,7 +73,7 @@ class HivesAdapter(private val hivesList: MutableList<Beehive>,
                     }
                     true
                 }
-                R.id.menu_long_click_stations_adjust -> {
+                R.id.menu_long_click_adjust -> {
                     // Handle adjust action
                     hivesBrowserActivity.startAdjustHiveActivity(stationId, hive.id)
                     true

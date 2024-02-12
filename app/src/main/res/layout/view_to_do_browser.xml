@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:clickable="true"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
+    android:paddingTop="16dp"
+    android:background="@color/black">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_weight="3"
+        android:background="@color/gray"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <!-- First Horizontal LinearLayout -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/first_linear_layout"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_to_do_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingHorizontal="8dp"
+                android:text="date"
+                android:textSize="18dp" />
+
+        </LinearLayout>
+
+        <!-- Second Horizontal LinearLayout -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/second_linear_layout"
+            android:layout_below="@id/first_linear_layout"
+            android:background="@color/gray_light"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_to_do_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="8dp"
+                android:layout_weight="1"
+                android:text="sample"
+                android:gravity="left"
+                android:textSize="18dp" />
+
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

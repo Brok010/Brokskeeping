@@ -8,7 +8,7 @@
 
     <!-- Note EditText -->
     <EditText
-        android:id="@+id/to_do_text"
+        android:id="@+id/adjust_to_do_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Enter to do text"
@@ -21,7 +21,7 @@
         android:layout_gravity="left">
 
         <Button
-            android:id="@+id/btn_to_do_date_picker"
+            android:id="@+id/btn_adjust_to_do_date_picker"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_margin="8dp"
@@ -32,7 +32,7 @@
             android:text="Pick Date"/>
 
         <TextView
-            android:id="@+id/to_do_date_text"
+            android:id="@+id/adjust_to_do_date_text"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_margin="8dp"
@@ -41,24 +41,47 @@
             android:textSize="15dp">
 
         </TextView>
+
+    </LinearLayout>
+
+    <!--  checkbox  -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <CheckBox
+            android:id="@+id/adjust_to_do_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Done?"
+            android:layout_margin="8dp">
+        </CheckBox>
+
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginTop="16dp">
+        android:gravity="bottom">
 
-        <!-- Submit Button -->
-        <Button
-            android:id="@+id/buttonSubmitToDo"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/black"
-            android:layout_marginEnd="8dp"
-            android:text="Submit" />
+            android:layout_marginTop="16dp"
+            android:gravity="center"
 
+            android:orientation="horizontal">
+
+            <!-- Submit Button -->
+            <Button
+                android:id="@+id/buttonAdjustToDo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="@color/black"
+                android:text="Adjust" />
+
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

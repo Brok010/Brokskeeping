@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.brokskeeping.DbFunctionality.DatabaseHelper
 import com.example.brokskeeping.DbFunctionality.NotesFunctionality
+import com.example.brokskeeping.DbFunctionality.ToDoFunctionality
 import com.example.brokskeeping.databinding.ActivityNotesBrowserBinding
 
 
@@ -45,18 +46,23 @@ class NotesBrowserActivity : AppCompatActivity() {
             startAddNoteActivity()
         }
 
-        //quit button
-        val addToDoButton: Button = findViewById(R.id.logs_bt)
-        addToDoButton.setOnClickListener {
-            startAddToDoActivity()
+        //T0D0 button
+        val browserToDoButton: Button = findViewById(R.id.to_do_bt)
+        browserToDoButton.setOnClickListener {
+            startToDoBrowserActivity()
         }
 
-        //quit button
+        //logs button
         val logsButton: Button = findViewById(R.id.logs_bt)
         logsButton.setOnClickListener {
             startLogsBrowserActivity()
         }
-        startToDoActivity()
+
+        //ToDoPopup
+        val toDoList = ToDoFunctionality.getAllPendingToDos(db, hiveId)
+        if (toDoList.isNotEmpty()) {
+            startToDoActivity()
+        }
     }
 
     override fun onResume() {
@@ -73,17 +79,15 @@ class NotesBrowserActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    fun startAddToDoActivity() {
-        val intent = Intent(this, AddToDo::class.java)
+    fun startToDoBrowserActivity() {
+        val intent = Intent(this, ToDoBrowserActivity()::class.java)
         intent.putExtra("hiveId", hiveId)
-        intent.putExtra("stationId", stationId)
         startActivity(intent)
     }
 
     fun startToDoActivity() {
         val intent = Intent(this, ToDoActivity::class.java)
         intent.putExtra("hiveId", hiveId)
-        intent.putExtra("stationId", stationId)
         startActivity(intent)
     }
 

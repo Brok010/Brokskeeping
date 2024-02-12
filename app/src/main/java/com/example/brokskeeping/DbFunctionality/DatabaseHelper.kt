@@ -40,12 +40,10 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     internal val CREATE_TABLE_TODO = "CREATE TABLE $TABLE_TODO (" +
             "$COL_TODO_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
             "$COL_HIVE_ID_FK_TODO INTEGER, " +
-            "$COL_NOTES_ID_FK_TODO INTEGER, " +
             "$COL_TODO_TEXT TEXT, " +
             "$COL_TODO_STATE INTEGER, " + // Store boolean as INTEGER (0 or 1)
             "$COL_TODO_DATE INTEGER," +
-            "FOREIGN KEY($COL_HIVE_ID_FK_TODO) REFERENCES $TABLE_HIVES($COL_HIVE_ID)," +
-            "FOREIGN KEY($COL_NOTES_ID_FK_TODO) REFERENCES $TABLE_HIVE_NOTES($COL_HIVE_NOTE_ID))"
+            "FOREIGN KEY($COL_HIVE_ID_FK_TODO) REFERENCES $TABLE_HIVES($COL_HIVE_ID))"
 
     override fun onCreate(db: SQLiteDatabase?) {
         db?.execSQL(CREATE_TABLE_STATIONS)
@@ -102,11 +100,10 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         const val COL_HIVE_NOTE_TEXT = "hive_note"
         const val COL_HIVE_NOTE_DATE = "hive_note_date"
 
-        //TODO
+        //T0D0
         const val TABLE_TODO = "tbl_todo"
         const val COL_TODO_ID = "todo_id"
         const val COL_HIVE_ID_FK_TODO = "todo_hive_id"
-        const val COL_NOTES_ID_FK_TODO = "todo_notes_id"
         const val COL_TODO_TEXT = "todo_text"
         const val COL_TODO_STATE = "todo_state"
         const val COL_TODO_DATE = "todo_date"

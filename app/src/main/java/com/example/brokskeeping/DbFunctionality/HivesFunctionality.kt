@@ -89,6 +89,7 @@ object HivesFunctionality {
         val db = dbHelper.writableDatabase
         NotesFunctionality.deleteNotes(dbHelper, hiveId)
         HumTempDataFunctionality.deleteHivesHumTempData(dbHelper, hiveId)
+        ToDoFunctionality.deleteToDos(dbHelper, hiveId)
         db.beginTransaction()
 
         try {
