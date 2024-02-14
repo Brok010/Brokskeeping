@@ -9,20 +9,21 @@ import com.example.brokskeeping.DataClasses.ToDo
 import com.example.brokskeeping.DbFunctionality.DatabaseHelper
 import com.example.brokskeeping.DbFunctionality.HivesFunctionality
 import com.example.brokskeeping.DbFunctionality.ToDoFunctionality
+import com.example.brokskeeping.databinding.ActivityNotesBrowserBinding
+import com.example.brokskeeping.databinding.ActivityToDoBinding
 
 class ToDoActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityToDoBinding
     private lateinit var tvToDoText: TextView
     private lateinit var tvToDoDate: TextView
-    private lateinit var btnDone: Button
-    private lateinit var btnSkip: Button
-    private lateinit var btnPostpone: Button
     private var hiveId: Int = -1
     private lateinit var db: DatabaseHelper
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_to_do)
+        binding = ActivityToDoBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         hiveId = intent.getIntExtra("hiveId", -1)
         db = DatabaseHelper(this)
@@ -33,7 +34,7 @@ class ToDoActivity : AppCompatActivity() {
         var toDoList = ToDoFunctionality.getAllPendingToDos(db, hiveId)
         var toDoId = showFirstToDo(toDoList)
 
-        btnSkip.setOnClickListener {
+        binding.toDoSkip.setOnClickListener {
             if (toDoList.isNotEmpty()) {
                 toDoList = toDoList.drop(1)
 
@@ -45,7 +46,7 @@ class ToDoActivity : AppCompatActivity() {
             }
         }
 
-        btnDone.setOnClickListener {
+        binding.toDoDone.setOnClickListener {
             if (toDoList.isNotEmpty()) {
                 toDoList = toDoList.drop(1)
                 ToDoFunctionality.setToDone(db, toDoId)
@@ -58,7 +59,7 @@ class ToDoActivity : AppCompatActivity() {
             }
         }
 
-        btnPostpone.setOnClickListener {
+        binding.toDoPostpone.setOnClickListener {
             if (toDoList.isNotEmpty()) {
                 toDoList = toDoList.drop(1)
                 ToDoFunctionality.postpone(db ,toDoId)
