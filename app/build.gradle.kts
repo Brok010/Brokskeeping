@@ -36,7 +36,20 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    sourceSets {
+        getByName("main") {
+            res {
+                srcDirs("src\\main\\res", "src\\main\\res\\layouts", "src\\main\\res\\layouts\\hive_layouts")
+                srcDirs("src\\main\\res", "src\\main\\res\\layouts", "src\\main\\res\\layouts\\note_layouts")
+                srcDirs("src\\main\\res", "src\\main\\res\\layouts", "src\\main\\res\\layouts\\qr_layouts")
+                srcDirs("src\\main\\res", "src\\main\\res\\layouts", "src\\main\\res\\layouts\\station_layouts")
+                srcDirs("src\\main\\res", "src\\main\\res\\layouts", "src\\main\\res\\layouts\\to_do_layouts")
+                srcDirs("src\\main\\res", "src\\main\\res\\layouts", "src\\main\\res\\layouts\\log_layouts")
+            }
+        }
+    }
 }
+
 
 
 dependencies {
