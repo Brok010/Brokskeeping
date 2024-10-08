@@ -1,0 +1,2 @@
+# add back button everywhere
+# make bluetooth work and batterry management

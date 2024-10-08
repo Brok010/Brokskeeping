@@ -7,36 +7,24 @@
     android:paddingTop="16dp"
     android:paddingRight="16dp"
     android:paddingBottom="16dp"
-    android:background="@color/gray_light"
+    android:background="@color/background_color_0"
     tools:context=".AdjustStationActivity">
 
     <EditText
-        android:id="@+id/et_adjust_note_text"
+        android:id="@+id/et_adjust_hive_nametag"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minLines="5"
-        android:hint="Hive text"/>
-
-    <EditText
-        android:id="@+id/et_adjust_note_date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/et_adjust_note_text"
-        android:layout_marginTop="8dp"
-        android:inputType="none"
-        android:focusable="false"
-        android:clickable="true"
-        android:hint="Date"/>
+        android:hint="Hive Name"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/et_adjust_note_date"
+        android:layout_below="@id/et_adjust_hive_nametag"
         android:orientation="horizontal"
         android:gravity="center">
 
         <Button
-            android:id="@+id/btn_adjust_note_save"
+            android:id="@+id/btn_adjust_hive_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/black"
@@ -44,7 +32,7 @@
             android:text="Save"/>
 
         <Button
-            android:id="@+id/btn_adjust_note_back"
+            android:id="@+id/btn_adjust_hive_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"

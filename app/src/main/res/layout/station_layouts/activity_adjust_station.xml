@@ -7,7 +7,7 @@
     android:paddingTop="16dp"
     android:paddingRight="16dp"
     android:paddingBottom="16dp"
-    android:background="@color/gray_light"
+    android:background="@color/background_color_0"
     tools:context=".AdjustStationActivity">
 
     <EditText
