@@ -46,12 +46,6 @@ class HivesBrowserActivity : AppCompatActivity() {
         binding.AddStationBt.setOnClickListener {
             startAddHiveActivity()
         }
-
-        //quit button
-        val quitButton: Button = findViewById(R.id.quit_bt)
-        quitButton.setOnClickListener {
-            finish()
-        }
     }
 
     override fun onResume() {

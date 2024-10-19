@@ -45,6 +45,8 @@ android {
                 srcDirs("src\\main\\res", "src\\main\\res\\layouts", "src\\main\\res\\layouts\\station_layouts")
                 srcDirs("src\\main\\res", "src\\main\\res\\layouts", "src\\main\\res\\layouts\\to_do_layouts")
                 srcDirs("src\\main\\res", "src\\main\\res\\layouts", "src\\main\\res\\layouts\\log_layouts")
+                srcDirs("src\\main\\res", "src\\main\\res\\layouts", "src\\main\\res\\layouts\\other_layouts")
+                srcDirs("src\\main\\res", "src\\main\\res\\layouts", "src\\main\\res\\layouts\\other_layouts")
             }
         }
     }
@@ -60,6 +62,8 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.5")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.5")
+    implementation("androidx.fragment:fragment:1.8.4")
+    implementation("com.google.firebase:firebase-inappmessaging:21.0.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")

@@ -16,6 +16,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             "$COL_HIVE_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
             "$COL_STATION_ID_FK INTEGER, " +
             "$COL_HIVE_NAME_TAG TEXT, " +
+            "$COL_HIVE_QR_TAG TEXT, " +
             "FOREIGN KEY($COL_STATION_ID_FK) REFERENCES $TABLE_STATIONS($COL_STATION_ID))"
 
     internal val CREATE_TABLE_DATA_LOGS = "CREATE TABLE $TABLE_DATA_LOGS (" +
@@ -81,6 +82,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         const val TABLE_HIVES = "tbl_hives"
         const val COL_HIVE_ID = "hive_id"
         const val COL_HIVE_NAME_TAG = "hive_name_tag"
+        const val COL_HIVE_QR_TAG = "hive_qr_tag"
         const val COL_STATION_ID_FK = "stations_foreign_key"
 
         //Datalogs

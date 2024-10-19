@@ -1,14 +1,14 @@
 package com.example.brokskeeping
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.brokskeeping.DbFunctionality.DatabaseHelper
 import com.example.brokskeeping.DbFunctionality.StationsFunctionality
 import com.example.brokskeeping.databinding.ActivityStationsBrowserBinding
+
 
 class StationsBrowserActivity : AppCompatActivity() {
     private lateinit var binding: ActivityStationsBrowserBinding
@@ -19,6 +19,7 @@ class StationsBrowserActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityStationsBrowserBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
 
         // Initialize the database helper and RecyclerView adapter
         db = DatabaseHelper(this)
@@ -32,15 +33,16 @@ class StationsBrowserActivity : AppCompatActivity() {
             adapter = stationsAdapter
         }
 
+
+        if (savedInstanceState == null) {
+            val fragment = BottomMenuFragment()
+            supportFragmentManager.beginTransaction()
+                .replace(binding.fragmentContainer.id, fragment)
+                .commit()
+        }
         // Set up the Floating Action Button (FAB) for adding a new station
         binding.AddStationBt.setOnClickListener {
             startAddStationActivity()
-        }
-
-        //logout button
-        val quitButton: Button = findViewById(R.id.quit_bt)
-        quitButton.setOnClickListener {
-            finish()
         }
     }
 

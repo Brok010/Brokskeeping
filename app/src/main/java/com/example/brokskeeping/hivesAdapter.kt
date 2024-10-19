@@ -56,7 +56,7 @@ class HivesAdapter(private val hivesList: MutableList<Beehive>,
 
     private fun showContextMenu(view: View, hive: Beehive) {
         val popupMenu = PopupMenu(view.context, view)
-        popupMenu.menuInflater.inflate(R.menu.menu_long_click_browser, popupMenu.menu)
+        popupMenu.menuInflater.inflate(R.menu.dropdown_menu_long_click_browser, popupMenu.menu)
 
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {

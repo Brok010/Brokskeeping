@@ -41,12 +41,6 @@ class ToDoBrowserActivity : AppCompatActivity() {
         binding.AddToDoBt.setOnClickListener {
             startAddToDoActivity()
         }
-
-        //logout button
-        val quitButton: Button = findViewById(R.id.quit_bt)
-        quitButton.setOnClickListener {
-            finish()
-        }
     }
 
     override fun onResume() {

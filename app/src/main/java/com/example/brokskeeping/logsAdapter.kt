@@ -62,7 +62,7 @@ class LogsAdapter(private val logsList: MutableList<HumTempData>,
     }
     private fun showContextMenu(view: View, log: HumTempData) {
         val popupMenu = PopupMenu(view.context, view)
-        popupMenu.menuInflater.inflate(R.menu.menu_delete, popupMenu.menu)
+        popupMenu.menuInflater.inflate(R.menu.dropdown_menu_delete, popupMenu.menu)
 
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
