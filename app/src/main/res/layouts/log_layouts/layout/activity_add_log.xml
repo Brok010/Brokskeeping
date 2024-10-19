@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backgroundColor"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <Button
+        android:id="@+id/btn_choose_file"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/buttonColor"
+        android:textColor="@color/buttonTextColor"
+        android:text="Import enviroment data" />
+
+    <EditText
+        android:id="@+id/edit_text_File_Name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColorHint="@color/hintColor"
+        android:textColor="@color/basicTextColor"
+        android:textSize="16sp"
+        android:text="Selected file name" />
+
+    <Button
+        android:id="@+id/btn_add_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/buttonColor"
+        android:textColor="@color/buttonTextColor"
+        android:text="Add data" />
+
+</LinearLayout>

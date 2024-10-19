@@ -9,6 +9,32 @@ import com.example.brokskeeping.DataClasses.HumTempData
 
 object HivesFunctionality {
 
+    fun getHiveNameById(dbHelper: DatabaseHelper, hiveId: Int): String {
+        var hiveName: String = ""
+
+        // Obtain a readable database from the DatabaseHelper
+        val db = dbHelper.readableDatabase
+
+        // SQL query to get the hive name by its ID
+        val query = "SELECT ${DatabaseHelper.COL_HIVE_NAME_TAG} FROM ${DatabaseHelper.TABLE_HIVES} WHERE ${DatabaseHelper.COL_HIVE_ID} = ?"
+
+        // Execute the query with the provided hive ID
+        val cursor = db.rawQuery(query, arrayOf(hiveId.toString()))
+
+        // Check if the cursor contains results
+        cursor?.use {
+            // Move to the first row in the cursor
+            if (it.moveToFirst()) {
+                // Get the hive name using getColumnIndexOrThrow which helps with debugging
+                hiveName = it.getString(it.getColumnIndexOrThrow(DatabaseHelper.COL_HIVE_NAME_TAG))
+            }
+        }
+
+        // Close the database connection
+        db.close()
+        return hiveName
+    }
+
     fun adjustHive(dbHelper: DatabaseHelper, stationId: Int, hiveId: Int, hiveName: String) {
         val db = dbHelper.writableDatabase
         db.beginTransaction()

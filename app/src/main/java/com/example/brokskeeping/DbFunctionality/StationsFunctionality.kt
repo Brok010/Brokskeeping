@@ -7,6 +7,29 @@ import com.example.brokskeeping.DataClasses.Station
 
 object StationsFunctionality {
 
+    fun getStationNameById(dbHelper: DatabaseHelper, stationId: Int): String {
+        var stationName: String = ""
+        val db = dbHelper.readableDatabase
+
+        // SQL query to get the station name by its ID
+        val query = "SELECT ${DatabaseHelper.COL_STATION_NAME} FROM ${DatabaseHelper.TABLE_STATIONS} WHERE ${DatabaseHelper.COL_STATION_ID} = ?"
+        val cursor = db.rawQuery(query, arrayOf(stationId.toString()))
+
+        if (cursor != null) {
+            // Move to the first row in the cursor
+            if (cursor.moveToFirst()) {
+                // Get the station name from the first column
+                stationName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_STATION_NAME))
+            }
+            // Close the cursor after use
+            cursor.close()
+        }
+
+        // Close the database connection
+        db.close()
+        return stationName
+    }
+
     fun getHiveCount(dbHelper: DatabaseHelper, stationId: Int): Int {
         val query = "SELECT ${DatabaseHelper.COL_BEEHIVE_NUM} FROM ${DatabaseHelper.TABLE_STATIONS} WHERE ${DatabaseHelper.COL_STATION_ID} = ?"
         val selectionArgs = arrayOf(stationId.toString())

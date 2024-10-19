@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backgroundColor"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textColor="@color/basicTextColor"
+        android:text="Station Name:" />
+
+    <EditText
+        android:id="@+id/editTextStationName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:textColorHint="@color/hintColor"
+        android:textColor="@color/basicTextColor"
+        android:hint="Enter Station Name" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/basicTextColor"
+        android:textSize="18sp"
+        android:text="Station Location:" />
+
+    <EditText
+        android:id="@+id/editTextStationLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Station Location"
+        android:textColor="@color/basicTextColor"
+        android:textColorHint="@color/hintColor"
+        android:inputType="textMultiLine" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/basicTextColor"
+        android:textSize="18sp"
+        android:text="Beehive Number:" />
+
+    <EditText
+        android:id="@+id/editTextBeehiveNumber"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Beehive Number"
+        android:textColor="@color/basicTextColor"
+        android:textColorHint="@color/hintColor"
+        android:inputType="number" />
+
+    <Button
+        android:id="@+id/buttonSaveStation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/buttonColor"
+        android:textColor="@color/buttonTextColor"
+        android:text="Save Station" />
+
+</LinearLayout>

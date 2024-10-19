@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:clickable="true"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
+    android:paddingTop="16dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_weight="3"
+        android:background="@color/itemColor"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <!-- First Horizontal LinearLayout -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/first_linear_layout"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_label_station_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:maxLines="1"
+                android:paddingHorizontal="4dp"
+                android:text="Station Name:"
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/tv_value_stations_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingHorizontal="4dp"
+                android:gravity="end"
+                android:maxLines="1"
+                android:textSize="18dp" />
+
+        </LinearLayout>
+
+        <!-- Second Horizontal LinearLayout -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/second_linear_layout"
+            android:layout_below="@id/first_linear_layout"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_label_station_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="8dp"
+                android:layout_weight="1"
+                android:text="Location:"
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/tv_value_stations_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:paddingHorizontal="8dp"
+                android:layout_weight="1"
+                android:maxLines="1"
+                android:gravity="end"
+                android:textSize="18dp" />
+
+        </LinearLayout>
+
+        <!-- Third Horizontal LinearLayout -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/third_linear_layout"
+            android:layout_below="@id/second_linear_layout"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_label_hive_count"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hive count:"
+                android:paddingHorizontal="8dp"
+                android:layout_weight="1"
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/tv_value_hive_count"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:paddingHorizontal="8dp"
+                android:gravity="end"
+                android:textSize="18dp" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+</RelativeLayout>

@@ -13,55 +13,55 @@
         android:theme="@style/Theme.Brokskeeping"
         tools:targetApi="31">
         <activity
-            android:name=".AdjustToDoActivity"
+            android:name=".ToDoActivities.AdjustToDoActivity"
             android:exported="false" />
         <activity
-            android:name=".ToDoBrowserActivity"
+            android:name=".ToDoActivities.ToDoBrowserActivity"
             android:exported="false" />
         <activity
-            android:name=".ToDoActivity"
+            android:name=".ToDoActivities.ToDoActivity"
             android:exported="false" />
         <activity
-            android:name=".AddToDoActivity"
+            android:name=".ToDoActivities.AddToDoActivity"
             android:exported="false" />
         <activity
-            android:name=".LogActivity"
+            android:name=".LogActivities.LogActivity"
             android:exported="false" />
         <activity
-            android:name=".AddLogActivity"
+            android:name=".LogActivities.AddLogActivity"
             android:exported="false" />
         <activity
-            android:name=".NoteActivity"
+            android:name=".NoteActivities.NoteActivity"
             android:exported="false" />
         <activity
-            android:name=".LogsBrowserActivity"
+            android:name=".LogActivities.LogsBrowserActivity"
             android:exported="false" />
         <activity
-            android:name=".AddNoteActivity"
+            android:name=".NoteActivities.AddNoteActivity"
             android:exported="false" />
         <activity
-            android:name=".AdjustNoteActivity"
+            android:name=".NoteActivities.AdjustNoteActivity"
             android:exported="false" />
         <activity
-            android:name=".AdjustHiveActivity"
+            android:name=".HiveActivities.AdjustHiveActivity"
             android:exported="false" />
         <activity
-            android:name=".AdjustStationActivity"
+            android:name=".StationActivities.AdjustStationActivity"
             android:exported="false" />
         <activity
-            android:name=".AddHiveActivity"
+            android:name=".HiveActivities.AddHiveActivity"
             android:exported="false" />
         <activity
-            android:name=".NotesBrowserActivity"
+            android:name=".NoteActivities.NotesBrowserActivity"
             android:exported="false" />
         <activity
-            android:name=".HivesBrowserActivity"
+            android:name=".HiveActivities.HivesBrowserActivity"
             android:exported="false" />
         <activity
-            android:name=".AddStationActivity"
+            android:name=".StationActivities.AddStationActivity"
             android:exported="false" />
         <activity
-            android:name=".StationsBrowserActivity"
+            android:name=".StationActivities.StationsBrowserActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Brokskeeping">

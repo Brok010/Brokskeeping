@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backgroundColor"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textColor="@color/basicTextColor"
+        android:text="Hive Name Tag:" />
+
+    <EditText
+        android:id="@+id/editTextHiveNameTag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:textColorHint="@color/hintColor"
+        android:textColor="@color/basicTextColor"
+        android:hint="Enter Hive Name Tag" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textColor="@color/basicTextColor"
+        android:text="Hive Notes:" />
+
+    <EditText
+        android:id="@+id/editTextHiveNotes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Hive Notes"
+        android:textColorHint="@color/hintColor"
+        android:textColor="@color/basicTextColor"
+        android:inputType="textMultiLine" />
+
+    <Button
+        android:id="@+id/buttonChooseFile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/buttonColor"
+        android:textColor="@color/buttonTextColor"
+        android:text="Import enviroment data" />
+
+    <TextView
+        android:id="@+id/textViewFileName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textSize="16sp"
+        android:textColor="@color/basicTextColor"
+        android:text="Selected File: None" />
+
+    <Button
+        android:id="@+id/buttonSaveHive"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/buttonColor"
+        android:textColor="@color/buttonTextColor"
+        android:text="Save Hive" />
+
+</LinearLayout>
