@@ -7,6 +7,26 @@ import com.example.brokskeeping.DataClasses.Station
 
 object StationsFunctionality {
 
+    fun GetHiveIdsOfStation(dbHelper: DatabaseHelper, stationId: Int): List<Int> {
+        val hiveIds = mutableListOf<Int>()
+        val db = dbHelper.readableDatabase
+
+        // SQL query to get hive IDs associated with a specific station
+        val query = "SELECT ${DatabaseHelper.COL_HIVE_ID} FROM ${DatabaseHelper.TABLE_HIVES} WHERE ${DatabaseHelper.COL_STATION_ID_FK_HIVES} = ?"
+        val cursor = db.rawQuery(query, arrayOf(stationId.toString()))
+
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                val hiveId = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_HIVE_ID))
+                hiveIds.add(hiveId)
+            }
+            cursor.close()
+        }
+
+        db.close()
+        return hiveIds
+    }
+
     fun getStationNameById(dbHelper: DatabaseHelper, stationId: Int): String {
         var stationName: String = ""
         val db = dbHelper.readableDatabase
@@ -31,32 +51,32 @@ object StationsFunctionality {
     }
 
     fun getHiveCount(dbHelper: DatabaseHelper, stationId: Int): Int {
-        val query = "SELECT ${DatabaseHelper.COL_BEEHIVE_NUM} FROM ${DatabaseHelper.TABLE_STATIONS} WHERE ${DatabaseHelper.COL_STATION_ID} = ?"
+        val query = "SELECT COUNT(*) FROM ${DatabaseHelper.TABLE_HIVES} WHERE ${DatabaseHelper.COL_STATION_ID_FK_HIVES} = ?"
         val selectionArgs = arrayOf(stationId.toString())
 
         val cursor = dbHelper.readableDatabase.rawQuery(query, selectionArgs)
 
         return try {
             if (cursor.moveToFirst()) {
-                cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_BEEHIVE_NUM))
+                cursor.getInt(0) // COUNT(*) is always the first column
             } else {
-                0 // default value
+                0
             }
         } finally {
             cursor.close()
         }
     }
-    fun saveStation(dbHelper: DatabaseHelper, newStation: Station) {
+
+    fun saveStation(dbHelper: DatabaseHelper, newStation: Station, startingHives: Int) {
         val db = dbHelper.writableDatabase
         db.beginTransaction()
         var stationId = -1
 
         try {
-            // Insert station details into tbl_stations
             val stationValues = ContentValues().apply {
                 put(DatabaseHelper.COL_STATION_NAME, newStation.name)
                 put(DatabaseHelper.COL_STATION_PLACE, newStation.location)
-                put(DatabaseHelper.COL_BEEHIVE_NUM, newStation.beehiveNum)
+                put(DatabaseHelper.COL_STATION_IN_USE, newStation.inUse)
             }
             stationId = db.insert(DatabaseHelper.TABLE_STATIONS, null, stationValues).toInt()
 
@@ -80,7 +100,7 @@ object StationsFunctionality {
             db.close()
 
             // Insert hives into tbl_hives based on beehiveNumber
-            createHivesForStation(dbHelper, stationId, newStation.beehiveNum)
+            createHivesForStation(dbHelper, stationId, startingHives)
         }
     }
 
@@ -90,7 +110,7 @@ object StationsFunctionality {
         for (i in 1..hiveCount) {
             val hiveValues = ContentValues().apply {
                 put(DatabaseHelper.COL_HIVE_NAME_TAG, "Hive $i for Station $stationId")
-                put(DatabaseHelper.COL_STATION_ID_FK, stationId)
+                put(DatabaseHelper.COL_STATION_ID_FK_HIVES, stationId)
             }
             db.insert(DatabaseHelper.TABLE_HIVES, null, hiveValues)
         }
@@ -114,27 +134,44 @@ object StationsFunctionality {
         val id = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_STATION_ID))
         val name = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_STATION_NAME))
         val location = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_STATION_PLACE))
-        val beehiveNumber = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_BEEHIVE_NUM))
+        val inUse = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_STATION_IN_USE))
 
-        return Station(id, name, location, beehiveNumber)
+        return Station(id, name, location, inUse)
     }
 
     fun getStationsAttributes(dbHelper: DatabaseHelper, stationId: Int): Station? {
         val query = "SELECT * FROM ${DatabaseHelper.TABLE_STATIONS} WHERE ${DatabaseHelper.COL_STATION_ID} = ?"
         val selectionArgs = arrayOf(stationId.toString())
-
         val cursor = dbHelper.readableDatabase.rawQuery(query, selectionArgs)
 
-        return try {
+        return cursor.use { cursor ->
             if (cursor.moveToFirst()) {
                 createStationFromCursor(cursor)
             } else {
                 null
             }
-        } finally {
-            cursor.close()
         }
     }
+
+    fun getStationIdByName(dbHelper: DatabaseHelper, stationName: String): Int {
+        var stationId = -1
+        val db = dbHelper.readableDatabase
+
+        // SQL query to get the station ID by name
+        val query = "SELECT ${DatabaseHelper.COL_STATION_ID} FROM ${DatabaseHelper.TABLE_STATIONS} WHERE ${DatabaseHelper.COL_STATION_NAME} = ?"
+        val cursor = db.rawQuery(query, arrayOf(stationName))
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                stationId = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_STATION_ID))
+            }
+            cursor.close()
+        }
+
+        db.close()
+        return stationId
+    }
+
 
     fun adjustStation(dbHelper: DatabaseHelper, stationId: Int, updatedStation: Station) {
         val db = dbHelper.writableDatabase
@@ -144,7 +181,6 @@ object StationsFunctionality {
             val values = ContentValues().apply {
                 put(DatabaseHelper.COL_STATION_NAME, updatedStation.name)
                 put(DatabaseHelper.COL_STATION_PLACE, updatedStation.location)
-                put(DatabaseHelper.COL_BEEHIVE_NUM, updatedStation.beehiveNum)
             }
 
             val rowsUpdated = db.update(
@@ -169,7 +205,7 @@ object StationsFunctionality {
 
         try {
             // Delete hives associated with the station
-            db.delete(DatabaseHelper.TABLE_HIVES, "${DatabaseHelper.COL_STATION_ID_FK} = ?", arrayOf(stationId.toString()))
+            db.delete(DatabaseHelper.TABLE_HIVES, "${DatabaseHelper.COL_STATION_ID_FK_HIVES} = ?", arrayOf(stationId.toString()))
 
             // Delete the station
             val rowsDeleted = db.delete(DatabaseHelper.TABLE_STATIONS, "${DatabaseHelper.COL_STATION_ID} = ?", arrayOf(stationId.toString()))
@@ -180,41 +216,6 @@ object StationsFunctionality {
             } else {
                 // Handle deletion failure
                 Log.e("DatabaseHelper", "Failed to delete station with ID $stationId")
-            }
-        } catch (e: Exception) {
-            // Handle any exceptions that may occur during the transaction
-            e.printStackTrace()
-        } finally {
-            // End the transaction
-            db.endTransaction()
-        }
-    }
-    fun updateHiveNumber(dbHelper: DatabaseHelper, stationId: Int, number: Int) {
-        val db = dbHelper.writableDatabase
-        db.beginTransaction()
-
-        try {
-            // Get the current hive count for the station
-            val currentHiveCount = getHiveCount(dbHelper, stationId)
-
-            // Calculate the new hive count
-            val newHiveCount = currentHiveCount + number
-
-            // Update the hive count in the tbl_stations table
-            val values = ContentValues().apply {
-                put(DatabaseHelper.COL_BEEHIVE_NUM, newHiveCount)
-            }
-
-            val rowsUpdated = db.update(
-                DatabaseHelper.TABLE_STATIONS, values, "${DatabaseHelper.COL_STATION_ID} = ?",
-                arrayOf(stationId.toString()))
-
-            // Check if the update was successful
-            if (rowsUpdated > 0) {
-                db.setTransactionSuccessful()
-            } else {
-                // Handle update failure
-                Log.e("DatabaseHelper", "Failed to update hive count for station with ID $stationId")
             }
         } catch (e: Exception) {
             // Handle any exceptions that may occur during the transaction

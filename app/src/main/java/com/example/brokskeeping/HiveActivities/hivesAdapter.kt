@@ -1,5 +1,6 @@
 package com.example.brokskeeping.HiveActivities
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,7 +36,8 @@ class HivesAdapter(private val hivesList: MutableList<Beehive>,
         holder.bind(currentHive)
 
         holder.itemView.setOnClickListener {
-            hivesBrowserActivity.startHiveActivity(stationId, currentHive.id)
+            hivesBrowserActivity.startHiveActivity(currentHive.id)
+            true
         }
         holder.itemView.setOnLongClickListener() {
             showContextMenu(holder.itemView, currentHive)
@@ -57,7 +59,7 @@ class HivesAdapter(private val hivesList: MutableList<Beehive>,
 
     private fun showContextMenu(view: View, hive: Beehive) {
         val popupMenu = PopupMenu(view.context, view)
-        popupMenu.menuInflater.inflate(R.menu.dropdown_menu_long_click_browser, popupMenu.menu)
+        popupMenu.menuInflater.inflate(R.menu.dropdown_menu_long_click_hive_browser, popupMenu.menu)
 
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
@@ -69,16 +71,38 @@ class HivesAdapter(private val hivesList: MutableList<Beehive>,
                         if (confirmed) {
                             // User confirmed the deletion
                             HivesFunctionality.deleteHive(db, stationId, hive.id)
-                            updateData(HivesFunctionality.getAllHives(db, stationId))
+                            val (hiveIds, result) = HivesFunctionality.getAllHives(db, stationId)
+                            if (result == 1) {
+                                updateData(hiveIds)
+                            } else {
+                                Log.e("HiveAdapter", "getAllHives function in did not finish properly")
+                            }
+
                         }
                     }
                     true
                 }
                 R.id.menu_long_click_adjust -> {
-                    // Handle adjust action
                     hivesBrowserActivity.startAdjustHiveActivity(stationId, hive.id)
                     true
                 }
+                R.id.menu_long_click_inspections -> {
+                    hivesBrowserActivity.startHiveInspectionDataBrowserActivity(hive.id)
+                    true
+                }
+                R.id.menu_long_click_notes -> {
+                    hivesBrowserActivity.startNotesBrowserActivity(stationId, hive.id)
+                    true
+                }
+                R.id.menu_long_click_todos -> {
+                    hivesBrowserActivity.startToDoBrowserActivity(hive.id)
+                    true
+                }
+                R.id.menu_long_click_logs -> {
+                    hivesBrowserActivity.startLogsBrowserActivity(hive.id)
+                    true
+                }
+
                 else -> false
             }
         }

@@ -21,7 +21,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="To do's of station x"
+                android:text="To Do's"
                 android:textSize="20dp"
                 android:maxLines="2"
                 android:layout_margin="8dp"
@@ -38,11 +38,98 @@
                 android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/buttonColor"
-                android:text="+"
+                android:text="Add ToDo"
                 android:textColor="@color/buttonTextColor">
             </Button>
         </LinearLayout>
     </FrameLayout>
+
+    <!-- Filter Section -->
+    <LinearLayout
+        android:id="@+id/ll_todo_filters"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/itemColor"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="8dp"
+        android:layout_marginTop="8dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:id="@+id/ll_station_filter"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            android:layout_marginEnd="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Station"
+                android:textColor="@color/basicTextColor" />
+
+            <EditText
+                android:id="@+id/station_filter_input"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:clickable="true"
+                android:focusable="false"
+                android:hint="Station Filter"
+                android:inputType="none" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ll_hive_filter"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hive"
+                android:textColor="@color/basicTextColor"/>
+
+            <EditText
+                android:id="@+id/hive_filter_input"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Hive Filter"
+                android:focusable="false"
+                android:clickable="true"
+                android:inputType="none"
+                android:layout_marginHorizontal="8dp"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/ll_state_filter"
+            android:layout_weight="1"
+            android:layout_marginEnd="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="State"
+                android:textColor="@color/basicTextColor" />
+
+            <EditText
+                android:id="@+id/state_filter_input"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:clickable="true"
+                android:focusable="false"
+                android:hint="State Filter"
+                android:inputType="none" />
+        </LinearLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -51,19 +51,22 @@ object ToDoFunctionality {
         return toDo
     }
 
-    fun addToDo(dbHelper: DatabaseHelper, toDo: ToDo) {
+    fun addToDo(dbHelper: DatabaseHelper, toDo: ToDo): Int {
         val db = dbHelper.writableDatabase
 
         val values = ContentValues().apply {
-            put(DatabaseHelper.COL_HIVE_ID_FK_TODO, toDo.hiveId) // Set the hiveId
+            put(DatabaseHelper.COL_HIVE_ID_FK_TODO, toDo.hiveId)
             put(DatabaseHelper.COL_TODO_TEXT, toDo.toDoText)
-            put(DatabaseHelper.COL_TODO_STATE, if (toDo.toDoState) 1 else 0) // Convert boolean to integer
-            put(DatabaseHelper.COL_TODO_DATE, toDo.date.time) // Convert date to milliseconds
+            put(DatabaseHelper.COL_TODO_STATE, if (toDo.toDoState) 1 else 0)
+            put(DatabaseHelper.COL_TODO_DATE, toDo.date.time)
         }
 
-        db.insert(DatabaseHelper.TABLE_TODO, null, values)
+        val result = db.insert(DatabaseHelper.TABLE_TODO, null, values)
         db.close()
+
+        return if (result != -1L) 1 else 0
     }
+
     fun postpone(dbHelper: DatabaseHelper, toDoId: Int) {
         val db = dbHelper.writableDatabase
         val contentValues = ContentValues()
@@ -86,56 +89,51 @@ object ToDoFunctionality {
         db.close()
     }
 
-    fun setToDone(dbHelper: DatabaseHelper, toDoId: Int) {
+    fun toggleToDoState(dbHelper: DatabaseHelper, toDoId: Int) {
         val db = dbHelper.writableDatabase
-        val contentValues = ContentValues()
 
-        // Set the state to 1 (done)
-        contentValues.put(DatabaseHelper.COL_TODO_STATE, 1)
+        val cursor = db.query(
+            DatabaseHelper.TABLE_TODO,
+            arrayOf(DatabaseHelper.COL_TODO_STATE),
+            "${DatabaseHelper.COL_TODO_ID} = ?",
+            arrayOf(toDoId.toString()),
+            null,
+            null,
+            null
+        )
 
-        // Perform the update operation
+        var currentState = -1
+        if (cursor.moveToFirst()) {
+            currentState = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_TODO_STATE))
+        }
+        cursor.close()
+
+        val newState = if (currentState == 0) 1 else 0
+        val contentValues = ContentValues().apply {
+            put(DatabaseHelper.COL_TODO_STATE, newState)
+        }
+
         db.update(
             DatabaseHelper.TABLE_TODO,
             contentValues,
             "${DatabaseHelper.COL_TODO_ID} = ?",
             arrayOf(toDoId.toString())
         )
+
         db.close()
     }
 
-    fun getAllPendingToDos(dbHelper: DatabaseHelper, hiveId: Int): List<ToDo> {
-        val todos = mutableListOf<ToDo>()
-        val db = dbHelper.readableDatabase
-        val currentTimeMillis = System.currentTimeMillis()
-
-        val selection = "${DatabaseHelper.COL_HIVE_ID_FK_TODO} = ? AND " +
-                        "${DatabaseHelper.COL_TODO_STATE} = ? AND " +
-                        "${DatabaseHelper.COL_TODO_DATE} < ?"
-
-        val selectionArgs = arrayOf(hiveId.toString(), "0", currentTimeMillis.toString())
-
-        val cursor = db.query(DatabaseHelper.TABLE_TODO, null, selection, selectionArgs, null, null, null)
-
-        cursor.use { cursor ->
-            while (cursor.moveToNext()) {
-                val todo = createToDoFromCursor(cursor)
-                // Filter out ToDos where the date has not yet passed
-                if (todo.date.time < currentTimeMillis) {
-                    todos.add(todo)
-                }
-            }
-        }
-
-        cursor.close()
-        db.close()
-
-        return todos
-    }
-    fun deleteToDos(dbHelper: DatabaseHelper, hiveId: Int) {
+    fun deleteToDos(dbHelper: DatabaseHelper, hiveId: Int): Int {
         val db = dbHelper.writableDatabase
-        db.delete(DatabaseHelper.TABLE_TODO, "${DatabaseHelper.COL_HIVE_ID_FK_TODO} = ?", arrayOf(hiveId.toString()))
+        val deletedRows = db.delete(
+            DatabaseHelper.TABLE_TODO,
+            "${DatabaseHelper.COL_HIVE_ID_FK_TODO} = ?",
+            arrayOf(hiveId.toString())
+        )
         db.close()
+        return if (deletedRows > 0) 1 else 0
     }
+
 
     fun deleteToDo(dbHelper: DatabaseHelper, toDoId: Int) {
         val db = dbHelper.writableDatabase
@@ -145,26 +143,76 @@ object ToDoFunctionality {
         db.close()
     }
 
-    fun getAllToDos(dbHelper: DatabaseHelper, hiveId: Int): List<ToDo> {
+    fun getAllToDos(dbHelper: DatabaseHelper, hiveId: Int, stationId: Int, state: Int, pending: Int): Pair<List<ToDo>, Int> {
+        // hiveID is enough, else stationId for all station's t0d0s, state if i want only finished ones or not
+        // pending if i want the one that are not finished and pending
         val todos = mutableListOf<ToDo>()
-        val db = dbHelper.readableDatabase
-        val selection = "${DatabaseHelper.COL_HIVE_ID_FK_TODO} = ?"
-        val selectionArgs = arrayOf(hiveId.toString())
 
-        val cursor =
-            db.query(DatabaseHelper.TABLE_TODO, null, selection, selectionArgs, null, null, null)
+        return try {
+            val hiveIds: List<Int> = when {
+                hiveId > 0 -> listOf(hiveId)    // if hive id > 0 process that one
+                hiveId < 1 && stationId > 0 -> {   // if station id > 0 and hive = 0 process all for that station
+                    val ids = StationsFunctionality.GetHiveIdsOfStation(dbHelper, stationId)
+                    ids
+                }
 
-        cursor.use { cursor ->
-            while (cursor.moveToNext()) {
-                todos.add(createToDoFromCursor(cursor))
+                else -> {   // else get all hives
+                    val (hives, result) = HivesFunctionality.getAllHives(dbHelper, 0)
+                    if (result == 1) {
+                        hives.map { it.id }
+                    } else {
+                        emptyList()
+                    }
+                }
             }
+
+            for (id in hiveIds) {
+                val db = dbHelper.readableDatabase
+
+                val selectionBuilder = StringBuilder("${DatabaseHelper.COL_HIVE_ID_FK_TODO} = ?")
+                val selectionArgs = mutableListOf(id.toString())
+
+                if (pending == 1) {
+                    val currentTime = System.currentTimeMillis()
+                    selectionBuilder.append(" AND ${DatabaseHelper.COL_TODO_DATE} < ?")
+                    selectionArgs.add(currentTime.toString())
+
+                    // Force state = 0 for pending
+                    selectionBuilder.append(" AND ${DatabaseHelper.COL_TODO_STATE} = ?")
+                    selectionArgs.add("0")
+
+                } else if (state == 0 || state == 1) {
+                    selectionBuilder.append(" AND ${DatabaseHelper.COL_TODO_STATE} = ?")
+                    selectionArgs.add(state.toString())
+                }
+
+                val cursor = db.query(
+                    DatabaseHelper.TABLE_TODO,
+                    null,
+                    selectionBuilder.toString(),
+                    selectionArgs.toTypedArray(),
+                    null,
+                    null,
+                    null
+                )
+
+                cursor.use {
+                    while (it.moveToNext()) {
+                        todos.add(createToDoFromCursor(it))
+                    }
+                }
+
+                db.close()
+            }
+
+            Pair(todos, 1) // success
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Pair(emptyList(), 0) // failure
         }
-
-        cursor.close()
-        db.close()
-
-        return todos
     }
+
 
     private fun createToDoFromCursor(cursor: Cursor): ToDo {
         val id = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_TODO_ID))

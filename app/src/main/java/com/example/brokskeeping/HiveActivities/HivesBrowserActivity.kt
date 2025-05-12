@@ -3,13 +3,19 @@ package com.example.brokskeeping.HiveActivities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.brokskeeping.BottomMenuFragment
 import com.example.brokskeeping.DbFunctionality.DatabaseHelper
 import com.example.brokskeeping.DbFunctionality.HivesFunctionality
 import com.example.brokskeeping.DbFunctionality.StationsFunctionality
+import com.example.brokskeeping.InspectionActivities.InspectionActivity
+import com.example.brokskeeping.InspectionDataActivities.HiveInspectionDataBrowser
+import com.example.brokskeeping.LogActivities.LogsBrowserActivity
 import com.example.brokskeeping.NoteActivities.NotesBrowserActivity
+import com.example.brokskeeping.ToDoActivities.ToDoBrowserActivity
 import com.example.brokskeeping.databinding.ActivityHivesBrowserBinding
 
 class HivesBrowserActivity : AppCompatActivity() {
@@ -55,15 +61,38 @@ class HivesBrowserActivity : AppCompatActivity() {
         binding.AddHiveBt.setOnClickListener {
             startAddHiveActivity()
         }
+
+        binding.NewInspectionBt.setOnClickListener {
+            startNewInspectionActivity()
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        val updatedHivesList = HivesFunctionality.getAllHives(db, stationId)
-        hivesAdapter.updateData(updatedHivesList)
+        val (updatedHivesList, result) = HivesFunctionality.getAllHives(db, stationId)
+        if (result == 1) {
+            hivesAdapter.updateData(updatedHivesList)
+        } else {
+            Toast.makeText(this, "HivesUpdateData did not finish successfully", Toast.LENGTH_SHORT).show()
+        }
+
     }
 
-    fun startHiveActivity(stationId: Int, hiveId: Int) {
+    fun startHiveInspectionDataBrowserActivity(hiveId: Int) {
+        val intent = Intent(this, HiveInspectionDataBrowser::class.java)
+        intent.putExtra("hiveId", hiveId)
+        startActivity(intent)
+    }
+
+    fun startHiveActivity(hiveId: Int) {
+        val intent = Intent(this, HiveActivity::class.java)
+        intent.putExtra("hiveId", hiveId)
+        startActivity(intent)
+    }
+
+
+
+    fun startNotesBrowserActivity(stationId: Int, hiveId: Int) {
         val intent = Intent(this, NotesBrowserActivity::class.java)
         intent.putExtra("stationId", stationId)
         intent.putExtra("hiveId", hiveId)
@@ -79,6 +108,26 @@ class HivesBrowserActivity : AppCompatActivity() {
         val intent = Intent(this, AdjustHiveActivity::class.java)
         intent.putExtra("stationId", stationId)
         intent.putExtra("hiveId", hiveId)
+        startActivity(intent)
+    }
+
+    fun startNewInspectionActivity() {
+        val intent = Intent(this, InspectionActivity::class.java)
+        intent.putExtra("stationId", stationId)
+        startActivity(intent)
+    }
+
+    fun startLogsBrowserActivity(hiveId: Int) {
+        val intent = Intent(this, LogsBrowserActivity::class.java)
+        intent.putExtra("hiveId", hiveId)
+        intent.putExtra("stationId", stationId)
+        startActivity(intent)
+    }
+
+    fun startToDoBrowserActivity(hiveId: Int) {
+        val intent = Intent(this, ToDoBrowserActivity()::class.java)
+        intent.putExtra("hiveId", hiveId)
+        intent.putExtra("stationId", stationId)
         startActivity(intent)
     }
 }

@@ -1,0 +1,20 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_long_click_adjust"
+        android:title="Adjust" />
+    <item
+        android:id="@+id/menu_long_click_inspections"
+        android:title="Inspections" />
+    <item
+        android:id="@+id/menu_long_click_notes"
+        android:title="Notes" />
+    <item
+        android:id="@+id/menu_long_click_todos"
+        android:title="To Do's" />
+    <item
+        android:id="@+id/menu_long_click_logs"
+        android:title="Logs" />
+    <item
+        android:id="@+id/menu_long_click_delete"
+        android:title="Delete" />
+</menu>

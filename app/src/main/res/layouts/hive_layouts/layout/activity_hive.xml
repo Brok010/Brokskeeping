@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- FrameLayout for the header "Notes" -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/headerColor"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_logs_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Hive"
+            android:textColor="@color/basicTextColor"
+            android:textSize="30dp"
+            android:textStyle="bold" />
+
+    </FrameLayout>
+
+    <!-- ScrollView to hold the dynamic fields -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Station Name row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Station name:"
+                    android:textSize="16sp"
+                    android:layout_gravity="start"
+                    android:paddingEnd="8dp" />
+
+                <!-- This TextView will dynamically show the station name -->
+                <TextView
+                    android:id="@+id/tv_station_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Station Name"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <!-- Hive Name row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hive name:"
+                    android:textSize="16sp"
+                    android:layout_gravity="start"
+                    android:paddingEnd="8dp" />
+
+                <!-- This TextView will dynamically show the hive name -->
+                <TextView
+                    android:id="@+id/tv_hive_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hive Name"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <!-- QR Tag row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="QR tag:"
+                    android:textSize="16sp"
+                    android:layout_gravity="start"
+                    android:paddingEnd="8dp" />
+
+                <!-- This TextView will dynamically show the QR tag -->
+                <TextView
+                    android:id="@+id/tv_qr_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="QR Tag"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <!-- Brood Frames row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Brood frames:"
+                    android:textSize="16sp"
+                    android:layout_gravity="start"
+                    android:paddingEnd="8dp" />
+
+                <!-- This TextView will dynamically show the brood frames count -->
+                <TextView
+                    android:id="@+id/tv_brood_frames"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Brood Frames"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <!-- Honey Frames row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Honey frames:"
+                    android:textSize="16sp"
+                    android:layout_gravity="start"
+                    android:paddingEnd="8dp" />
+
+                <!-- This TextView will dynamically show the honey frames count -->
+                <TextView
+                    android:id="@+id/tv_honey_frames"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Honey Frames"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <!-- Frames per Super row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Frames per super:"
+                    android:textSize="16sp"
+                    android:layout_gravity="start"
+                    android:paddingEnd="8dp" />
+
+                <!-- This TextView will dynamically show frames per super -->
+                <TextView
+                    android:id="@+id/tv_frames_per_super"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Frames Per Super"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <!-- Supers row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Supers:"
+                    android:textSize="16sp"
+                    android:layout_gravity="start"
+                    android:paddingEnd="8dp" />
+
+                <!-- This TextView will dynamically show the number of supers -->
+                <TextView
+                    android:id="@+id/tv_supers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Supers"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <!-- Drone Brood Frames row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Drone brood frames:"
+                    android:textSize="16sp"
+                    android:layout_gravity="start"
+                    android:paddingEnd="8dp" />
+
+                <!-- This TextView will dynamically show the drone brood frames count -->
+                <TextView
+                    android:id="@+id/tv_drone_brood_frames"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Drone Brood Frames"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <!-- Free Space Frames row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Free space frames:"
+                    android:textSize="16sp"
+                    android:layout_gravity="start"
+                    android:paddingEnd="8dp" />
+
+                <!-- This TextView will dynamically show the free space frames count -->
+                <TextView
+                    android:id="@+id/tv_free_space_frames"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Free Space Frames"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <!-- Colony Origin row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Colony origin:"
+                    android:textSize="16sp"
+                    android:layout_gravity="start"
+                    android:paddingEnd="8dp" />
+
+                <!-- This TextView will dynamically show the colony origin -->
+                <TextView
+                    android:id="@+id/tv_colony_origin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Colony Origin"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <!-- Supplemented Feed Count row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Supplemented feed count:"
+                    android:textSize="16sp"
+                    android:layout_gravity="start"
+                    android:paddingEnd="8dp" />
+
+                <!-- This TextView will dynamically show the supplemented feed count -->
+                <TextView
+                    android:id="@+id/tv_supplemented_feed_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Supplemented Feed Count"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <!-- Winter Ready row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Winter ready:"
+                    android:textSize="16sp"
+                    android:layout_gravity="start"
+                    android:paddingEnd="8dp" />
+
+                <!-- This TextView will dynamically show if winter ready -->
+                <TextView
+                    android:id="@+id/tv_winter_ready"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Winter Ready"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <!-- Aggressivity row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Aggressivity:"
+                    android:textSize="16sp"
+                    android:layout_gravity="start"
+                    android:paddingEnd="8dp" />
+
+                <!-- This TextView will dynamically show the aggressivity -->
+                <TextView
+                    android:id="@+id/tv_aggressivity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Aggressivity"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginTop="16dp">
+
+                <Button
+                    android:id="@+id/btn_adjust_hive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Adjust Hive"
+                    android:textColor="@color/buttonTextColor"
+                    android:layout_marginHorizontal="4dp"
+                    android:backgroundTint="@color/buttonColor">
+                </Button>
+
+                <Button
+                    android:id="@+id/btn_delete_hive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Delete Hive"
+                    android:textColor="@color/buttonTextColor"
+                    android:layout_marginHorizontal="4dp"
+                    android:backgroundTint="@color/buttonColor">
+                </Button>
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

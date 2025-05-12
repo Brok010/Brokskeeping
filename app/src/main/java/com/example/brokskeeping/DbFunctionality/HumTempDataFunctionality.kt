@@ -51,12 +51,15 @@ object HumTempDataFunctionality {
         return HumTempData(id, stationId, hiveId, logText, firstDate, lastDate)
     }
 
-    // Function to delete humidity and temperature data associated with a specific hive
-    //TODO: test if it works
-    fun deleteHivesHumTempData(dbHelper: DatabaseHelper, hiveId: Int) {
+    fun deleteHivesHumTempData(dbHelper: DatabaseHelper, hiveId: Int): Int {
         val db = dbHelper.writableDatabase
-        db.delete(DatabaseHelper.TABLE_DATA_LOGS, "$DatabaseHelper.COL_HIVE_ID_FK_DATA_LOGS = ?", arrayOf(hiveId.toString()))
+        val deletedRows = db.delete(
+            DatabaseHelper.TABLE_DATA_LOGS,
+            "${DatabaseHelper.COL_HIVE_ID_FK_DATA_LOGS} = ?",
+            arrayOf(hiveId.toString())
+        )
         db.close()
+        return if (deletedRows > 0) 1 else 0
     }
 
     fun deleteHumTempData(dbHelper: DatabaseHelper, logId: Int) {

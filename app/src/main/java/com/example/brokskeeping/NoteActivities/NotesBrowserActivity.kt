@@ -3,9 +3,14 @@ package com.example.brokskeeping.NoteActivities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.widget.Button
+import android.widget.Toast
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.brokskeeping.BarcodeScan
+import com.example.brokskeeping.BottomMenuFragment
 import com.example.brokskeeping.DbFunctionality.DatabaseHelper
 import com.example.brokskeeping.DbFunctionality.HivesFunctionality
 import com.example.brokskeeping.DbFunctionality.NotesFunctionality
@@ -24,8 +29,10 @@ class NotesBrowserActivity : AppCompatActivity() {
     private lateinit var notesAdapter: NotesAdapter
     private var hiveId: Int = -1
     private var stationId: Int = -1
+    private var qrString: String = ""
     private var stationName: String = ""
     private var hiveName: String = ""
+    private var qrHiveId = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,8 +41,37 @@ class NotesBrowserActivity : AppCompatActivity() {
 
         stationId = intent.getIntExtra("stationId", -1)
         hiveId = intent.getIntExtra("hiveId", -1)
+        qrString = intent.getStringExtra("qrString") ?: ""
 
         db = DatabaseHelper(this)
+
+        // means we are getting here from a qr scanner and hiveId is the hiveId we are getting here from
+        if (qrString != "") {
+            qrHiveId = HivesFunctionality.getHiveIdByQRString(db, qrString)
+            if (qrHiveId == -1) {
+                // hive not found
+                Toast.makeText(this, "Hive not found", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, BarcodeScan::class.java)
+                Handler(Looper.getMainLooper()).postDelayed({   // TODO check
+                    startActivity(intent)
+                    finish()
+                }, 2000)
+                startActivity(intent)
+                finish()
+                // TODO if user presses back it puts him into an empty notes activity
+            } else if (hiveId == qrHiveId){
+                // we are on the correct hive
+                Toast.makeText(this, "U are on the correct hive", Toast.LENGTH_SHORT).show()
+                stationId = HivesFunctionality.getStationIdByHiveId(db, qrHiveId)
+            } else {
+                //continue in routing to the next hive
+                stationId = HivesFunctionality.getStationIdByHiveId(db, qrHiveId)
+                // i need to load the correct hive
+                hiveId = qrHiveId
+            }
+        }
+
+
         notesAdapter = NotesAdapter(mutableListOf(), hiveId, db, this)
 
         //get stationName
@@ -54,27 +90,20 @@ class NotesBrowserActivity : AppCompatActivity() {
             adapter = notesAdapter
         }
 
-        // Set up the Floating Action Button (FAB) for adding a new station
+        // bottom menu
+        if (savedInstanceState == null) {
+            val fragment = BottomMenuFragment()
+            val bundle = Bundle()
+            bundle.putInt("hiveId", hiveId)  // Replace `yourHiveId` with the actual hive ID you want to pass
+            fragment.arguments = bundle
+            supportFragmentManager.beginTransaction()
+                .replace(binding.fragmentContainer.id, fragment)
+                .commit()
+        }
+
+        //Add button
         binding.AddNoteBt.setOnClickListener {
             startAddNoteActivity()
-        }
-
-        //T0D0 button
-        val browserToDoButton: Button = findViewById(R.id.to_do_bt)
-        browserToDoButton.setOnClickListener {
-            startToDoBrowserActivity()
-        }
-
-        //logs button
-        val logsButton: Button = findViewById(R.id.logs_bt)
-        logsButton.setOnClickListener {
-            startLogsBrowserActivity()
-        }
-
-        //ToDoPopup
-        val toDoList = ToDoFunctionality.getAllPendingToDos(db, hiveId)
-        if (toDoList.isNotEmpty()) {
-            startToDoActivity()
         }
     }
 
@@ -82,21 +111,6 @@ class NotesBrowserActivity : AppCompatActivity() {
         super.onResume()
         val updatedNotesList = NotesFunctionality.getAllNotes(db, hiveId)
         notesAdapter.updateData(updatedNotesList)
-    }
-
-
-    fun startLogsBrowserActivity() {
-        val intent = Intent(this, LogsBrowserActivity::class.java)
-        intent.putExtra("hiveId", hiveId)
-        intent.putExtra("stationId", stationId)
-        startActivity(intent)
-    }
-
-    fun startToDoBrowserActivity() {
-        val intent = Intent(this, ToDoBrowserActivity()::class.java)
-        intent.putExtra("hiveId", hiveId)
-        intent.putExtra("stationId", stationId)
-        startActivity(intent)
     }
 
     fun startToDoActivity() {

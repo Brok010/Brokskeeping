@@ -17,6 +17,7 @@ class AdjustStationActivity : AppCompatActivity() {
     private lateinit var etName: EditText
     private lateinit var etLocation: EditText
     private lateinit var etHiveCount: EditText
+    private var beehiveNum: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +43,8 @@ class AdjustStationActivity : AppCompatActivity() {
 
         etName.setText(existingStation.name)
         etLocation.setText(existingStation.location)
-        etHiveCount.setText(existingStation.beehiveNum.toString())
+        beehiveNum = StationsFunctionality.getHiveCount(db, stationId)
+        etHiveCount.setText(beehiveNum.toString())
 
         val btnSave = findViewById<Button>(R.id.btn_adjust_station_save)
         val btnBack = findViewById<Button>(R.id.btn_adjust_station_back)
@@ -61,7 +63,7 @@ class AdjustStationActivity : AppCompatActivity() {
         val newLocation = etLocation.text.toString()
         var newHiveCount = etHiveCount.text.toString().toIntOrNull()
 
-        if (existingStation != null && newHiveCount != null && Utils.correctHiveCount(newHiveCount) && existingStation.beehiveNum <= newHiveCount) {
+        if (existingStation != null && newHiveCount != null && Utils.correctHiveCount(newHiveCount) && beehiveNum <= newHiveCount) {
             // Proceed with your logic when the conditions are met
             val confirmationMessage = "Are you sure you want to proceed?"
 
@@ -71,11 +73,10 @@ class AdjustStationActivity : AppCompatActivity() {
                     val updatedStation = existingStation.copy(
                         name = newName,
                         location = newLocation,
-                        beehiveNum = newHiveCount
                     )
 
-                    if (newHiveCount > existingStation.beehiveNum) {
-                        val newHives = newHiveCount - existingStation.beehiveNum
+                    if (newHiveCount > beehiveNum) {
+                        val newHives = newHiveCount - beehiveNum
                         StationsFunctionality.createHivesForStation(db, stationId, newHives)
                     }
                     StationsFunctionality.adjustStation(db, stationId, updatedStation)

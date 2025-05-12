@@ -11,6 +11,12 @@ import kotlin.math.abs
 
 object Utils {
 
+    fun parseStringToListOfIntegers(string: String): List<Int> {
+        return string
+            .split(",")
+            .mapNotNull { it.trim().toIntOrNull() }
+    }
+
     fun getNewData(data: String, firstDateTime: Long, lastDateTime: Long): String {
         val lines = data.split("\n")
         val filteredLines = lines.filter { line ->

@@ -19,9 +19,57 @@
         android:hint="Hive Name"/>
 
     <LinearLayout
+        android:id="@+id/QR_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/et_adjust_hive_nametag"
+        android:orientation="horizontal"
+        android:layout_below="@id/et_adjust_hive_nametag">
+        <EditText
+            android:id="@+id/et_adjust_hive_qr_string"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColorHint="@color/hintColor"
+            android:textColor="@color/basicTextColor"
+            android:hint="QR String"/>
+        <Button
+            android:id="@+id/btn_scan_QR"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Scan QR"
+            android:textColor="@color/buttonTextColor"
+            android:layout_marginHorizontal="4dp"
+            android:backgroundTint="@color/buttonColor">
+        </Button>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/station_change_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/QR_layout"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/station_change_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Station:"
+            android:textColor="@color/basicTextColor"
+            android:layout_marginEnd="8dp" />
+
+        <Spinner
+            android:id="@+id/station_change_options"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dropdown" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/station_change_layout"
         android:orientation="horizontal"
         android:gravity="center">
 

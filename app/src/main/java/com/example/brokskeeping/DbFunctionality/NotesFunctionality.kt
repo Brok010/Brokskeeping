@@ -61,36 +61,9 @@ object NotesFunctionality {
             db.endTransaction()
         }
     }
-    fun addFirstHiveNote(dbHelper: DatabaseHelper, data: HiveNotes) {
+    fun addNote(dbHelper: DatabaseHelper, note: HiveNotes): Pair<Int, Int> {
         val db = dbHelper.writableDatabase
 
-        // Prepare the data to be inserted
-        val values = ContentValues().apply {
-            put(DatabaseHelper.COL_STATION_ID_FK_HIVE_NOTES, data.stationId)
-            put(DatabaseHelper.COL_HIVE_ID_FK_HIVE_NOTES, data.hiveId)
-            put(DatabaseHelper.COL_HIVE_NOTE_TEXT, data.noteText)
-
-            // Check if the date was set to the default value
-            val dateToInsert = if (data.noteDate == Date(0)) {
-                Date(System.currentTimeMillis())
-            } else {
-                data.noteDate
-            }
-
-            // Convert Date to Unix timestamp (milliseconds since the epoch)
-            put(DatabaseHelper.COL_HIVE_NOTE_DATE, dateToInsert.time)
-        }
-
-        // Insert the data into the HIVE_NOTES table
-        db.insert(DatabaseHelper.TABLE_HIVE_NOTES, null, values)
-
-        db.close()
-    }
-    fun addNote(dbHelper: DatabaseHelper, note: HiveNotes) {
-        // Get a writable database instance
-        val db = dbHelper.writableDatabase
-
-        // Create a ContentValues object to hold the values to be inserted
         val values = ContentValues().apply {
             put(DatabaseHelper.COL_STATION_ID_FK_HIVE_NOTES, note.stationId)
             put(DatabaseHelper.COL_HIVE_ID_FK_HIVE_NOTES, note.hiveId)
@@ -103,20 +76,27 @@ object NotesFunctionality {
         }
 
         // Insert the new row into the table
-        db.insert(DatabaseHelper.TABLE_HIVE_NOTES, null, values)
+        val insertedId = db.insert(DatabaseHelper.TABLE_HIVE_NOTES, null, values)
 
-        // Close the database connection
         db.close()
+
+        return if (insertedId != -1L) {
+            Pair(insertedId.toInt(), 1)  // success
+        } else {
+            Pair(-1, 0)  // failure
+        }
     }
 
 
 
+
     // Function to delete notes associated with a specific hive
-    //TODO: test if it works
-    fun deleteNotes(dbHelper: DatabaseHelper, hiveId: Int) {
+    fun deleteNotes(dbHelper: DatabaseHelper, hiveId: Int): Int {
         val db = dbHelper.writableDatabase
-        db.delete(DatabaseHelper.TABLE_HIVE_NOTES, "${DatabaseHelper.COL_HIVE_ID_FK_HIVE_NOTES} = ?", arrayOf(hiveId.toString()))
+        val rowsAffected = db.delete(DatabaseHelper.TABLE_HIVE_NOTES, "${DatabaseHelper.COL_HIVE_ID_FK_HIVE_NOTES} = ?", arrayOf(hiveId.toString()))
         db.close()
+
+        return if (rowsAffected > 0) 1 else 0
     }
 
     fun deleteNote(dbHelper: DatabaseHelper, noteId: Int, hiveId: Int) {

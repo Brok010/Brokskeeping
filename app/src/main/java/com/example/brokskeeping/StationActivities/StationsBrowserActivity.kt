@@ -9,6 +9,8 @@ import com.example.brokskeeping.BottomMenuFragment
 import com.example.brokskeeping.DbFunctionality.DatabaseHelper
 import com.example.brokskeeping.DbFunctionality.StationsFunctionality
 import com.example.brokskeeping.HiveActivities.HivesBrowserActivity
+import com.example.brokskeeping.HoneyHarvestActivities.HoneyHarvestBrowserActivity
+import com.example.brokskeeping.InspectionActivities.InspectionsBrowserActivity
 import com.example.brokskeeping.databinding.ActivityStationsBrowserBinding
 
 
@@ -35,14 +37,14 @@ class StationsBrowserActivity : AppCompatActivity() {
             adapter = stationsAdapter
         }
 
-        // bottom menu
+        // bottom menu TODO add in a hive id paramentr to send to the bottommenufragment class
         if (savedInstanceState == null) {
             val fragment = BottomMenuFragment()
             supportFragmentManager.beginTransaction()
                 .replace(binding.fragmentContainer.id, fragment)
                 .commit()
         }
-        // Set up the Floating Action Button (FAB) for adding a new station
+
         binding.AddStationBt.setOnClickListener {
             startAddStationActivity()
         }

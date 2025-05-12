@@ -20,6 +20,8 @@ import java.io.InputStreamReader
 class AddHiveActivity : AppCompatActivity() {
     private lateinit var editTextNameTag: EditText
     private lateinit var editTextNotes: EditText
+    private lateinit var editTextAddQRString: EditText
+    private lateinit var buttonScanQR: Button
     private lateinit var buttonChooseFile: Button
     private lateinit var textViewFileName: TextView
     private lateinit var buttonSaveHive: Button
@@ -33,6 +35,8 @@ class AddHiveActivity : AppCompatActivity() {
 
         editTextNameTag = findViewById(R.id.editTextHiveNameTag)
         editTextNotes = findViewById(R.id.editTextHiveNotes)
+        editTextAddQRString = findViewById(R.id.et_add_hive_qr_string)
+        buttonScanQR = findViewById(R.id.btn_scan_QR)
         buttonChooseFile = findViewById(R.id.buttonChooseFile)
         textViewFileName = findViewById(R.id.textViewFileName)
         buttonSaveHive = findViewById(R.id.buttonSaveHive)
@@ -40,6 +44,10 @@ class AddHiveActivity : AppCompatActivity() {
 
         stationId = intent.getIntExtra("stationId", -1)
 
+
+        buttonScanQR.setOnClickListener {
+            //TODO
+        }
         buttonChooseFile.setOnClickListener {
             // Call a function to start the file explorer
             startFileExplorer()
@@ -94,12 +102,13 @@ class AddHiveActivity : AppCompatActivity() {
     private fun saveHive() {
         val nameTag = editTextNameTag.text.toString()
         val notes = editTextNotes.text.toString()
+        val qrString = editTextAddQRString.toString()
         val selectedFile = textViewFileName.text.toString().removePrefix("Selected File: ")
 
         // Check if the notes and file are valid
         if (Utils.notesFormat(notes) && isValidFile(selectedFile, fileData)) {
             // Call the database function to create a new hive
-            HivesFunctionality.saveHive(db, stationId, nameTag, notes, fileData)
+            HivesFunctionality.saveHive(db, stationId, nameTag, notes, fileData, qrString)
             Toast.makeText(this, "New hive added", Toast.LENGTH_SHORT).show()
             finish()
 

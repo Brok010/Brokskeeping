@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Background Image or Solid Color -->
     <background android:drawable="@drawable/ic_launcher_background" />
-    <foreground android:drawable="@drawable/ic_launcher_foreground" />
-    <monochrome android:drawable="@drawable/ic_launcher_foreground" />
+
+    <!-- Foreground Image: Your custom bee icon -->
+    <foreground android:drawable="@drawable/beeicon" />
+
+    <!-- Optional: Monochrome version of the foreground -->
+    <monochrome android:drawable="@drawable/beeicon" />
 </adaptive-icon>

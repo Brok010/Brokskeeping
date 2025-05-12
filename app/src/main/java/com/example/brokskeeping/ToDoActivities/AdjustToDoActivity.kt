@@ -56,6 +56,7 @@ class AdjustToDoActivity : AppCompatActivity() {
         btnAdjust.setOnClickListener {
             adjustToDo(toDo)
         }
+
     }
 
 

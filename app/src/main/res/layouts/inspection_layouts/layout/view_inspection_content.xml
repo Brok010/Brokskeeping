@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/backgroundColor">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/headerColor"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_hive_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hive: Hive A"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/basicTextColor" />
+    </LinearLayout>
+
+    <!-- Frames Per Super Dropdown -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Frames per Super: "
+            android:layout_marginHorizontal="8dp"
+            android:textColor="@color/basicTextColor" />
+
+        <Spinner
+            android:id="@+id/spinner_frames_per_super"
+            android:layout_width="match_parent"
+
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <!-- Supers Selector -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Supers"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/basicTextColor" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="8dp">
+
+        <Button
+            android:id="@+id/btn_add_super"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/buttonColor"
+            android:text="Add"
+            android:textColor="@color/buttonTextColor" />
+
+        <TextView
+            android:id="@+id/tv_super_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textSize="18sp"
+            android:layout_marginHorizontal="16dp" />
+
+        <Button
+            android:id="@+id/btn_remove_super"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/buttonColor"
+            android:textColor="@color/buttonTextColor"
+            android:text="Remove"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Frame trading:"
+        android:textColor="@color/basicTextColor" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Brood frames:"
+            android:textColor="@color/basicTextColor" />
+
+        <EditText
+            android:id="@+id/edittext_brood_frames"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="8dp"
+            android:inputType="number"
+            android:textColor="@color/basicTextColor"
+            android:backgroundTint="@color/basicTextColor"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Adjusted"
+            android:textColor="@color/basicTextColor" />
+
+        <CheckBox
+            android:id="@+id/checkbox_brood_taken"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:contentDescription="Brood taken" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Honey frames:"
+            android:textColor="@color/basicTextColor" />
+
+        <EditText
+            android:id="@+id/edittext_honey_frames"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="8dp"
+            android:inputType="number"
+            android:textColor="@color/basicTextColor"
+            android:backgroundTint="@color/basicTextColor"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Adjusted"
+            android:textColor="@color/basicTextColor" />
+
+        <CheckBox
+            android:id="@+id/checkbox_honey_taken"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:contentDescription="Honey taken" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Drone frames:"
+            android:textColor="@color/basicTextColor" />
+
+        <EditText
+            android:id="@+id/edittext_drone_frames"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="8dp"
+            android:inputType="number"
+            android:textColor="@color/basicTextColor"
+            android:backgroundTint="@color/basicTextColor"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Adjusted"
+            android:textColor="@color/basicTextColor" />
+
+        <CheckBox
+            android:id="@+id/checkbox_drone_taken"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:contentDescription="Drone brood taken" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Honey harvested:"
+            android:textColor="@color/basicTextColor" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/honey_frames_harvested"
+            android:layout_marginHorizontal="8dp"
+            android:text="0"
+            android:inputType="number"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Agresivity:"
+            android:textColor="@color/basicTextColor" />
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/aggressivity_slider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:valueFrom="1"
+            android:valueTo="5"
+            android:stepSize="1" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Supplemented feed"
+                android:textColor="@color/basicTextColor" />
+
+            <CheckBox
+                android:id="@+id/checkbox_supplemented_feed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:contentDescription="Drone brood taken" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+            <Button
+                android:id="@+id/bt_add_todo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/buttonColor"
+                android:textColor="@color/buttonTextColor"
+                android:text="Pending Todo's (0)"/>
+
+            <CheckBox
+                android:id="@+id/checkbox_added_to_do"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Winter ready"
+            android:textColor="@color/basicTextColor" />
+
+        <CheckBox
+            android:id="@+id/checkbox_winter_ready"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:contentDescription="Drone brood taken" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Notes:"
+        android:textColor="@color/basicTextColor" />
+
+    <EditText
+        android:id="@+id/edittext_notes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lines="3"
+        android:inputType="textMultiLine"
+        android:nestedScrollingEnabled="true"
+        android:textColor="@color/basicTextColor"
+        android:backgroundTint="@color/basicTextColor"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/btn_layout">
+    </LinearLayout>
+</LinearLayout>

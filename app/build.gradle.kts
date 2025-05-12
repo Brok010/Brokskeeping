@@ -46,7 +46,9 @@ android {
                 srcDirs("src\\main\\res", "src\\main\\res\\layouts", "src\\main\\res\\layouts\\to_do_layouts")
                 srcDirs("src\\main\\res", "src\\main\\res\\layouts", "src\\main\\res\\layouts\\log_layouts")
                 srcDirs("src\\main\\res", "src\\main\\res\\layouts", "src\\main\\res\\layouts\\other_layouts")
-                srcDirs("src\\main\\res", "src\\main\\res\\layouts", "src\\main\\res\\layouts\\other_layouts")
+                srcDirs("src\\main\\res", "src\\main\\res\\layouts", "src\\main\\res\\layouts\\inspection_layouts")
+                srcDirs("src\\main\\res", "src\\main\\res\\layouts", "src\\main\\res\\layouts\\inspection_data_layouts")
+                srcDirs("src\\main\\res", "src\\main\\res\\layouts", "src\\main\\res\\layouts\\honey_harvest_layouts")
             }
         }
     }
@@ -55,6 +57,7 @@ android {
 
 
 dependencies {
+    implementation("com.google.android.gms:play-services-vision:20.1.3")
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.appcompat:appcompat:1.6.1")

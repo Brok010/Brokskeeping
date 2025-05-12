@@ -1,0 +1,30 @@
+<!-- res/layout/bottom_menu.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottom_menu"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/headerColor"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:padding="8dp">
+
+    <Button
+        android:id="@+id/qrScanButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_weight="1"
+        android:backgroundTint="@color/buttonColor"
+        android:text="QR Scan"
+        android:textColor="@color/buttonTextColor" />
+
+    <ImageButton
+        android:id="@+id/settingsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/buttonColor"
+        android:src="@drawable/settings"
+        app:tint="@color/buttonTextColor" />
+
+</LinearLayout>

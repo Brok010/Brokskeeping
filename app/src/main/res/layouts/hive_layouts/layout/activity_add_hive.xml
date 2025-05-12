@@ -38,6 +38,31 @@
         android:textColor="@color/basicTextColor"
         android:inputType="textMultiLine" />
 
+    <LinearLayout
+        android:id="@+id/QR_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/et_adjust_hive_nametag">
+        <EditText
+            android:id="@+id/et_add_hive_qr_string"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColorHint="@color/hintColor"
+            android:textColor="@color/basicTextColor"
+            android:hint="QR String"/>
+        <Button
+            android:id="@+id/btn_scan_QR"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Scan QR"
+            android:textColor="@color/buttonTextColor"
+            android:layout_marginHorizontal="4dp"
+            android:backgroundTint="@color/buttonColor">
+        </Button>
+    </LinearLayout>
+
     <Button
         android:id="@+id/buttonChooseFile"
         android:layout_width="wrap_content"

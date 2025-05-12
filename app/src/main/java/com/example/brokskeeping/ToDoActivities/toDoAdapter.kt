@@ -1,5 +1,6 @@
 package com.example.brokskeeping.ToDoActivities
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -63,7 +64,14 @@ class ToDoAdapter(private val toDosList: MutableList<ToDo>,
     }
     private fun showContextMenu(view: View, toDo: ToDo) {
         val popupMenu = PopupMenu(view.context, view)
-        popupMenu.menuInflater.inflate(R.menu.dropdown_menu_long_click_browser, popupMenu.menu)
+        popupMenu.menuInflater.inflate(R.menu.dropdown_menu_long_click_todo_browser, popupMenu.menu)
+
+        val stateMenuItem = popupMenu.menu.findItem(R.id.menu_long_click_change_state)
+        stateMenuItem.title = if (toDo.toDoState) {
+            "Change to not done"
+        } else {
+            "Change to done"
+        }
 
         popupMenu.setOnMenuItemClickListener { item ->
             when (item.itemId) {
@@ -75,15 +83,23 @@ class ToDoAdapter(private val toDosList: MutableList<ToDo>,
                         if (confirmed) {
                             // User confirmed the deletion
                             ToDoFunctionality.deleteToDo(db, toDo.id)
-                            updateData(ToDoFunctionality.getAllToDos(db, hiveId))
+                            val (toDoList, result) = ToDoFunctionality.getAllToDos(db, hiveId, 0, 0, 1)
+                            if (result == 1) {
+                                updateData(toDoList)
+                            } else {
+                                Log.e("ToDoAdapter", "getAllToDos function did not finish properly")
+                            }
                         }
                     }
 
                     true
                 }
                 R.id.menu_long_click_adjust -> {
-                    // Handle adjust action
                     toDosBrowserActivity.startAdjustToDoActivity(toDo.id)
+                    true
+                }
+                R.id.menu_long_click_change_state -> {
+                    toDosBrowserActivity.startChangeStateToDoActivity(toDo.id)
                     true
                 }
                 else -> false

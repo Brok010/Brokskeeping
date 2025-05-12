@@ -28,18 +28,37 @@
                 android:layout_weight="4"
                 android:textStyle="bold">
             </TextView>
-
-            <Button
-                android:id="@+id/AddHiveBt"
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_margin="5dp"
-                android:layout_weight="1"
-                android:backgroundTint="@color/buttonColor"
-                android:text="+"
-                android:textColor="@color/buttonTextColor">
-            </Button>
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <Button
+                    android:id="@+id/AddHiveBt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/buttonColor"
+                    android:text="Add hive"
+                    android:textColor="@color/buttonTextColor"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    style="?android:attr/buttonBarButtonStyle">
+                </Button>
+                <Button
+                    android:id="@+id/NewInspectionBt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/buttonColor"
+                    android:text="New inspection"
+                    android:textColor="@color/buttonTextColor"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    style="?android:attr/buttonBarButtonStyle">
+                </Button>
+            </LinearLayout>
         </LinearLayout>
     </FrameLayout>
 

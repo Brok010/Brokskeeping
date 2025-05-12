@@ -28,25 +28,13 @@ class ToDoActivity : AppCompatActivity() {
         tvToDoText = findViewById(R.id.to_do_text)
         tvToDoDate = findViewById(R.id.to_do_date)
 
-        var toDoList = ToDoFunctionality.getAllPendingToDos(db, hiveId)
+        var (toDoList, _) = ToDoFunctionality.getAllToDos(db, hiveId, 0, 0, 1)
         var toDoId = showFirstToDo(toDoList)
-
-        binding.toDoSkip.setOnClickListener {
-            if (toDoList.isNotEmpty()) {
-                toDoList = toDoList.drop(1)
-
-                if (toDoList.isNotEmpty()) {
-                    toDoId = showFirstToDo(toDoList)
-                } else {
-                    finish()
-                }
-            }
-        }
 
         binding.toDoDone.setOnClickListener {
             if (toDoList.isNotEmpty()) {
                 toDoList = toDoList.drop(1)
-                ToDoFunctionality.setToDone(db, toDoId)
+                ToDoFunctionality.toggleToDoState(db, toDoId)
 
                 if (toDoList.isNotEmpty()) {
                     toDoId = showFirstToDo(toDoList)

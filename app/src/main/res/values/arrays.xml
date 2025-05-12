@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="time_filter_options">
+        <item>All Time</item>
+        <item>Year</item>
+        <item>Month</item>
+    </string-array>
+
+    <string-array name="type_filter_options">
+        <item>Hives</item>
+        <item>Stations</item>
+    </string-array>
+</resources>
