@@ -101,6 +101,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     internal val CREATE_TABLE_HISTORY = "CREATE TABLE $TABLE_HISTORY (" +
             "$COL_HISTORY_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
             "$COL_HISTORY_ENTITY_ID INTEGER, " +
+            "$COL_HISTORY_ENTITY_TYPE TEXT, " +
             "$COL_HISTORY_DATE INTEGER, " +
             "$COL_HISTORY_EVENT TEXT, " +
             "FOREIGN KEY($COL_HISTORY_ENTITY_ID) REFERENCES $TABLE_HIVES($COL_HIVE_ID))"
@@ -230,6 +231,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         const val TABLE_HISTORY = "tbl_history"
         const val COL_HISTORY_ID = "history_id"
         const val COL_HISTORY_ENTITY_ID = "history_entity_id"
+        const val COL_HISTORY_ENTITY_TYPE = "history_entity_type"
         const val COL_HISTORY_DATE = "history_date"
         const val COL_HISTORY_EVENT = "history_event"
     }
