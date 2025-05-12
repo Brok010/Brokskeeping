@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/backgroundColor">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/headerColor"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Inspection for hive: "
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/basicTextColor" />
+
+        <TextView
+            android:id="@+id/tv_hive_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="name"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/basicTextColor" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Frames per Super: "
+            android:textColor="@color/basicTextColor" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_frames_per_super"
+            android:text="0"
+            android:textSize="18sp"
+            android:textColor="@color/basicTextColor" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Supers"
+            android:layout_marginRight="8dp"
+            android:textColor="@color/basicTextColor" />
+
+        <TextView
+            android:id="@+id/tv_supers_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textSize="18sp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Brood frames:"
+            android:textColor="@color/basicTextColor" />
+
+        <TextView
+            android:id="@+id/tv_brood_frames_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:layout_marginHorizontal="8dp"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Adjusted"
+            android:textColor="@color/basicTextColor" />
+
+        <ImageView
+            android:id="@+id/iv_brood_frames"
+            android:layout_width="20dp"
+            android:layout_marginHorizontal="8dp"
+            android:layout_height="20dp"/>
+
+        <TextView
+            android:id="@+id/tv_brood_change"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textSize="18sp"
+            android:textColor="@color/basicTextColor" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Honey frames:"
+            android:textColor="@color/basicTextColor" />
+
+        <TextView
+            android:id="@+id/tv_honey_frames_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:layout_marginHorizontal="8dp"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Adjusted"
+            android:textColor="@color/basicTextColor" />
+
+        <ImageView
+            android:id="@+id/iv_honey_frames"
+            android:layout_width="20dp"
+            android:layout_marginHorizontal="8dp"
+            android:layout_height="20dp"/>
+
+        <TextView
+            android:id="@+id/tv_honey_change"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:text="0"
+            android:textColor="@color/basicTextColor" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Drone frames:"
+            android:textColor="@color/basicTextColor" />
+
+        <TextView
+            android:id="@+id/tv_drone_frames_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:text="0"
+            android:textSize="18sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Adjusted"
+            android:textColor="@color/basicTextColor" />
+
+        <ImageView
+            android:id="@+id/iv_drone_frames"
+            android:layout_width="20dp"
+            android:layout_marginHorizontal="8dp"
+            android:layout_height="20dp"/>
+
+        <TextView
+            android:id="@+id/tv_drone_change"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+
+            android:textColor="@color/basicTextColor" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Honey harvested:"
+            android:textColor="@color/basicTextColor" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tv_honey_frames_harvested"
+            android:layout_marginHorizontal="8dp"
+            android:text="0"
+            android:inputType="number"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Agresivity:"
+            android:textColor="@color/basicTextColor" />
+
+        <TextView
+            android:id="@+id/tv_aggressivity_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:layout_marginHorizontal="8dp"
+            android:layout_gravity="center"
+            android:text="0" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Supplemented feed"
+            android:textColor="@color/basicTextColor" />
+
+        <ImageView
+            android:id="@+id/iv_supplemented_feed"
+            android:layout_width="20dp"
+            android:layout_marginHorizontal="8dp"
+            android:layout_height="20dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Winter ready"
+            android:textColor="@color/basicTextColor" />
+
+        <ImageView
+            android:id="@+id/iv_winter_ready"
+            android:layout_width="20dp"
+            android:layout_marginHorizontal="8dp"
+            android:layout_height="20dp"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Notes:"
+        android:textColor="@color/basicTextColor" />
+
+    <TextView
+        android:id="@+id/tv_notes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:lines="3"
+        android:inputType="textMultiLine"
+        android:nestedScrollingEnabled="true"
+        android:textSize="18sp"/>
+
+</LinearLayout>
