@@ -52,5 +52,15 @@
         android:layout_height="wrap_content"
         android:text="To Do's"
         android:backgroundTint="@color/buttonColor"
-        android:textColor="@color/buttonTextColor" />
+        android:textColor="@color/buttonTextColor"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btn_discarded_entities"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Discarded entities"
+        android:backgroundTint="@color/buttonColor"
+        android:textColor="@color/buttonTextColor"
+        android:layout_marginBottom="16dp"/>
 </LinearLayout>

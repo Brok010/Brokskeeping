@@ -3,14 +3,15 @@ max prio:
     # after scanning wrong barcode - cache it
     # u can skip or pause the inspection
     # it gives u hives in ordered list - the lists order = order of hives in station
+    # db migration
 
 mid prio:
     # death management
-    # add hive.state property into inspections and what not - if it needs attention
     # add skip button to inspection
-    # change add hive and adjust hive to accommodate the new params
     # yearly reset
     # filter for inspection activity
+    # in use functionality for hives and stations
+    # inspection attention slider and dead checkbox
 
 low prio:
     # adjust hive - option for qr set is not working

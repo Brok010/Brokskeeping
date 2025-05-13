@@ -55,7 +55,7 @@ class InspectionActivity : AppCompatActivity() {
         db = DatabaseHelper(this)
 
         inspectionContainer = binding.inspectionContainer
-        val (data, result) = HivesFunctionality.getAllHives(db, stationId)
+        val (data, result) = HivesFunctionality.getAllHives(db, stationId, 0)
         if (result == 0 || data.isEmpty()) {
             Toast.makeText(this, "Could not load hives", Toast.LENGTH_SHORT).show()
             finish()

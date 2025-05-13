@@ -6,37 +6,52 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:textColor="@color/basicTextColor"
-        android:text="Hive Name Tag:" />
-
-    <EditText
-        android:id="@+id/editTextHiveNameTag"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textMultiLine"
-        android:textColorHint="@color/hintColor"
-        android:textColor="@color/basicTextColor"
-        android:hint="Enter Hive Name Tag" />
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textColor="@color/basicTextColor"
+            android:text="Hive Name:"
+            android:paddingEnd="8dp"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:textColor="@color/basicTextColor"
-        android:text="Hive Notes:" />
+        <EditText
+            android:id="@+id/editTextHiveNameTag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:textColorHint="@color/hintColor"
+            android:textColor="@color/basicTextColor"
+            android:hint="Hive Name" />
+    </LinearLayout>
 
-    <EditText
-        android:id="@+id/editTextHiveNotes"
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Hive Notes"
-        android:textColorHint="@color/hintColor"
-        android:textColor="@color/basicTextColor"
-        android:inputType="textMultiLine" />
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textColor="@color/basicTextColor"
+            android:paddingEnd="8dp"
+            android:text="Hive Notes:" />
+
+        <EditText
+            android:id="@+id/editTextHiveNotes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Hive Notes"
+            android:inputType="textMultiLine"
+            android:textColor="@color/basicTextColor"
+            android:textColorHint="@color/hintColor" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/QR_layout"
@@ -62,6 +77,220 @@
             android:backgroundTint="@color/buttonColor">
         </Button>
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <!-- Brood Frames row -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingEnd="8dp"
+                android:text="Brood frames:" />
+
+            <EditText
+                android:id="@+id/tv_brood_frames"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:inputType="number"/>
+        </LinearLayout>
+
+        <!-- Honey Frames row -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingEnd="8dp"
+                android:text="Honey frames:" />
+
+            <EditText
+                android:id="@+id/et_honey_frames"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <!-- Drone Brood Frames row -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Drone brood frames:"
+                android:paddingEnd="8dp" />
+
+            <EditText
+                android:id="@+id/et_drone_brood_frames"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number"/>
+        </LinearLayout>
+
+        <!-- Frames per Super row -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Frames per super:"
+                android:paddingEnd="8dp" />
+
+            <EditText
+                android:id="@+id/et_frames_per_super"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Supers row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Supers:"
+            android:paddingEnd="8dp" />
+
+        <EditText
+            android:id="@+id/et_supers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="number"/>
+    </LinearLayout>
+
+    <!-- Origin row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Colony origin:"
+            android:paddingEnd="8dp" />
+
+        <EditText
+            android:id="@+id/et_colony_origin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Origin"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <!-- SupplementedFeed row -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Supplemented Feed:"
+                android:paddingEnd="8dp" />
+
+            <EditText
+                android:id="@+id/et_supplemented_feed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number"/>
+        </LinearLayout>
+
+        <!-- WinterReady row -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Winter ready:"
+                android:paddingEnd="8dp" />
+
+            <CheckBox
+                android:id="@+id/checkbox_winter_ready"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Agresivity:"
+            android:textColor="@color/basicTextColor" />
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/slider_aggressivity_slider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:valueFrom="1"
+            android:valueTo="5"
+            android:stepSize="1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Attention worth:"
+            android:textColor="@color/basicTextColor" />
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/slider_attention_worth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:valueFrom="1"
+            android:valueTo="5"
+            android:stepSize="1" />
+    </LinearLayout>
+
+
 
     <Button
         android:id="@+id/buttonChooseFile"

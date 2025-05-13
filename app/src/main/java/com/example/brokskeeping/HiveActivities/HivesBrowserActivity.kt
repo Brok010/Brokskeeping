@@ -69,7 +69,7 @@ class HivesBrowserActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        val (updatedHivesList, result) = HivesFunctionality.getAllHives(db, stationId)
+        val (updatedHivesList, result) = HivesFunctionality.getAllHives(db, stationId, 0)
         if (result == 1) {
             hivesAdapter.updateData(updatedHivesList)
         } else {

@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity() {
         val btnInspections: Button = findViewById(R.id.btn_inspections)
         val btnHoneyHarvest: Button = findViewById(R.id.btn_honey_harvest)
         val btnToDo: Button = findViewById(R.id.btn_to_do)
+        val btnDiscardedEntities: Button = findViewById(R.id.btn_discarded_entities)
 
         // Set onClick listeners for each button
         btnDatabase.setOnClickListener {
@@ -42,5 +43,10 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, ToDoBrowserActivity::class.java)
             startActivity(intent)
         }
+
+        btnDiscardedEntities.setOnClickListener {
+            //todo
+        }
+
     }
 }

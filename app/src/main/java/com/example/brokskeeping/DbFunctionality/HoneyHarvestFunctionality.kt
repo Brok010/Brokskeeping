@@ -94,7 +94,7 @@ object HoneyHarvestFunctionality {
                 }
 
                 "hive" -> {
-                    val (hives, result) = HivesFunctionality.getAllHives(databaseHelper)
+                    val (hives, result) = HivesFunctionality.getAllHives(databaseHelper, dead = 0)
                     if (result == 0) {
                         Log.e("HoneyHarvestFunctionality", "getAllHives function did not finish properly")
                     }

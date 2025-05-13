@@ -219,22 +219,33 @@ object HivesFunctionality {
 
 
 
-    fun getAllHives(dbHelper: DatabaseHelper, stationId: Int? = null): Pair<List<Beehive>, Int> {
+    fun getAllHives(dbHelper: DatabaseHelper, stationId: Int? = null, dead: Int? = null): Pair<List<Beehive>, Int> {
         val hives = mutableListOf<Beehive>()
 
         return try {
-            val query: String
-            val selectionArgs: Array<String>?
+            val selectionArgs = mutableListOf<String>()
+            val whereConditions = mutableListOf<String>()
 
             if (stationId != null && stationId != 0) {
-                query = "SELECT * FROM ${DatabaseHelper.TABLE_HIVES} WHERE ${DatabaseHelper.COL_STATION_ID_FK_HIVES} = ?"
-                selectionArgs = arrayOf(stationId.toString())
-            } else {
-                query = "SELECT * FROM ${DatabaseHelper.TABLE_HIVES}"
-                selectionArgs = null
+                whereConditions.add("${DatabaseHelper.COL_STATION_ID_FK_HIVES} = ?")
+                selectionArgs.add(stationId.toString())
             }
 
-            val cursor = dbHelper.readableDatabase.rawQuery(query, selectionArgs)
+            if (dead == 1) {
+                whereConditions.add("${DatabaseHelper.COL_HIVE_DEATH} = 1")
+            } else if (dead == 0) {
+                whereConditions.add("${DatabaseHelper.COL_HIVE_DEATH} = 0")
+            }
+
+            val whereClause = if (whereConditions.isNotEmpty()) {
+                "WHERE ${whereConditions.joinToString(" AND ")}"
+            } else {
+                ""
+            }
+
+            val query = "SELECT * FROM ${DatabaseHelper.TABLE_HIVES} $whereClause"
+
+            val cursor = dbHelper.readableDatabase.rawQuery(query, if (selectionArgs.isNotEmpty()) selectionArgs.toTypedArray() else null)
 
             cursor.use {
                 while (it.moveToNext()) {
@@ -252,35 +263,60 @@ object HivesFunctionality {
 
 
 
+
     //TODO: get all notes and datalogs from the database and pass them along?
 
-    fun saveHive(dbHelper: DatabaseHelper, currentStationId: Int, nameTag: String, currentNotes: String, fileData: String, qrString: String) { //addHive
+    fun saveHive(
+        dbHelper: DatabaseHelper,
+        beehive: Beehive,
+        fileData: String,
+        currentNotes: String
+    ): Int {
         val db = dbHelper.writableDatabase
-
-        // Prepare the data to be inserted
         val values = ContentValues().apply {
-            put(DatabaseHelper.COL_STATION_ID_FK_HIVES, currentStationId)
-            put(DatabaseHelper.COL_HIVE_NAME_TAG, nameTag)
-            put(DatabaseHelper.COL_HIVE_QR_TAG, qrString)
+            put(DatabaseHelper.COL_STATION_ID_FK_HIVES, beehive.stationId)
+            put(DatabaseHelper.COL_HIVE_NAME_TAG, beehive.nameTag)
+            put(DatabaseHelper.COL_HIVE_QR_TAG, beehive.qrTag)
+            put(DatabaseHelper.COL_HIVE_FRAMES_PER_SUPER, beehive.framesPerSuper)
+            put(DatabaseHelper.COL_HIVE_SUPERS, beehive.supers)
+            put(DatabaseHelper.COL_HIVE_BROOD_FRAMES, beehive.broodFrames)
+            put(DatabaseHelper.COL_HIVE_HONEY_FRAMES, beehive.honeyFrames)
+            put(DatabaseHelper.COL_HIVE_DRONE_BROOD_FRAMES, beehive.droneBroodFrames)
+            put(DatabaseHelper.COL_HIVE_FREE_SPACE_FRAMES, beehive.freeSpaceFrames)
+            put(DatabaseHelper.COL_HIVE_COLONY_ORIGIN, beehive.colonyOrigin)
+            put(DatabaseHelper.COL_HIVE_WINTER_READY, if (beehive.winterReady) 1 else 0)
+            put(DatabaseHelper.COL_HIVE_SUPPLEMENTED_FEED_COUNT, beehive.supplementedFeedCount)
+            put(DatabaseHelper.COL_HIVE_AGGRESSIVITY, beehive.aggressivity)
+            put(DatabaseHelper.COL_HIVE_DEATH, if (beehive.death) 1 else 0)
+            put(DatabaseHelper.COL_HIVE_ATTENTION_WORTH, beehive.attentionWorth)
         }
 
-        // Insert the data into the Hives table
         val currentHiveId = db.insert(DatabaseHelper.TABLE_HIVES, null, values).toInt()
+        db.close()
 
-        // Check if the insertion was successful
         if (currentHiveId != -1) {
-            // If successful, insert additional data into other tables as needed
             if (fileData != "None") {
-                val data = HumTempData(stationId = currentStationId, hiveId = currentHiveId, logText = fileData)
+                val data = HumTempData(
+                    stationId = beehive.stationId,
+                    hiveId = currentHiveId,
+                    logText = fileData
+                )
                 HumTempDataFunctionality.addDataLogs(dbHelper, data)
             }
             if (currentNotes != "None") {
-                val data = HiveNotes(stationId = currentStationId, hiveId = currentHiveId, noteText = currentNotes)
-                NotesFunctionality.addNote(dbHelper, data)
+                val note = HiveNotes(
+                    stationId = beehive.stationId,
+                    hiveId = currentHiveId,
+                    noteText = currentNotes
+                )
+                NotesFunctionality.addNote(dbHelper, note)
             }
+            return 1
         }
-        db.close()
+
+        return 0
     }
+
     fun deleteHive(dbHelper: DatabaseHelper, stationId: Int, hiveId: Int) {
         if (NotesFunctionality.deleteNotes(dbHelper, hiveId) == 0) {
             Log.e("HiveFunctionality", "deleteHive - deleteNotes - end with 0")

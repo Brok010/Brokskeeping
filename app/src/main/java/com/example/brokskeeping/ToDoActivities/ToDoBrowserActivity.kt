@@ -144,7 +144,7 @@ class ToDoBrowserActivity : AppCompatActivity() {
         if (stationId < 1) {
             Toast.makeText(this, "Please choose a station first.", Toast.LENGTH_SHORT).show()
         } else {
-            val (hives, result) = HivesFunctionality.getAllHives(db, stationId)
+            val (hives, result) = HivesFunctionality.getAllHives(db, stationId, 0)
             if (result != 1 || hives.isEmpty()) {
                 Toast.makeText(this, "No hives found for this station.", Toast.LENGTH_SHORT).show()
             } else {

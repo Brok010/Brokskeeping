@@ -71,7 +71,7 @@ class HivesAdapter(private val hivesList: MutableList<Beehive>,
                         if (confirmed) {
                             // User confirmed the deletion
                             HivesFunctionality.deleteHive(db, stationId, hive.id)
-                            val (hiveIds, result) = HivesFunctionality.getAllHives(db, stationId)
+                            val (hiveIds, result) = HivesFunctionality.getAllHives(db, stationId, 0)
                             if (result == 1) {
                                 updateData(hiveIds)
                             } else {

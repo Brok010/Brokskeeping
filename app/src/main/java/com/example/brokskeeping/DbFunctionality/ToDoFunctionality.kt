@@ -157,7 +157,7 @@ object ToDoFunctionality {
                 }
 
                 else -> {   // else get all hives
-                    val (hives, result) = HivesFunctionality.getAllHives(dbHelper, 0)
+                    val (hives, result) = HivesFunctionality.getAllHives(dbHelper, dead = 0)
                     if (result == 1) {
                         hives.map { it.id }
                     } else {

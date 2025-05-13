@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import com.example.brokskeeping.DataClasses.Beehive
 import com.example.brokskeeping.DbFunctionality.DatabaseHelper
 import com.example.brokskeeping.DbFunctionality.HivesFunctionality
 import com.example.brokskeeping.Functionality.Utils
@@ -46,15 +47,13 @@ class AddHiveActivity : AppCompatActivity() {
 
 
         buttonScanQR.setOnClickListener {
-            //TODO
+            //Todo
         }
         buttonChooseFile.setOnClickListener {
-            // Call a function to start the file explorer
             startFileExplorer()
         }
 
         buttonSaveHive.setOnClickListener {
-            // Call a function to save hive information
             saveHive()
         }
     }
@@ -100,20 +99,46 @@ class AddHiveActivity : AppCompatActivity() {
 
 
     private fun saveHive() {
-        val nameTag = editTextNameTag.text.toString()
+        val name = editTextNameTag.text.toString()
+        val qr = editTextAddQRString.text.toString()
+        val broodFrames = findViewById<EditText>(R.id.tv_brood_frames).text.toString().toIntOrNull() ?: 0
+        val honeyFrames = findViewById<EditText>(R.id.et_honey_frames).text.toString().toIntOrNull() ?: 0
+        val droneBroodFrames = findViewById<EditText>(R.id.et_drone_brood_frames).text.toString().toIntOrNull() ?: 0
+        val framesPerSuper = findViewById<EditText>(R.id.et_frames_per_super).text.toString().toIntOrNull() ?: 0
+        val supers = findViewById<EditText>(R.id.et_supers).text.toString().toIntOrNull() ?: 0
+        val supplementedFeed = findViewById<EditText>(R.id.et_supplemented_feed).text.toString().toIntOrNull() ?: 0
+        val colonyOrigin = findViewById<EditText>(R.id.et_colony_origin).text.toString()
+
+        val isWinterReady = findViewById<android.widget.CheckBox>(R.id.checkbox_winter_ready).isChecked
+        val aggressivity = findViewById<com.google.android.material.slider.Slider>(R.id.slider_aggressivity_slider).value.toInt()
+        val attentionWorth = findViewById<com.google.android.material.slider.Slider>(R.id.slider_attention_worth).value.toInt()
+
+        val beehive = Beehive(
+            id = -1,
+            stationId = stationId,
+            nameTag = name,
+            qrTag = qr,
+            framesPerSuper = framesPerSuper,
+            supers = supers,
+            broodFrames = broodFrames,
+            honeyFrames = honeyFrames,
+            droneBroodFrames = droneBroodFrames,
+            freeSpaceFrames = framesPerSuper * supers - (broodFrames + honeyFrames + droneBroodFrames),
+            colonyOrigin = colonyOrigin,
+            winterReady = isWinterReady,
+            supplementedFeedCount = supplementedFeed,
+            aggressivity = aggressivity,
+            death = false,
+            attentionWorth = attentionWorth
+        )
         val notes = editTextNotes.text.toString()
-        val qrString = editTextAddQRString.toString()
         val selectedFile = textViewFileName.text.toString().removePrefix("Selected File: ")
 
-        // Check if the notes and file are valid
         if (Utils.notesFormat(notes) && isValidFile(selectedFile, fileData)) {
-            // Call the database function to create a new hive
-            HivesFunctionality.saveHive(db, stationId, nameTag, notes, fileData, qrString)
+            HivesFunctionality.saveHive(db, beehive, fileData, notes)
             Toast.makeText(this, "New hive added", Toast.LENGTH_SHORT).show()
             finish()
-
         } else {
-            // Show a Toast indicating an issue with notes or file
             Toast.makeText(this, "Invalid notes or file", Toast.LENGTH_SHORT).show()
             return
         }
