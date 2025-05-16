@@ -5,6 +5,7 @@ import androidx.appcompat.app.AlertDialog
 import com.example.brokskeeping.DataClasses.DateRange
 import com.example.brokskeeping.DataClasses.MaxMins
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import kotlin.math.abs
@@ -114,4 +115,30 @@ object Utils {
         return fileName.endsWith(".txt") || fileName == "None"
     }
 
+    fun getStartAndEndTime(year: Int? = null, month: Int? = null): Pair<Pair<Long?, Long?>, Int> {
+        val calendar = Calendar.getInstance()
+        var startTime: Long? = null
+        var endTime: Long? = null
+
+        when {
+            (year == null) && (month == null) -> {
+                startTime = 0L
+                endTime = System.currentTimeMillis()
+            }
+            year != null && year > 0 && (month == null) -> {
+                calendar.set(year, Calendar.JANUARY, 1, 0, 0, 0)
+                startTime = calendar.timeInMillis
+                calendar.set(year, Calendar.DECEMBER, 31, 23, 59, 59)
+                endTime = calendar.timeInMillis
+            }
+            year != null && year > 0 && month != null && month in 1..12 -> {
+                calendar.set(year, month - 1, 1, 0, 0, 0)
+                startTime = calendar.timeInMillis
+                calendar.set(year, month - 1, calendar.getActualMaximum(Calendar.DAY_OF_MONTH), 23, 59, 59)
+                endTime = calendar.timeInMillis
+            }
+            else -> return Pair(Pair(null, null), 0)
+        }
+        return Pair(Pair(startTime, endTime), 1)
+    }
 }

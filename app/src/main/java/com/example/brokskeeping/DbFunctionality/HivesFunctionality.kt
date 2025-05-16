@@ -116,10 +116,10 @@ object HivesFunctionality {
         val droneBroodFrames = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_HIVE_DRONE_BROOD_FRAMES))
         val freeSpaceFrames = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_HIVE_FREE_SPACE_FRAMES))
         val colonyOrigin = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_HIVE_COLONY_ORIGIN))
+        val colonyEndState = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_HIVE_COLONY_END_STATE))
         val supplementedFeedCount = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_HIVE_SUPPLEMENTED_FEED_COUNT))
         val winterReady = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_HIVE_WINTER_READY)) == 1
         val aggressivity = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_HIVE_AGGRESSIVITY))
-        val death = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_HIVE_DEATH)) == 1
         val attentionWorth = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_HIVE_ATTENTION_WORTH))
 
         return Beehive(
@@ -129,20 +129,20 @@ object HivesFunctionality {
             qrTag,
             broodFrames,
             honeyFrames,
+            droneBroodFrames,
             framesPerSuper,
             supers,
-            droneBroodFrames,
             freeSpaceFrames,
             colonyOrigin,
+            colonyEndState,
             supplementedFeedCount,
             winterReady,
             aggressivity,
-            death,
             attentionWorth)
     }
 
     fun updateHive(dbHelper: DatabaseHelper, beehive: Beehive): Int {
-        val db = dbHelper.writableDatabase
+         val db = dbHelper.writableDatabase
         db.beginTransaction()
         var result = 0
 
@@ -163,20 +163,23 @@ object HivesFunctionality {
                 if (beehive.honeyFrames != -1) {
                     put(DatabaseHelper.COL_HIVE_HONEY_FRAMES, beehive.honeyFrames)
                 }
+                if (beehive.droneBroodFrames != -1) {
+                    put(DatabaseHelper.COL_HIVE_DRONE_BROOD_FRAMES, beehive.droneBroodFrames)
+                }
                 if (beehive.framesPerSuper != -1) {
                     put(DatabaseHelper.COL_HIVE_FRAMES_PER_SUPER, beehive.framesPerSuper)
                 }
                 if (beehive.supers != -1) {
                     put(DatabaseHelper.COL_HIVE_SUPERS, beehive.supers)
                 }
-                if (beehive.droneBroodFrames != -1) {
-                    put(DatabaseHelper.COL_HIVE_DRONE_BROOD_FRAMES, beehive.droneBroodFrames)
-                }
                 if (beehive.freeSpaceFrames != -1) {
                     put(DatabaseHelper.COL_HIVE_FREE_SPACE_FRAMES, beehive.freeSpaceFrames)
                 }
                 if (!beehive.colonyOrigin.isNullOrBlank()) {
                     put(DatabaseHelper.COL_HIVE_COLONY_ORIGIN, beehive.colonyOrigin)
+                }
+                if (beehive.colonyEndState != -1) {
+                    put(DatabaseHelper.COL_HIVE_COLONY_END_STATE, beehive.colonyEndState)
                 }
                 if (beehive.supplementedFeedCount != -1) {
                     put(DatabaseHelper.COL_HIVE_SUPPLEMENTED_FEED_COUNT, beehive.supplementedFeedCount)
@@ -185,7 +188,6 @@ object HivesFunctionality {
                 if (beehive.aggressivity != -1) {
                     put(DatabaseHelper.COL_HIVE_AGGRESSIVITY, beehive.aggressivity)
                 }
-                put(DatabaseHelper.COL_HIVE_DEATH, if (beehive.death) 1 else 0)
                 if (beehive.attentionWorth != -1) {
                     put(DatabaseHelper.COL_HIVE_ATTENTION_WORTH, beehive.attentionWorth)
                 }
@@ -232,9 +234,9 @@ object HivesFunctionality {
             }
 
             if (dead == 1) {
-                whereConditions.add("${DatabaseHelper.COL_HIVE_DEATH} = 1")
+                whereConditions.add("${DatabaseHelper.COL_HIVE_COLONY_END_STATE} = 0")
             } else if (dead == 0) {
-                whereConditions.add("${DatabaseHelper.COL_HIVE_DEATH} = 0")
+                whereConditions.add("${DatabaseHelper.COL_HIVE_COLONY_END_STATE} = -1")
             }
 
             val whereClause = if (whereConditions.isNotEmpty()) {
@@ -260,18 +262,12 @@ object HivesFunctionality {
             Pair(emptyList(), 0) // Failure
         }
     }
-
-
-
-
-    //TODO: get all notes and datalogs from the database and pass them along?
-
     fun saveHive(
         dbHelper: DatabaseHelper,
         beehive: Beehive,
         fileData: String,
         currentNotes: String
-    ): Int {
+    ): Pair<Int, Int> {
         val db = dbHelper.writableDatabase
         val values = ContentValues().apply {
             put(DatabaseHelper.COL_STATION_ID_FK_HIVES, beehive.stationId)
@@ -284,10 +280,10 @@ object HivesFunctionality {
             put(DatabaseHelper.COL_HIVE_DRONE_BROOD_FRAMES, beehive.droneBroodFrames)
             put(DatabaseHelper.COL_HIVE_FREE_SPACE_FRAMES, beehive.freeSpaceFrames)
             put(DatabaseHelper.COL_HIVE_COLONY_ORIGIN, beehive.colonyOrigin)
+            put(DatabaseHelper.COL_HIVE_COLONY_END_STATE, beehive.colonyEndState)
             put(DatabaseHelper.COL_HIVE_WINTER_READY, if (beehive.winterReady) 1 else 0)
             put(DatabaseHelper.COL_HIVE_SUPPLEMENTED_FEED_COUNT, beehive.supplementedFeedCount)
             put(DatabaseHelper.COL_HIVE_AGGRESSIVITY, beehive.aggressivity)
-            put(DatabaseHelper.COL_HIVE_DEATH, if (beehive.death) 1 else 0)
             put(DatabaseHelper.COL_HIVE_ATTENTION_WORTH, beehive.attentionWorth)
         }
 
@@ -311,10 +307,10 @@ object HivesFunctionality {
                 )
                 NotesFunctionality.addNote(dbHelper, note)
             }
-            return 1
+            return Pair(currentHiveId, 1)
         }
 
-        return 0
+        return Pair(-1, 0)
     }
 
     fun deleteHive(dbHelper: DatabaseHelper, stationId: Int, hiveId: Int) {

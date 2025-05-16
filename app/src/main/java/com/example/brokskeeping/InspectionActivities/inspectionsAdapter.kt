@@ -1,5 +1,6 @@
 package com.example.brokskeeping.InspectionActivities
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,7 +36,7 @@ class InspectionsAdapter(private val inspectionsList: MutableList<Inspection>,
         holder.bind(currentInspection)
 
         holder.itemView.setOnClickListener {
-            inspectionsBrowserActivity.startInspectionDataBrowserActivity(currentInspection.id)
+            inspectionsBrowserActivity.startInspectionDataBrowserActivity(currentInspection.id, currentInspection.stationId)
         }
         holder.itemView.setOnLongClickListener() {
             showContextMenu(holder.itemView, currentInspection)
@@ -49,14 +50,12 @@ class InspectionsAdapter(private val inspectionsList: MutableList<Inspection>,
 
     inner class InspectionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val tvStationName = itemView.findViewById<TextView>(R.id.tv_station_name)
-        private val tvInspectionStatus = itemView.findViewById<TextView>(R.id.tv_inspection_status)
         private val tvInspectionDate = itemView.findViewById<TextView>(R.id.tv_inspection_date)
 
         fun bind(inspection: Inspection) {
 
             val stationName = StationsFunctionality.getStationNameById(db, inspection.stationId)
             tvStationName.text = stationName
-            tvInspectionStatus.text = if (inspection.finished) "Finished" else "Paused"
             tvInspectionDate.text = inspection.date.toString()
         }
     }
@@ -75,7 +74,11 @@ class InspectionsAdapter(private val inspectionsList: MutableList<Inspection>,
                         if (confirmed) {
                             // User confirmed the deletion
                             InspectionsFunctionality.deleteInspection(db, inspection.id)
-                            updateData(InspectionsFunctionality.getAllInspections(db))
+                            val (inspections, result) = InspectionsFunctionality.getAllInspections(db)
+                            if (result != 1) {
+                                Log.e("inspectionsAdapter", "Could not load inspections")
+                            }
+                            updateData(inspections)
                         }
                     }
                     true

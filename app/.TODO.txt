@@ -1,20 +1,12 @@
-max prio:
-    # spojovani a rozdelovani ulu
     # after scanning wrong barcode - cache it
-    # u can skip or pause the inspection
     # it gives u hives in ordered list - the lists order = order of hives in station
     # db migration
-
-mid prio:
-    # death management
-    # add skip button to inspection
-    # yearly reset
-    # filter for inspection activity
-    # in use functionality for hives and stations
-    # inspection attention slider and dead checkbox
-
-low prio:
+    # dead entities browser
+    # make a table for supplemented feed
     # adjust hive - option for qr set is not working
-    # make bluetooth work and battery management
-    # history of hives
+    # localization options
+
+long term
     # family tracking -> graph?
+    # history of hives
+    # make bluetooth work and battery management

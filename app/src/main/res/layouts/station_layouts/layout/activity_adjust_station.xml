@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="16dp"
-    android:paddingTop="16dp"
-    android:paddingRight="16dp"
-    android:paddingBottom="16dp"
+    android:padding="16dp"
+    android:orientation="vertical"
     android:background="@color/backgroundColor"
     tools:context=".StationActivities.AdjustStationActivity">
 
@@ -14,35 +12,53 @@
         android:id="@+id/et_adjust_station_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:hint="Station Name"
         android:textColor="@color/basicTextColor"
-        android:textColorHint="@color/hintColor"
-        android:hint="Station Name"/>
+        android:textColorHint="@color/hintColor" />
 
     <EditText
         android:id="@+id/et_adjust_station_location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColorHint="@color/hintColor"
-        android:textColor="@color/basicTextColor"
-        android:layout_below="@id/et_adjust_station_name"
+        android:hint="Location"
         android:layout_marginTop="8dp"
-        android:hint="Location"/>
+        android:textColor="@color/basicTextColor"
+        android:textColorHint="@color/hintColor" />
 
     <EditText
         android:id="@+id/et_adjust_station_hive_count"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColorHint="@color/hintColor"
-        android:textColor="@color/basicTextColor"
-        android:layout_below="@id/et_adjust_station_location"
+        android:hint="Hive Count"
         android:layout_marginTop="8dp"
         android:inputType="number"
-        android:hint="Hive Count"/>
+        android:textColor="@color/basicTextColor"
+        android:textColorHint="@color/hintColor" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/et_adjust_station_hive_count"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="In use:"
+            android:paddingEnd="8dp"
+            android:textColor="@color/basicTextColor" />
+
+        <CheckBox
+            android:id="@+id/checkbox_in_use"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:orientation="horizontal"
         android:gravity="center">
 
@@ -50,19 +66,18 @@
             android:id="@+id/btn_adjust_station_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/buttonColor"
-            android:textColor="@color/buttonTextColor"
+            android:text="Save"
             android:layout_margin="8dp"
-            android:text="Save"/>
+            android:backgroundTint="@color/buttonColor"
+            android:textColor="@color/buttonTextColor" />
 
         <Button
             android:id="@+id/btn_adjust_station_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Back"
             android:layout_margin="8dp"
             android:backgroundTint="@color/buttonColor"
-            android:textColor="@color/buttonTextColor"
-            android:text="Back" />
-
+            android:textColor="@color/buttonTextColor" />
     </LinearLayout>
-</RelativeLayout>
+</LinearLayout>

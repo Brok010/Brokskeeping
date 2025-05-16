@@ -25,10 +25,10 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             "$COL_HIVE_DRONE_BROOD_FRAMES INTEGER, " +
             "$COL_HIVE_FREE_SPACE_FRAMES INTEGER, " +
             "$COL_HIVE_COLONY_ORIGIN TEXT, " +
+            "$COL_HIVE_COLONY_END_STATE INTEGER, " +
             "$COL_HIVE_WINTER_READY INTEGER, " +
             "$COL_HIVE_SUPPLEMENTED_FEED_COUNT INTEGER, " +
             "$COL_HIVE_AGGRESSIVITY INTEGER, " +
-            "$COL_HIVE_DEATH INTEGER, " +
             "$COL_HIVE_ATTENTION_WORTH INTEGER, " +
             "FOREIGN KEY($COL_STATION_ID_FK_HIVES) REFERENCES $TABLE_STATIONS($COL_STATION_ID))"
 
@@ -63,7 +63,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     internal val CREATE_TABLE_INSPECTIONS = "CREATE TABLE $TABLE_INSPECTIONS (" +
             "$COL_INSPECTION_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
             "$COL_STATION_ID_FK_INSPECTION INTEGER, " +
-            "$COL_INSPECTION_FINISHED INTEGER, " +
             "$COL_INSPECTION_DATE INTEGER," +
             "$COL_INSPECTION_DATA_IDS TEXT," +
             "FOREIGN KEY($COL_STATION_ID_FK_INSPECTION) REFERENCES $TABLE_STATIONS($COL_STATION_ID))"
@@ -72,6 +71,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             "$COL_INSPECTION_DATA_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
             "$COL_HIVE_ID_FK_INSPECTION_DATA INTEGER, " +
             "$COL_NOTE_ID_FK_INSPECTION_DATA INTEGER, " +
+            "$COL_INSPECTION_ID_FK_INSPECTION_DATA INTEGER, " +
             "$COL_INSPECTION_DATA_FRAMES_PER_SUPER INTEGER, " +
             "$COL_INSPECTION_DATA_SUPERS INTEGER, " +
             "$COL_INSPECTION_DATA_HONEY_FRAMES INTEGER, " +
@@ -88,6 +88,11 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             "$COL_INSPECTION_DATA_WINTER_READY INTEGER, " +
             "$COL_INSPECTION_DATA_AGGRESSIVITY INTEGER, " +
             "$COL_INSPECTION_DATA_HONEY_HARVESTED INTEGER, " +
+            "$COL_INSPECTION_DATA_ATTENTION_WORTH INTEGER, " +
+            "$COL_INSPECTION_DATA_COLONY_END_STATE INTEGER, " +
+            "$COL_INSPECTION_DATA_SEPARATED INTEGER, " +
+            "$COL_INSPECTION_DATA_JOINED INTEGER, " +
+            "FOREIGN KEY($COL_INSPECTION_ID_FK_INSPECTION_DATA) REFERENCES $TABLE_INSPECTIONS($COL_INSPECTION_ID), " +
             "FOREIGN KEY($COL_NOTE_ID_FK_INSPECTION_DATA) REFERENCES $TABLE_HIVE_NOTES($COL_HIVE_NOTE_ID), " +
             "FOREIGN KEY($COL_HIVE_ID_FK_INSPECTION_DATA) REFERENCES $TABLE_HIVES($COL_HIVE_ID))"
 
@@ -136,7 +141,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     }
 
     companion object {
-        const val DATABASE_VERSION = 11
+        const val DATABASE_VERSION = 15
         const val DATABASE_NAME = "beehives.db"
 
         //Station
@@ -154,15 +159,15 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         const val COL_STATION_ID_FK_HIVES = "station_foreign_key"
         const val COL_HIVE_FRAMES_PER_SUPER = "hive_frames_per_super"
         const val COL_HIVE_SUPERS = "hive_supers"
-        const val COL_HIVE_BROOD_FRAMES = "hive_egg_laying_frames"
+        const val COL_HIVE_BROOD_FRAMES = "hive_brood_frames"
         const val COL_HIVE_HONEY_FRAMES = "hive_honey_frames"
         const val COL_HIVE_DRONE_BROOD_FRAMES = "hive_drone_brood_frames"
         const val COL_HIVE_FREE_SPACE_FRAMES = "hive_free_space_frames"
         const val COL_HIVE_COLONY_ORIGIN = "hive_colony_origin"
+        const val COL_HIVE_COLONY_END_STATE = "hive_colony_end_state"
         const val COL_HIVE_WINTER_READY = "hive_winter_ready"
         const val COL_HIVE_SUPPLEMENTED_FEED_COUNT = "hive_supplemented_feed_count"
         const val COL_HIVE_AGGRESSIVITY = "hive_aggressivity"
-        const val COL_HIVE_DEATH = "hive_death"
         const val COL_HIVE_ATTENTION_WORTH = "hive_attention_worth"
 
         //Datalogs
@@ -194,7 +199,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         const val TABLE_INSPECTIONS = "tbl_inspections"
         const val COL_INSPECTION_ID = "inspection_id"
         const val COL_STATION_ID_FK_INSPECTION = "station_foreign_key_inspection"
-        const val COL_INSPECTION_FINISHED = "inspection_finished"
         const val COL_INSPECTION_DATE = "inspection_date"
         const val COL_INSPECTION_DATA_IDS = "inspection_data"
 
@@ -202,6 +206,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         const val TABLE_INSPECTION_DATA = "tbl_inspection_data"
         const val COL_INSPECTION_DATA_ID = "inspection_data_id"
         const val COL_HIVE_ID_FK_INSPECTION_DATA = "inspection_data_hive_id_fk"
+        const val COL_INSPECTION_ID_FK_INSPECTION_DATA = "inspection_data_inspection_id_fk"
         const val COL_INSPECTION_DATA_FRAMES_PER_SUPER = "inspection_data_frames_per_super"
         const val COL_INSPECTION_DATA_SUPERS = "inspection_data_supers"
         const val COL_INSPECTION_DATA_BROOD_FRAMES = "inspection_data_brood_frames"
@@ -218,7 +223,11 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         const val COL_INSPECTION_DATA_WINTER_READY = "inspection_data_winter_ready"
         const val COL_INSPECTION_DATA_AGGRESSIVITY = "inspection_data_aggressivity"
         const val COL_INSPECTION_DATA_HONEY_HARVESTED = "inspection_data_honey_harvested"
+        const val COL_INSPECTION_DATA_ATTENTION_WORTH = "inspection_data_attention_worth"
+        const val COL_INSPECTION_DATA_COLONY_END_STATE = "inspection_data_colony_end_state"
         const val COL_NOTE_ID_FK_INSPECTION_DATA = "inspection_data_note_id_fk"
+        const val COL_INSPECTION_DATA_JOINED = "inspection_data_joined"
+        const val COL_INSPECTION_DATA_SEPARATED = "inspection_data_separated"
 
         // Honey harvest
         const val TABLE_HONEY_HARVESTS = "tbl_honey_harvests"

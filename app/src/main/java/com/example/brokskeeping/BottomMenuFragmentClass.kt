@@ -65,7 +65,14 @@ class BottomMenuFragment : Fragment() {
 
             popup.setOnMenuItemClickListener { item ->
                 if (item.title == "Yearly Reset") {
-                    showYearlyResetConfirmation()
+                    AlertDialog.Builder(requireContext())
+                        .setTitle("Confirm Reset")
+                        .setMessage("Are you sure you want to perform a yearly reset? This action cannot be undone.")
+                        .setPositiveButton("Yes") { _, _ ->
+                            OtherFunctionality.yearlyReset(db)
+                        }
+                        .setNegativeButton("No", null)
+                        .show()
                     true
                 } else {
                     false
@@ -76,36 +83,7 @@ class BottomMenuFragment : Fragment() {
         }
 
 
+
         return view
     }
-
-    private fun showYearlyResetConfirmation() {
-        val currentYear = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR)
-        val numberPicker = NumberPicker(requireContext()).apply {
-            minValue = currentYear - 5
-            maxValue = currentYear + 1
-            value = currentYear
-        }
-
-        AlertDialog.Builder(requireContext())
-            .setTitle("Select Year for Reset")
-            .setView(numberPicker)
-            .setPositiveButton("Next") { _, _ ->
-                val selectedYear = numberPicker.value
-
-                // Show second confirmation dialog
-                AlertDialog.Builder(requireContext())
-                    .setTitle("Confirm Reset")
-                    .setMessage("Are you sure you want to perform a yearly reset for $selectedYear? This action cannot be undone.")
-                    .setPositiveButton("Yes") { _, _ ->
-                        OtherFunctionality.yearlyReset(db, selectedYear)
-                        Toast.makeText(requireContext(), "Yearly reset for $selectedYear completed", Toast.LENGTH_SHORT).show()
-                    }
-                    .setNegativeButton("Cancel", null)
-                    .show()
-            }
-            .setNegativeButton("Cancel", null)
-            .show()
-    }
-
 }

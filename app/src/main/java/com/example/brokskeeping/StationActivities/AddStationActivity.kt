@@ -57,7 +57,7 @@ class AddStationActivity : AppCompatActivity() {
     }
 
     private fun processStationInformation(stationName: String, stationLocation: String, beehiveNumber: Int) {
-        val newStation = Station(name = stationName, location = stationLocation)
+        val newStation = Station(name = stationName, location = stationLocation, inUse = 1)
         StationsFunctionality.saveStation(db, newStation, beehiveNumber)
 
         // You can add additional logic as needed

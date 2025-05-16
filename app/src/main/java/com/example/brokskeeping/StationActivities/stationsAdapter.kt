@@ -1,5 +1,6 @@
 package com.example.brokskeeping.StationActivities
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -52,9 +53,13 @@ class StationsAdapter(private val stationsList: MutableList<Station>,
         private val tvHiveCount: TextView = itemView.findViewById(R.id.tv_value_hive_count)
 
         fun bind(station: Station) {
+            val (hiveCount, result) = StationsFunctionality.getHiveCount(db, station.id)
+            if (result == 0) {
+                Log.e("stationAdapter", "getHiveCount didn't finish properly")
+            }
             tvStationName.text = station.name
             tvStationLocation.text = station.location
-            tvHiveCount.text = StationsFunctionality.getHiveCount(db, station.id).toString()
+            tvHiveCount.text = hiveCount.toString()
         }
     }
     private fun showContextMenu(view: View, station: Station) {
@@ -71,7 +76,11 @@ class StationsAdapter(private val stationsList: MutableList<Station>,
                         if (confirmed) {
                             // User confirmed the deletion
                             StationsFunctionality.deleteStation(db, station.id)
-                            updateData(StationsFunctionality.getAllStations(db))
+                            val (stations, result) = StationsFunctionality.getAllStations(db, 1)
+                            if (result == 0) {
+                                Log.e("stationsAdapter", "Station loading was not successful - stationFilter")
+                            }
+                            updateData(stations)
                         }
                     }
 

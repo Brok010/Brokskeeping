@@ -5,8 +5,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.View
 import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.brokskeeping.BarcodeScan
@@ -15,16 +19,13 @@ import com.example.brokskeeping.DbFunctionality.DatabaseHelper
 import com.example.brokskeeping.DbFunctionality.HivesFunctionality
 import com.example.brokskeeping.DbFunctionality.NotesFunctionality
 import com.example.brokskeeping.DbFunctionality.StationsFunctionality
-import com.example.brokskeeping.DbFunctionality.ToDoFunctionality
-import com.example.brokskeeping.LogActivities.LogsBrowserActivity
 import com.example.brokskeeping.R
 import com.example.brokskeeping.ToDoActivities.ToDoActivity
-import com.example.brokskeeping.ToDoActivities.ToDoBrowserActivity
-import com.example.brokskeeping.databinding.ActivityNotesBrowserBinding
+import com.example.brokskeeping.databinding.CommonBrowserRecyclerBinding
 
 
 class NotesBrowserActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityNotesBrowserBinding
+    private lateinit var binding: CommonBrowserRecyclerBinding
     private lateinit var db: DatabaseHelper
     private lateinit var notesAdapter: NotesAdapter
     private var hiveId: Int = -1
@@ -33,10 +34,12 @@ class NotesBrowserActivity : AppCompatActivity() {
     private var stationName: String = ""
     private var hiveName: String = ""
     private var qrHiveId = -1
+    private lateinit var header: TextView
+    private lateinit var btnLayout: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityNotesBrowserBinding.inflate(layoutInflater)
+        binding = CommonBrowserRecyclerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         stationId = intent.getIntExtra("stationId", -1)
@@ -80,10 +83,21 @@ class NotesBrowserActivity : AppCompatActivity() {
         hiveName = HivesFunctionality.getHiveNameById(db, hiveId)
 
         // Set the text of the TextView to the stationName
-        binding.tvNotesHeader.text = "Notes of [$stationName], [$hiveName]"
+        header = binding.tvCommonBrowserHeader
+        header.text = "Notes of [$stationName], [$hiveName]"
+
+        // buttons
+        btnLayout = binding.llCommonBrowserButtonLayout
+        val addNoteButton = Button(this).apply {
+            id = View.generateViewId()
+            text = "Add Note"
+            setTextColor(ContextCompat.getColor(this@NotesBrowserActivity, R.color.buttonTextColor))
+            backgroundTintList = ContextCompat.getColorStateList(this@NotesBrowserActivity, R.color.buttonColor)
+        }
+        btnLayout.addView(addNoteButton)
 
         // Set up the RecyclerView
-        binding.recyclerView.apply {
+        binding.commonRecyclerView.apply {
             layoutManager = LinearLayoutManager(this@NotesBrowserActivity)
             itemAnimator = DefaultItemAnimator()
             setHasFixedSize(true)
@@ -97,19 +111,22 @@ class NotesBrowserActivity : AppCompatActivity() {
             bundle.putInt("hiveId", hiveId)  // Replace `yourHiveId` with the actual hive ID you want to pass
             fragment.arguments = bundle
             supportFragmentManager.beginTransaction()
-                .replace(binding.fragmentContainer.id, fragment)
+                .replace(binding.commonFragmentContainer.id, fragment)
                 .commit()
         }
 
         //Add button
-        binding.AddNoteBt.setOnClickListener {
+        addNoteButton.setOnClickListener {
             startAddNoteActivity()
         }
     }
 
     override fun onResume() {
         super.onResume()
-        val updatedNotesList = NotesFunctionality.getAllNotes(db, hiveId)
+        val (updatedNotesList, result) = NotesFunctionality.getAllNotes(db, hiveId, null, null, true)
+        if (result == 0) {
+            Toast.makeText(this, "Couldn't retrieve notes", Toast.LENGTH_SHORT).show()
+        }
         notesAdapter.updateData(updatedNotesList)
     }
 

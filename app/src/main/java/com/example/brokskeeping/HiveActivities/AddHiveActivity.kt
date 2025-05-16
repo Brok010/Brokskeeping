@@ -128,7 +128,7 @@ class AddHiveActivity : AppCompatActivity() {
             winterReady = isWinterReady,
             supplementedFeedCount = supplementedFeed,
             aggressivity = aggressivity,
-            death = false,
+            colonyEndState = -1,
             attentionWorth = attentionWorth
         )
         val notes = editTextNotes.text.toString()

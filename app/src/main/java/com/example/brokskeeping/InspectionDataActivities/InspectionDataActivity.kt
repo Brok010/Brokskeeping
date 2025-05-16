@@ -26,8 +26,20 @@ class InspectionDataActivity : AppCompatActivity() {
 
         val (currentInspectionData, result) = InspectionsFunctionality.getAllInspectionDataById(db, inspectionDataId)
         if (result != 1 && currentInspectionData != null) {
-            Toast.makeText(this, "InspectionDataLoad not successful - See logs for details", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "InspectionDataLoad not successful", Toast.LENGTH_SHORT).show()
             finish()
+        }
+
+        // date
+        val (inspection, inspectionResult) = InspectionsFunctionality.getInspection(db, currentInspectionData!!.inspectionId)
+        if (inspectionResult == 0) {
+            Toast.makeText(this, "Inspection load not successful", Toast.LENGTH_SHORT).show()
+        }
+        val tvDate = findViewById<TextView>(R.id.tv_date)
+        if (inspection != null) {
+            tvDate.text = inspection.date.toString()
+        } else {
+            Toast.makeText(this, "Inspection has no date", Toast.LENGTH_SHORT).show()
         }
 
         // checkboxes
@@ -51,8 +63,17 @@ class InspectionDataActivity : AppCompatActivity() {
         ivWinterReady.setImageResource(
             if (currentInspectionData?.winterReady == true) R.drawable.ic_yes else R.drawable.ic_no
         )
+        val ivSeparated = findViewById<ImageView>(R.id.iv_separated)
+        ivSeparated.setImageResource(
+            if (currentInspectionData?.separated != -1) R.drawable.ic_yes else R.drawable.ic_no
+        )
+        val ivJoined = findViewById<ImageView>(R.id.iv_joined)
+        ivJoined.setImageResource(
+            if (currentInspectionData?.joined != -1) R.drawable.ic_yes else R.drawable.ic_no
+        )
         val tvHoneyHarvested = findViewById<TextView>(R.id.tv_honey_frames_harvested)
-        val tvAggressivity = findViewById<TextView>(R.id.tv_aggressivity_value)
+        val tvAggressivity = findViewById<TextView>(R.id.tv_aggressivity)
+        val tvAttention = findViewById<TextView>(R.id.tv_attention)
         val tvHiveName = findViewById<TextView>(R.id.tv_hive_name)
         val tvNotes = findViewById<TextView>(R.id.tv_notes)
         val tvFramesPerSuper = findViewById<TextView>(R.id.tv_frames_per_super)
@@ -63,13 +84,37 @@ class InspectionDataActivity : AppCompatActivity() {
         val tvBroodChange = findViewById<TextView>(R.id.tv_brood_change)
         val tvHoneyChange = findViewById<TextView>(R.id.tv_honey_change)
         val tvDroneChange = findViewById<TextView>(R.id.tv_drone_change)
+        val tvColonyEndState = findViewById<TextView>(R.id.tv_colony_end_state)
+        val tvSeparated = findViewById<TextView>(R.id.tv_separated_count)
+        val tvJoined = findViewById<TextView>(R.id.tv_joined_count)
 
         val note = currentInspectionData?.let { NotesFunctionality.getNote(db, it.noteId) }
         tvNotes.text = note?.noteText ?: ""
 
+        val colonyEndState = if (currentInspectionData?.colonyEndState == 0) {
+            "Dead"
+        } else if (currentInspectionData?.colonyEndState == -1) {
+            "Alive"
+        } else {
+            currentInspectionData?.colonyEndState.toString()
+        }
+
+        val separatedValue = if (currentInspectionData?.separated == -1) {
+            ""
+        } else {
+            currentInspectionData?.separated.toString()
+        }
+
+        val joinedValue = if (currentInspectionData?.joined == -1) {
+            ""
+        } else {
+            currentInspectionData?.joined.toString()
+        }
+
         currentInspectionData?.let { data ->
             tvHoneyHarvested.text = data.honeyHarvested.toString()
             tvAggressivity.text = data.aggressivity.toString()
+            tvAttention.text = data.attentionWorth.toString()
             tvHiveName.text = HivesFunctionality.getHiveNameById(db, data.hiveId)
             tvFramesPerSuper.text = data.framesPerSuper.toString()
             tvSupersCount.text = data.supers.toString()
@@ -79,6 +124,9 @@ class InspectionDataActivity : AppCompatActivity() {
             tvBroodChange.text = data.broodFramesChange.toString()
             tvHoneyChange.text = data.honeyFramesChange.toString()
             tvDroneChange.text = data.droneBroodFramesChange.toString()
+            tvColonyEndState.text = colonyEndState
+            tvSeparated.text = separatedValue
+            tvJoined.text = joinedValue
         }
     }
 }

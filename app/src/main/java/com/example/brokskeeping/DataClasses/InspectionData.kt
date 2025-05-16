@@ -2,6 +2,7 @@ package com.example.brokskeeping.DataClasses
 
 data class InspectionData(
     val id: Int = -1,
+    val inspectionId: Int = -1,
     val hiveId: Int = -1,
     val noteId: Int = -1,
     var broodFrames: Int = -1,
@@ -19,5 +20,9 @@ data class InspectionData(
     var supplementedFeed: Boolean = false,
     var winterReady: Boolean = false,
     var aggressivity: Int = -1,
-    var honeyHarvested: Int = -1
+    var honeyHarvested: Int = -1,
+    var attentionWorth: Int = -1,
+    var colonyEndState: Int = -1, // 0 = dead, -1 = alive, else hiveId
+    var separated: Int = -1, // -1 not, else id of new hive
+    var joined: Int = -1 // -1 not, else id of the joined hive
 )

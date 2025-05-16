@@ -35,8 +35,8 @@ class AdjustHiveActivity : AppCompatActivity() {
         stationAttributes = StationsFunctionality.getStationsAttributes(db, stationId)
         val stationName = stationAttributes?.name
 
-        val (hive, result) = HivesFunctionality.getHiveAttributesById(db, hiveId)
-        if (result == 0 || hive == null) {
+        val (hive, hiveResult) = HivesFunctionality.getHiveAttributesById(db, hiveId)
+        if (hiveResult == 0 || hive == null) {
             Toast.makeText(this, "Hive couldn't be retrieved from db", Toast.LENGTH_SHORT).show()
             finish()
             return
@@ -44,7 +44,12 @@ class AdjustHiveActivity : AppCompatActivity() {
 
         setValues(hive)
 
-        val stations: List<Station> = StationsFunctionality.getAllStations(db)
+        val (stations, stationResult) = StationsFunctionality.getAllStations(db, 1)
+        if (stationResult == 0) {
+            Toast.makeText(this, "Station loading was not successful", Toast.LENGTH_SHORT).show()
+            finish()
+        }
+
         val stationNames = stations.map { it.name }
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, stationNames)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -93,6 +98,8 @@ class AdjustHiveActivity : AppCompatActivity() {
             return
         }
 
+//        val colonyEndState = if (checkboxDead.isChecked) -> 0, else -1
+
         val beehive = Beehive(
             id = hiveId,
             stationId = newStationId,
@@ -105,11 +112,11 @@ class AdjustHiveActivity : AppCompatActivity() {
             supers = etSupers.text.toString().toIntOrNull() ?: 0,
             freeSpaceFrames = 0, // Set this based on app logic if needed
             colonyOrigin = etColonyOrigin.text.toString(),
+//            colonyEndState = colonyEndState,
             supplementedFeedCount = etSupplementedFeed.text.toString().toIntOrNull() ?: 0,
             winterReady = checkboxWinterReady.isChecked,
             aggressivity = sliderAggressivitySlider.value.toInt(),
-            attentionWorth = sliderAttentionWorth.value.toInt(),
-            death = checkboxDead.isChecked
+            attentionWorth = sliderAttentionWorth.value.toInt()
         )
 
         HivesFunctionality.updateHive(db, beehive)
@@ -126,7 +133,7 @@ class AdjustHiveActivity : AppCompatActivity() {
         etColonyOrigin.setText(hive.colonyOrigin)
         etSupplementedFeed.setText(hive.supplementedFeedCount.toString())
         checkboxWinterReady.isChecked = hive.winterReady
-        sliderAggressivitySlider.value = hive.aggressivity.toFloat()
-        sliderAttentionWorth.value = hive.attentionWorth.toFloat()
+        sliderAggressivitySlider.value = hive.aggressivity.toFloat().coerceIn(1.0f, 5.0f)
+        sliderAttentionWorth.value = hive.attentionWorth.toFloat().coerceIn(1.0f, 5.0f)
     }
 }

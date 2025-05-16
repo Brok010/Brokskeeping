@@ -1,5 +1,6 @@
 package com.example.brokskeeping.InspectionActivities
 
+import android.content.Context
 import android.content.Intent
 import com.example.brokskeeping.R
 import android.os.Bundle
@@ -14,6 +15,7 @@ import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.brokskeeping.DataClasses.Beehive
 import com.example.brokskeeping.DataClasses.HiveNotes
@@ -25,11 +27,14 @@ import com.example.brokskeeping.DbFunctionality.HivesFunctionality
 import com.example.brokskeeping.DbFunctionality.HoneyHarvestFunctionality
 import com.example.brokskeeping.DbFunctionality.InspectionsFunctionality
 import com.example.brokskeeping.DbFunctionality.NotesFunctionality
+import com.example.brokskeeping.DbFunctionality.StationsFunctionality
 import com.example.brokskeeping.DbFunctionality.ToDoFunctionality
+import com.example.brokskeeping.InspectionDataActivities.InspectionDataActivity
 import com.example.brokskeeping.ToDoActivities.AddToDoActivity
 import com.example.brokskeeping.ToDoActivities.ToDoActivity
 import com.example.brokskeeping.databinding.ActivityInspectionContainerBinding
 import com.google.android.material.slider.Slider
+import java.util.Calendar
 import java.util.Date
 import kotlin.Int
 
@@ -178,34 +183,32 @@ class InspectionActivity : AppCompatActivity() {
         val honeyHarvested = inspectionView.findViewById<TextView>(R.id.honey_frames_harvested)
         honeyHarvested.text = ""
 
+        // separation and join
+        val separationCheckbox = inspectionView.findViewById<CheckBox>(R.id.checkbox_seperate)
+        separationCheckbox.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                separationPopUp(hive, db,this, separationCheckbox)
+            } else {
+                separationCheckbox.tag = -1
+            }
+        }
+        val joinCheckbox = inspectionView.findViewById<CheckBox>(R.id.checkbox_join)
+        joinCheckbox.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                joinPopUp(hive, db,this, joinCheckbox)
+            } else {
+                joinCheckbox.tag = 0 // Reset if unchecked
+            }
+        }
+
         // slider
-        val slider = inspectionView.findViewById<Slider>(R.id.aggressivity_slider)
-        val initialValue = if (hive.aggressivity < 1 || hive.aggressivity > 5) 1 else hive.aggressivity
-        slider.value = initialValue.toFloat()
+        val aggressivitySlider = inspectionView.findViewById<Slider>(R.id.aggressivity_slider)
+        val initialValueAggressivity = if (hive.aggressivity < 1 || hive.aggressivity > 5) 1 else hive.aggressivity
+        aggressivitySlider.value = initialValueAggressivity.toFloat()
 
-        // Dynamic buttons
-        val btnLayout = inspectionView.findViewById<LinearLayout>(R.id.btn_layout)
-        btnLayout.removeAllViews()
-
-        if (index > 0) {
-            btnLayout.addView(createNavButton("Previous") {
-                showInspection(index - 1)
-            })
-        }
-
-        if (index < beehiveData!!.size - 1) {
-            btnLayout.addView(createNavButton("Next") {
-                showInspection(index + 1)
-            })
-        } else {
-            btnLayout.addView(createNavButton("Save All") {
-                saveAllToDatabase()
-            })
-        }
-
-        btnLayout.addView(createNavButton("Pause") {
-            //
-        })
+        val attentionSlider = inspectionView.findViewById<Slider>(R.id.slider_attention_worth)
+        val initialValueAttention = if (hive.attentionWorth < 1 || hive.attentionWorth > 5) 1 else hive.attentionWorth
+        attentionSlider.value = initialValueAttention.toFloat()
 
         // ToD0's
         val btnAddToDo = inspectionView.findViewById<Button>(R.id.bt_add_todo)
@@ -233,9 +236,177 @@ class InspectionActivity : AppCompatActivity() {
         val winterReadyCheckbox = inspectionView.findViewById<CheckBox>(R.id.checkbox_winter_ready)
         winterReadyCheckbox.isChecked = hive.winterReady
 
+        // notes
+        val btnLastNotes = inspectionView.findViewById<Button>(R.id.btn_last_notes)
+        btnLastNotes.setOnClickListener {
+            showLastNotes(hive.id, this)
+        }
+
+        // last inspection
+        val btnLastInspection = inspectionView.findViewById<Button>(R.id.btn_last_inspection)
+        btnLastInspection.setOnClickListener {
+            val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+            val (inspectionData, result) = InspectionsFunctionality.getAllInspectionDataForHiveId(db, hive.id, currentYear, null, true)
+            if (result == 0 || inspectionData.isEmpty()) {
+                Toast.makeText(this, "No previous inspections this year", Toast.LENGTH_SHORT).show()
+            } else {
+                startInspectionDataActivity(inspectionData[0].id)
+            }
+        }
+
         inspectionView.visibility = View.GONE // Hidden until selected
         inspectionData.add(inspectionView)
         inspectionContainer!!.addView(inspectionView)
+    }
+
+    private fun startInspectionDataActivity(inspectionDataId: Int) {
+        val intent = Intent(this, InspectionDataActivity::class.java)
+        intent.putExtra("inspectionDataId", inspectionDataId)
+        startActivity(intent)
+    }
+    private fun showLastNotes(hiveId: Int, context: Context) {
+        val (notes, result) = NotesFunctionality.getAllNotes(db, hiveId, orderByDate = true)
+
+        if (result != 0 && notes.isNotEmpty()) {
+            val lastNote = notes[0].noteText
+
+            AlertDialog.Builder(context)
+                .setTitle("Last notes")
+                .setMessage(lastNote)
+                .setPositiveButton("OK", null)
+                .show()
+        } else {
+            Toast.makeText(context, "Couldn't retrieve note", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun joinPopUp(hive: Beehive, db: DatabaseHelper, context: Context, checkbox: CheckBox) {
+        val (stations, stationResult) = StationsFunctionality.getAllStations(db, 1)
+
+        if (stationResult == 0 || stations.isEmpty()) {
+            Toast.makeText(context, "Cannot find stations", Toast.LENGTH_SHORT).show()
+            checkbox.isChecked = false
+            return
+        }
+
+        val stationNames = stations.map { it.name }.toTypedArray()
+
+        val stationDialog = AlertDialog.Builder(context)
+        stationDialog.setTitle("Select station to join into")
+        stationDialog.setItems(stationNames) { _, stationIndex ->
+            val selectedStationId = stations[stationIndex].id
+
+            val (allHives, hiveResult) = HivesFunctionality.getAllHives(db, selectedStationId, 0)
+            val hives = allHives.filter { it.id != hive.id }
+
+            if (hiveResult == 0 || hives.isEmpty()) {
+                Toast.makeText(context, "Cannot find hives in selected station", Toast.LENGTH_SHORT).show()
+                checkbox.isChecked = false
+                return@setItems
+            }
+
+            val hiveNames = hives.map { it.nameTag }.toTypedArray()
+
+            AlertDialog.Builder(context)
+                .setTitle("Select hive to join into")
+                .setItems(hiveNames) { _, hiveIndex ->
+                    val selectedHiveId = hives[hiveIndex].id
+                    val newHive = hive.copy()
+                    newHive.colonyEndState = selectedHiveId
+                    HivesFunctionality.updateHive(db, newHive)
+                    checkbox.tag = selectedHiveId
+                }
+                .setOnCancelListener {
+                    checkbox.isChecked = false
+                }
+                .show()
+        }
+
+        stationDialog.setOnCancelListener {
+            checkbox.isChecked = false
+        }
+
+        stationDialog.show()
+    }
+
+    private fun separationPopUp(hive: Beehive, db: DatabaseHelper, context: Context, checkbox: CheckBox) {
+        val (stations, result) = StationsFunctionality.getAllStations(db, 1)
+
+        if (result == 0 || stations.isEmpty()) {
+            Toast.makeText(context, "Cannot find stations", Toast.LENGTH_SHORT).show()
+            checkbox.isChecked = false
+            return
+        }
+
+        val stationNames = stations.map { it.name }.toTypedArray()
+
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle("Select station for new hive")
+        builder.setItems(stationNames) { _, which ->
+            val selectedStationId = stations[which].id
+
+            // Prompt for hive name
+            val nameInput = EditText(context)
+            nameInput.hint = "Enter new hive name"
+
+            AlertDialog.Builder(context)
+                .setTitle("New Hive Name")
+                .setView(nameInput)
+                .setPositiveButton("Create") { _, _ ->
+                    val newName = nameInput.text.toString().trim()
+                    if (newName.isNotEmpty()) {
+                        val newHive = Beehive().apply {
+                            stationId = selectedStationId
+                            nameTag = newName
+                            colonyEndState = -1
+                            colonyOrigin = hive.id.toString()
+                        }
+                        val (newHiveId, saveHiveResult) = HivesFunctionality.saveHive(db, newHive, "", "")
+                        checkbox.tag = newHiveId
+                        if (saveHiveResult == 0) {
+                            Toast.makeText(context, "Could not save new hive", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        Toast.makeText(context, "Hive name cannot be empty", Toast.LENGTH_SHORT).show()
+                        checkbox.isChecked = false
+                    }
+                }
+                .setNegativeButton("Cancel") { _, _ ->
+                    checkbox.isChecked = false
+                }
+                .show()
+        }
+        builder.setOnCancelListener {
+            checkbox.isChecked = false
+        }
+        builder.show()
+    }
+
+
+    private fun skip() {
+        if (inspectionData.isNotEmpty() && currentInspectionIndex >= 0) {
+            // Remove the current view from the list
+            inspectionData.removeAt(currentInspectionIndex)
+            inspectionContainer?.removeViewAt(currentInspectionIndex)
+
+            beehiveData = beehiveData!!.toMutableList().apply {
+                removeAt(currentInspectionIndex)
+            }
+
+            // Adjust the current inspection index
+            if (currentInspectionIndex >= inspectionData.size) {
+                currentInspectionIndex = inspectionData.size - 1 // Move to the last valid view
+            }
+
+            // If currentInspectionIndex is now -1 (empty list), hide the inspection container
+            if (inspectionData.isEmpty()) {
+                inspectionContainer?.visibility = View.GONE
+            } else {
+                // Show the next view, or no view if the list is empty
+                showInspection(currentInspectionIndex)
+            }
+            regenerateNavigationButtons()
+        }
     }
 
     private fun askAdjustment(frameType: String, onResult: (Int) -> Unit) {
@@ -342,7 +513,20 @@ class InspectionActivity : AppCompatActivity() {
             }
 
             val aggressivity = view.findViewById<Slider>(R.id.aggressivity_slider).value.toInt()
+            val attention = view.findViewById<Slider>(R.id.slider_attention_worth).value.toInt()
 
+            val separateCheckbox = view.findViewById<CheckBox>(R.id.checkbox_seperate)
+            val separatedHiveId = (separateCheckbox.tag as? Int) ?: -1
+
+            val joinedCheckbox = view.findViewById<CheckBox>(R.id.checkbox_join)
+            val joinedHiveId = (joinedCheckbox.tag as? Int) ?: -1
+
+            val deathCheckbox = view.findViewById<CheckBox>(R.id.checkbox_dead)
+            var colonyEndState = -1
+
+            if (deathCheckbox.isChecked) {
+                colonyEndState = 0
+            }
 
             val inspectionData = InspectionData(
                 id = -1, // to be auto-generated by DB
@@ -363,7 +547,11 @@ class InspectionActivity : AppCompatActivity() {
                 supplementedFeed = supplementedFeedCheckbox.isChecked,
                 winterReady = winterReadyCheckbox.isChecked,
                 aggressivity = aggressivity,
-                honeyHarvested = honeyHarvested
+                honeyHarvested = honeyHarvested,
+                attentionWorth = attention,
+                colonyEndState = colonyEndState,
+                separated = separatedHiveId,
+                joined = joinedHiveId
             )
 
             var hivesSupplementedFeedCount = 0
@@ -383,6 +571,8 @@ class InspectionActivity : AppCompatActivity() {
                 supplementedFeedCount = newSupplementedFeedCount,
                 winterReady = winterReadyCheckbox.isChecked,
                 aggressivity = aggressivity,
+                attentionWorth = attention,
+                colonyEndState = colonyEndState
             )
 
             val (insertedId, _) = InspectionsFunctionality.saveInspectionData(db, inspectionData)
@@ -400,7 +590,6 @@ class InspectionActivity : AppCompatActivity() {
 
         val inspection = Inspection(
             stationId = stationId,
-            finished = true,
             date = Date(),
             inspectionDataIds = insertedInspectionIds
         )
@@ -428,6 +617,7 @@ class InspectionActivity : AppCompatActivity() {
         inspectionData.forEachIndexed { i, view ->
             view.visibility = if (i == index) View.VISIBLE else View.GONE
         }
+        regenerateNavigationButtons()
     }
 
     private fun startToDoActivity(hiveId: Int) {
@@ -442,5 +632,40 @@ class InspectionActivity : AppCompatActivity() {
         intent.putExtra("hiveId", hiveId)
         toDoLauncher.launch(intent)
     }
+
+    private fun regenerateNavigationButtons() {
+        val currentView = inspectionData[currentInspectionIndex]
+
+        // Find the button layout
+        val btnLayout = currentView.findViewById<LinearLayout>(R.id.btn_layout)
+        btnLayout.removeAllViews()
+
+        // Add Previous button if we're not at the first inspection
+        if (currentInspectionIndex > 0) {
+            btnLayout.addView(createNavButton("Previous") {
+                showInspection(currentInspectionIndex - 1)
+            })
+        }
+
+        // Add Next button if we're not at the last inspection
+        if (currentInspectionIndex < inspectionData.size - 1) {
+            btnLayout.addView(createNavButton("Next") {
+                showInspection(currentInspectionIndex + 1)
+            })
+            btnLayout.addView(createNavButton("Skip") {
+                skip()
+            })
+        } else {
+            // If at the last inspection, show "Save All" and "Skip and Save All"
+            btnLayout.addView(createNavButton("Save All") {
+                saveAllToDatabase()
+            })
+            btnLayout.addView(createNavButton("Skip and Save All") {
+                skip()
+                saveAllToDatabase()
+            })
+        }
+    }
+
 
 }

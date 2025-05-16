@@ -3,6 +3,7 @@ package com.example.brokskeeping.StationActivities
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Toast
 import com.example.brokskeeping.DataClasses.Station
@@ -17,6 +18,7 @@ class AdjustStationActivity : AppCompatActivity() {
     private lateinit var etName: EditText
     private lateinit var etLocation: EditText
     private lateinit var etHiveCount: EditText
+    private lateinit var checkboxInUse: CheckBox
     private var beehiveNum: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +33,7 @@ class AdjustStationActivity : AppCompatActivity() {
         etName = findViewById(R.id.et_adjust_station_name)
         etLocation = findViewById(R.id.et_adjust_station_location)
         etHiveCount = findViewById(R.id.et_adjust_station_hive_count)
+        checkboxInUse = findViewById(R.id.checkbox_in_use)
 
         // Load existing station data
         var existingStation = StationsFunctionality.getStationsAttributes(db, stationId)
@@ -43,8 +46,14 @@ class AdjustStationActivity : AppCompatActivity() {
 
         etName.setText(existingStation.name)
         etLocation.setText(existingStation.location)
-        beehiveNum = StationsFunctionality.getHiveCount(db, stationId)
+        val (hiveCount, result) = StationsFunctionality.getHiveCount(db, stationId)
+        if (result == 0) {
+            Toast.makeText(this, "Couldn't get hive count", Toast.LENGTH_SHORT).show()
+            finish()
+        }
+        beehiveNum = hiveCount
         etHiveCount.setText(beehiveNum.toString())
+        checkboxInUse.isChecked = existingStation.inUse == 1
 
         val btnSave = findViewById<Button>(R.id.btn_adjust_station_save)
         val btnBack = findViewById<Button>(R.id.btn_adjust_station_back)
@@ -61,9 +70,10 @@ class AdjustStationActivity : AppCompatActivity() {
     private fun saveChanges(existingStation: Station) {
         val newName = etName.text.toString()
         val newLocation = etLocation.text.toString()
-        var newHiveCount = etHiveCount.text.toString().toIntOrNull()
+        val newHiveCount = etHiveCount.text.toString().toIntOrNull()
+        val newInUseBool = checkboxInUse.isChecked
 
-        if (existingStation != null && newHiveCount != null && Utils.correctHiveCount(newHiveCount) && beehiveNum <= newHiveCount) {
+        if (newHiveCount != null && Utils.correctHiveCount(newHiveCount) && beehiveNum <= newHiveCount) {
             // Proceed with your logic when the conditions are met
             val confirmationMessage = "Are you sure you want to proceed?"
 
@@ -73,11 +83,12 @@ class AdjustStationActivity : AppCompatActivity() {
                     val updatedStation = existingStation.copy(
                         name = newName,
                         location = newLocation,
+                        inUse = if (newInUseBool) 1 else 0
                     )
 
                     if (newHiveCount > beehiveNum) {
                         val newHives = newHiveCount - beehiveNum
-                        StationsFunctionality.createHivesForStation(db, stationId, newHives)
+                        StationsFunctionality.createHivesForStation(db, updatedStation, newHives)
                     }
                     StationsFunctionality.adjustStation(db, stationId, updatedStation)
                     finish()

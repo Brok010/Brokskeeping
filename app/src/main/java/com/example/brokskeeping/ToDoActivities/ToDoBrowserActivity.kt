@@ -5,6 +5,7 @@ package com.example.brokskeeping.ToDoActivities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -119,7 +120,11 @@ class ToDoBrowserActivity : AppCompatActivity() {
     }
 
     private fun stationFilter() {
-        val stations = StationsFunctionality.getAllStations(db)
+        val (stations, result) = StationsFunctionality.getAllStations(db, 1)
+        if (result == 0) {
+            Log.e("ToDoBrowserActivity", "Station loading was not successful - stationFilter")
+        }
+
         val stationNames = mutableListOf("All")
         val stationIds = mutableListOf(0)
 

@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.util.Log
 import com.example.brokskeeping.DataClasses.HiveNotes
+import com.example.brokskeeping.Functionality.Utils
 import java.util.Date
 
 object NotesFunctionality {
@@ -115,19 +116,43 @@ object NotesFunctionality {
         // Close the database connection
         db.close()
     }
-    fun getAllNotes(dbHelper: DatabaseHelper, hiveId: Int): List<HiveNotes> {
+    fun getAllNotes(
+        dbHelper: DatabaseHelper,
+        hiveId: Int,
+        year: Int? = null,
+        month: Int? = null,
+        orderByDate: Boolean? = null
+    ): Pair<List<HiveNotes>, Int> {
+
+        val (times, timesResult) = Utils.getStartAndEndTime(year, month)
+        if (timesResult == 0) return emptyList<HiveNotes>() to 0
+        val (startTime, endTime) = times
+
         val notesList = mutableListOf<HiveNotes>()
         val db = dbHelper.readableDatabase
-        val selectQuery = "SELECT * FROM ${DatabaseHelper.TABLE_HIVE_NOTES} WHERE ${DatabaseHelper.COL_HIVE_ID_FK_HIVE_NOTES} = ?"
-        val selectionArgs = arrayOf(hiveId.toString())
 
-        val cursor = db.rawQuery(selectQuery, selectionArgs)
-        cursor.use { cursor ->
-            while (cursor.moveToNext()) {
-                val hiveNote = getNoteFromCursor(cursor)
+        val baseQuery = StringBuilder("SELECT * FROM ${DatabaseHelper.TABLE_HIVE_NOTES} WHERE ${DatabaseHelper.COL_HIVE_ID_FK_HIVE_NOTES} = ?")
+        val selectionArgs = mutableListOf(hiveId.toString())
+
+        if (startTime != null && endTime != null) {
+            baseQuery.append(" AND ${DatabaseHelper.COL_HIVE_NOTE_DATE} BETWEEN ? AND ?")
+            selectionArgs.add(startTime.toString())
+            selectionArgs.add(endTime.toString())
+        }
+
+        if (orderByDate == true) {
+            baseQuery.append(" ORDER BY ${DatabaseHelper.COL_HIVE_NOTE_DATE} DESC")
+        }
+
+        val cursor = db.rawQuery(baseQuery.toString(), selectionArgs.toTypedArray())
+        cursor.use {
+            while (it.moveToNext()) {
+                val hiveNote = getNoteFromCursor(it)
                 notesList.add(hiveNote)
             }
         }
-        return notesList
+
+        return notesList to 1
     }
+
 }

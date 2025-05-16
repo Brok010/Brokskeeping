@@ -1,10 +1,12 @@
 package com.example.brokskeeping.NoteActivities
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.brokskeeping.DataClasses.HiveNotes
 import com.example.brokskeeping.DbFunctionality.DatabaseHelper
@@ -71,7 +73,11 @@ class NotesAdapter(private val notesList: MutableList<HiveNotes>,
                         if (confirmed) {
                             // User confirmed the deletion
                             NotesFunctionality.deleteNote(db, note.id, hiveId)
-                            updateData(NotesFunctionality.getAllNotes(db, hiveId))
+                            val (notes, result) = NotesFunctionality.getAllNotes(db, hiveId, null, null, true)
+                            if (result == 0) {
+                                Log.e("NotesAdapter", "Couldn't retrieve notes")
+                            }
+                            updateData(notes)
                         }
                     }
                     true

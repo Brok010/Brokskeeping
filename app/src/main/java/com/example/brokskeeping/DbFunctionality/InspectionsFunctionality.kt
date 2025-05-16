@@ -7,8 +7,25 @@ import com.example.brokskeeping.DataClasses.Inspection
 import com.example.brokskeeping.DataClasses.InspectionData
 import com.example.brokskeeping.Functionality.Utils
 import java.sql.Date
+import java.util.Calendar
 
 object InspectionsFunctionality {
+
+
+    fun getInspection(dbHelper: DatabaseHelper, inspectionId: Int): Pair<Inspection?, Int> {
+        val db = dbHelper.readableDatabase
+        val query = "SELECT * FROM ${DatabaseHelper.TABLE_INSPECTIONS} WHERE ${DatabaseHelper.COL_INSPECTION_ID} = ?"
+        val cursor = db.rawQuery(query, arrayOf(inspectionId.toString()))
+
+        cursor.use {
+            if (it.moveToFirst()) {
+                val inspection = createInspectionFromCursor(it)
+                return Pair(inspection, 1)
+            }
+        }
+
+        return Pair(null, 0)
+    }
 
     fun getAllInspectionDataById(dbHelper: DatabaseHelper, inspectionDataId: Int): Pair<InspectionData?, Int> {
         val query =
@@ -87,30 +104,58 @@ object InspectionsFunctionality {
         }
     }
 
-    fun getAllInspectionDataForHiveId(dbHelper: DatabaseHelper, hiveId: Int): Pair<List<InspectionData>, Int> {
-        val inspectionDataList = mutableListOf<InspectionData>()
-        val query = "SELECT * FROM ${DatabaseHelper.TABLE_INSPECTION_DATA} WHERE ${DatabaseHelper.COL_HIVE_ID_FK_INSPECTION_DATA} = ?"
-        val selectionArgs = arrayOf(hiveId.toString())
 
-        // Perform the query and retrieve the results
-        val cursor = dbHelper.readableDatabase.rawQuery(query, selectionArgs)
+    fun getAllInspectionDataForHiveId(
+        dbHelper: DatabaseHelper,
+        hiveId: Int,
+        year: Int? = null,
+        month: Int? = null,
+        ordered: Boolean = true
+    ): Pair<List<InspectionData>, Int> {
+        val inspectionDataList = mutableListOf<InspectionData>()
+
+        // Get the stationId for the given hiveId
+        val stationId = HivesFunctionality.getStationIdByHiveId(dbHelper, hiveId)
+
+        // Get inspections that match the time filters
+        val (inspections, inspectionsResult) = getAllInspections(dbHelper, stationId, year, month, ordered)
+        if (inspectionsResult == 0 || inspections.isEmpty()) {
+            return Pair(emptyList(), 0)
+        }
+
+        // Extract inspection IDs
+        val inspectionIds = inspections.map { it.id }
+        if (inspectionIds.isEmpty()) {
+            return Pair(emptyList(), 0)
+        }
+
+        // Prepare SQL query with IN clause
+        val placeholders = inspectionIds.joinToString(",") { "?" }
+        val query = """
+        SELECT * FROM ${DatabaseHelper.TABLE_INSPECTION_DATA}
+        WHERE ${DatabaseHelper.COL_HIVE_ID_FK_INSPECTION_DATA} = ?
+        AND ${DatabaseHelper.COL_INSPECTION_ID_FK_INSPECTION_DATA} IN ($placeholders)
+        ${if (ordered) "ORDER BY ${DatabaseHelper.COL_INSPECTION_ID_FK_INSPECTION_DATA} DESC" else ""}
+    """.trimIndent()
+
+        val selectionArgs = listOf(hiveId.toString()) + inspectionIds.map { it.toString() }
+
+        // Execute the query
+        val cursor = dbHelper.readableDatabase.rawQuery(query, selectionArgs.toTypedArray())
 
         cursor.use {
-            if (cursor.moveToFirst()) {
-                // Iterate through the cursor and map to InspectionData objects using the provided function
+            if (it.moveToFirst()) {
                 do {
-                    val inspectionData = createInspectionDataFromCursor(cursor)
-                    inspectionDataList.add(inspectionData)
-                } while (cursor.moveToNext())
-
-                // Return the list and success code (1)
+                    val data = createInspectionDataFromCursor(it)
+                    inspectionDataList.add(data)
+                } while (it.moveToNext())
                 return Pair(inspectionDataList, 1)
-            } else {
-                // No data found, return an empty list and failure code (0)
-                return Pair(inspectionDataList, 0)
             }
         }
+
+        return Pair(emptyList(), 0)
     }
+
 
     fun getAllInspectionDataForInspectionId(dbHelper: DatabaseHelper, inspectionId: Int): Pair<List<InspectionData>, Int> {
         val (inspectionDataIds, idStatus) = getInspectionDataIdsByInspectionId(dbHelper, inspectionId)
@@ -167,19 +212,60 @@ object InspectionsFunctionality {
         }
     }
 
+    private fun inspectionDataCompletion(dbHelper: DatabaseHelper, dataIds: List<Int>, inspectionId: Int): Int {
+        val db = dbHelper.writableDatabase
+
+        db.beginTransaction()
+        try {
+            for (dataId in dataIds) {
+                val values = ContentValues().apply {
+                    put(DatabaseHelper.COL_INSPECTION_ID_FK_INSPECTION_DATA, inspectionId)
+                }
+                val result = db.update(
+                    DatabaseHelper.TABLE_INSPECTION_DATA,
+                    values,
+                    "${DatabaseHelper.COL_INSPECTION_DATA_ID} = ?",
+                    arrayOf(dataId.toString())
+                )
+                if (result <= 0) {
+                    db.endTransaction()
+                    return 0
+                }
+            }
+            db.setTransactionSuccessful()
+            return 1
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return 0
+        } finally {
+            db.endTransaction()
+        }
+    }
+
 
     fun saveInspection(dbHelper: DatabaseHelper, inspection: Inspection): Int {
         val db = dbHelper.writableDatabase
 
         val values = ContentValues().apply {
             put(DatabaseHelper.COL_STATION_ID_FK_INSPECTION, inspection.stationId)
-            put(DatabaseHelper.COL_INSPECTION_FINISHED, if (inspection.finished) 1 else 0)
-            put(DatabaseHelper.COL_INSPECTION_DATE, inspection.date.time) // Date to timestamp
-            put(DatabaseHelper.COL_INSPECTION_DATA_IDS, inspection.inspectionDataIds.joinToString(",")) // List<Int> to CSV
+            put(DatabaseHelper.COL_INSPECTION_DATE, inspection.date.time)
+            put(DatabaseHelper.COL_INSPECTION_DATA_IDS, inspection.inspectionDataIds.joinToString(","))
         }
 
         val result = db.insert(DatabaseHelper.TABLE_INSPECTIONS, null, values)
-        return if (result == -1L) 0 else 1
+        if (result == -1L) {
+            Log.e("InspectionsFunctionality", "Failed to insert inspection")
+            return 0
+        }
+
+        val inspectionId = result.toInt()
+        val completionResult = inspectionDataCompletion(dbHelper, inspection.inspectionDataIds, inspectionId)
+        if (completionResult == 0) {
+            Log.e("InspectionsFunctionality", "Failed to complete inspection data")
+            return 0
+        }
+
+        return 1
     }
 
 
@@ -189,6 +275,7 @@ object InspectionsFunctionality {
         val values = ContentValues().apply {
             put(DatabaseHelper.COL_HIVE_ID_FK_INSPECTION_DATA, inspection.hiveId)
             put(DatabaseHelper.COL_NOTE_ID_FK_INSPECTION_DATA, inspection.noteId)
+            put(DatabaseHelper.COL_INSPECTION_ID_FK_INSPECTION_DATA, inspection.inspectionId)
             put(DatabaseHelper.COL_INSPECTION_DATA_FRAMES_PER_SUPER, inspection.framesPerSuper)
             put(DatabaseHelper.COL_INSPECTION_DATA_SUPERS, inspection.supers)
             put(DatabaseHelper.COL_INSPECTION_DATA_HONEY_FRAMES, inspection.honeyFrames)
@@ -205,6 +292,10 @@ object InspectionsFunctionality {
             put(DatabaseHelper.COL_INSPECTION_DATA_WINTER_READY, if (inspection.winterReady) 1 else 0)
             put(DatabaseHelper.COL_INSPECTION_DATA_AGGRESSIVITY, inspection.aggressivity)
             put(DatabaseHelper.COL_INSPECTION_DATA_HONEY_HARVESTED, inspection.honeyHarvested)
+            put(DatabaseHelper.COL_INSPECTION_DATA_ATTENTION_WORTH, inspection.attentionWorth)
+            put(DatabaseHelper.COL_INSPECTION_DATA_COLONY_END_STATE, inspection.colonyEndState)
+            put(DatabaseHelper.COL_INSPECTION_DATA_SEPARATED, inspection.separated)
+            put(DatabaseHelper.COL_INSPECTION_DATA_JOINED, inspection.joined)
         }
 
         val insertedId = db.insert(DatabaseHelper.TABLE_INSPECTION_DATA, null, values)
@@ -213,40 +304,80 @@ object InspectionsFunctionality {
         return Pair(insertedId.toInt(), resultCode)
     }
 
-
-
-    fun getAllInspections(dbHelper: DatabaseHelper): List<Inspection> {
+    fun getAllInspections(
+        dbHelper: DatabaseHelper,
+        stationId: Int? = null,
+        year: Int? = null,
+        month: Int? = null,
+        ordered: Boolean = true
+    ): Pair<List<Inspection>, Int> {
         val inspections = mutableListOf<Inspection>()
+        val result = 1
 
-        val query = "SELECT * FROM ${DatabaseHelper.TABLE_INSPECTIONS}"
+        return try {
+            val db = dbHelper.readableDatabase
 
-        val cursor = dbHelper.readableDatabase.rawQuery(query, null)
+            val selection = mutableListOf<String>()
+            val selectionArgs = mutableListOf<String>()
 
-        cursor.use { cursor ->
-            while (cursor.moveToNext()) {
-                val inspection = createInspectionFromCursor(cursor)
-                inspections.add(inspection)
+            // Filter by station ID
+            stationId?.let {
+                selection.add("${DatabaseHelper.COL_STATION_ID_FK_INSPECTION} = ?")
+                selectionArgs.add(it.toString())
             }
+
+            // Filter by year/month
+            val (times, timesResult) = Utils.getStartAndEndTime(year, month)
+            if (timesResult == 0) return Pair(inspections, 0)
+            val (startTime, endTime) = times
+
+            selection.add("${DatabaseHelper.COL_INSPECTION_DATE} BETWEEN ? AND ?")
+            selectionArgs.add(startTime.toString())
+            selectionArgs.add(endTime.toString())
+
+            // Apply ordering
+            val orderBy = if (ordered) "${DatabaseHelper.COL_INSPECTION_DATE} DESC" else null
+
+            val cursor = db.query(
+                DatabaseHelper.TABLE_INSPECTIONS,
+                null,
+                selection.joinToString(" AND "),
+                selectionArgs.toTypedArray(),
+                null,
+                null,
+                orderBy
+            )
+
+            cursor?.use {
+                while (it.moveToNext()) {
+                    inspections.add(createInspectionFromCursor(it))
+                }
+            }
+
+            db.close()
+            Pair(inspections, result)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Pair(emptyList(), 0)
         }
-        return inspections
     }
 
     private fun createInspectionFromCursor(cursor: Cursor): Inspection {
         val id = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_INSPECTION_ID))
         val stationId = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_STATION_ID_FK_INSPECTION))
-        val finished = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_INSPECTION_FINISHED)) == 1 //into bool conversion
         val dateInMillis = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_INSPECTION_DATE))
         val date = Date(dateInMillis)
         val inspectionDataIdsText = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_INSPECTION_DATA_IDS))
         val inspectionDataIds = Utils.parseStringToListOfIntegers(inspectionDataIdsText)
 
-        return Inspection(id, stationId, finished, date, inspectionDataIds)
+        return Inspection(id, stationId, date, inspectionDataIds)
     }
 
     private fun createInspectionDataFromCursor(cursor: Cursor): InspectionData {
         val id = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_INSPECTION_DATA_ID))
         val hiveId = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_HIVE_ID_FK_INSPECTION_DATA))
         val noteId = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_NOTE_ID_FK_INSPECTION_DATA))
+        val inspectionId = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_INSPECTION_ID_FK_INSPECTION_DATA))
         val broodFrames = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_INSPECTION_DATA_BROOD_FRAMES))
         val broodFramesAdjusted = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_INSPECTION_DATA_BROOD_ADJUSTED)) == 1
         val broodFramesChange = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_INSPECTION_DATA_BROOD_CHANGE))
@@ -263,9 +394,14 @@ object InspectionsFunctionality {
         val winterReady = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_INSPECTION_DATA_WINTER_READY)) == 1
         val aggressivity = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_INSPECTION_DATA_AGGRESSIVITY))
         val honeyHarvested = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_INSPECTION_DATA_HONEY_HARVESTED))
+        val attentionWorth = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_INSPECTION_DATA_ATTENTION_WORTH))
+        val colonyEndState = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_INSPECTION_DATA_COLONY_END_STATE))
+        val separated = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_INSPECTION_DATA_SEPARATED))
+        val joined = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_INSPECTION_DATA_JOINED))
 
         return InspectionData(
             id = id,
+            inspectionId = inspectionId,
             hiveId = hiveId,
             noteId = noteId,
             broodFrames = broodFrames,
@@ -283,7 +419,11 @@ object InspectionsFunctionality {
             supplementedFeed = supplementedFeed,
             winterReady = winterReady,
             aggressivity = aggressivity,
-            honeyHarvested = honeyHarvested
+            honeyHarvested = honeyHarvested,
+            attentionWorth = attentionWorth,
+            colonyEndState = colonyEndState,
+            separated = separated,
+            joined = joined
         )
     }
 
@@ -322,11 +462,11 @@ object InspectionsFunctionality {
             if (rowsDeleted > 0) {
                 db.setTransactionSuccessful()
             } else {
-                Log.e("DatabaseHelper", "Failed to delete inspection with ID $inspectionId")
+                Log.e("InspectionsFunctionality", "Failed to delete inspection with ID $inspectionId")
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e("DatabaseHelper", "Error deleting inspection: ${e.message}")
+            Log.e("InspectionsFunctionality", "Error deleting inspection: ${e.message}")
         } finally {
             db.endTransaction()
             db.close()

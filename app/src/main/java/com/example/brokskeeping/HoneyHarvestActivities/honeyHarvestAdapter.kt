@@ -50,15 +50,53 @@ class HoneyHarvestAdapter(private val honeyHarvestList: MutableList<Pair<Int, In
         private val tvHoneyFramesHarvested = itemView.findViewById<TextView>(R.id.tv_honey_harvested)
 
         fun bind(honeyHarvest: Pair<Int, Int>, type: String) {
-
             if (type == "Station") {
                 val entityName = StationsFunctionality.getStationNameById(db, honeyHarvest.first)
                 tvLocation.text = entityName
             } else {
                 val entityName = HivesFunctionality.getHiveNameById(db, honeyHarvest.first)
                 tvLocation.text = entityName
+                setStationName(honeyHarvest)
             }
             tvHoneyFramesHarvested.text = honeyHarvest.second.toString()
         }
+
+        private fun setStationName(honeyHarvest: Pair<Int, Int>) {
+            val context = itemView.context
+            val stationId = HivesFunctionality.getStationIdByHiveId(db, honeyHarvest.first)
+            val station = StationsFunctionality.getStationsAttributes(db, stationId)
+
+            val llDynamic = itemView.findViewById<ViewGroup>(R.id.ll_dynamic)
+            llDynamic.removeAllViews()
+
+            val tvLabel = TextView(context).apply {
+                layoutParams = ViewGroup.MarginLayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    marginEnd = 4.dpToPx(context)
+                }
+                text = "Station: "
+                setTextColor(context.getColor(R.color.basicTextColor))
+            }
+
+            val tvStationName = TextView(context).apply {
+                layoutParams = ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+                if (station != null) {
+                    text = station.name
+                }
+                setTextColor(context.getColor(R.color.basicTextColor))
+            }
+
+            llDynamic.addView(tvLabel)
+            llDynamic.addView(tvStationName)
+        }
+    }
+
+    private fun Int.dpToPx(context: android.content.Context): Int {
+        return (this * context.resources.displayMetrics.density).toInt()
     }
 }

@@ -50,22 +50,33 @@ object StationsFunctionality {
         return stationName
     }
 
-    fun getHiveCount(dbHelper: DatabaseHelper, stationId: Int): Int {
-        val query = "SELECT COUNT(*) FROM ${DatabaseHelper.TABLE_HIVES} WHERE ${DatabaseHelper.COL_STATION_ID_FK_HIVES} = ?"
+    fun getHiveCount(dbHelper: DatabaseHelper, stationId: Int): Pair<Int, Int> {
+        // SQL query to count hives with COL_HIVE_DEATH == 0 and matching stationId
+        val query = """
+        SELECT COUNT(*) 
+        FROM ${DatabaseHelper.TABLE_HIVES} 
+        WHERE ${DatabaseHelper.COL_STATION_ID_FK_HIVES} = ? 
+        AND ${DatabaseHelper.COL_HIVE_COLONY_END_STATE} = -1
+    """
         val selectionArgs = arrayOf(stationId.toString())
 
-        val cursor = dbHelper.readableDatabase.rawQuery(query, selectionArgs)
-
         return try {
-            if (cursor.moveToFirst()) {
-                cursor.getInt(0) // COUNT(*) is always the first column
-            } else {
-                0
+            val cursor = dbHelper.readableDatabase.rawQuery(query, selectionArgs)
+            cursor.use {
+                if (it.moveToFirst()) {
+                    val count = it.getInt(0) // COUNT(*) is always the first column
+                    Pair(count, 1) // Return count and 1 (success)
+                } else {
+                    Pair(0, 1) // No hives found, but still success (just no records)
+                }
             }
-        } finally {
-            cursor.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Pair(0, 0) // Return count 0 and 0 (failure) if an error occurs
         }
     }
+
+
 
     fun saveStation(dbHelper: DatabaseHelper, newStation: Station, startingHives: Int) {
         val db = dbHelper.writableDatabase
@@ -79,7 +90,7 @@ object StationsFunctionality {
                 put(DatabaseHelper.COL_STATION_IN_USE, newStation.inUse)
             }
             stationId = db.insert(DatabaseHelper.TABLE_STATIONS, null, stationValues).toInt()
-
+            newStation.id = stationId
             // Check if station insertion was successful
             if (stationId != -1) {
                 // Set the transaction as successful
@@ -93,42 +104,61 @@ object StationsFunctionality {
             // Handle any exceptions that may occur during the transaction
             e.printStackTrace()
         } finally {
-            // End the transaction
             db.endTransaction()
-
-            // Close the database
             db.close()
-
-            // Insert hives into tbl_hives based on beehiveNumber
-            createHivesForStation(dbHelper, stationId, startingHives)
+            createHivesForStation(dbHelper, newStation, startingHives)
         }
     }
 
-    fun createHivesForStation(dbHelper: DatabaseHelper, stationId: Int, hiveCount: Int) {
+    fun createHivesForStation(dbHelper: DatabaseHelper, newStation: Station, hiveCount: Int) {
         val db = dbHelper.writableDatabase
+        val newStationName = newStation.name
 
         for (i in 1..hiveCount) {
             val hiveValues = ContentValues().apply {
-                put(DatabaseHelper.COL_HIVE_NAME_TAG, "Hive $i for Station $stationId")
-                put(DatabaseHelper.COL_STATION_ID_FK_HIVES, stationId)
+                put(DatabaseHelper.COL_HIVE_NAME_TAG, "Hive $i for Station $newStationName")
+                put(DatabaseHelper.COL_STATION_ID_FK_HIVES, newStation.id)
+                put(DatabaseHelper.COL_HIVE_COLONY_END_STATE, -1)
             }
             db.insert(DatabaseHelper.TABLE_HIVES, null, hiveValues)
         }
         db.close()
     }
-    fun getAllStations(dbHelper: DatabaseHelper): List<Station> {
+    fun getAllStations(dbHelper: DatabaseHelper, inUse: Int? = null): Pair<List<Station>, Int> {
         val stations = mutableListOf<Station>()
-        val query = "SELECT * FROM ${DatabaseHelper.TABLE_STATIONS}"
-        val cursor = dbHelper.readableDatabase.rawQuery(query, null)
 
-        cursor.use { cursor ->
-            while (cursor.moveToNext()) {
-                val station = createStationFromCursor(cursor)
-                stations.add(station)
+        return try {
+            val selectionArgs = mutableListOf<String>()
+            val whereClauses = mutableListOf<String>()
+
+            if (inUse == 0 || inUse == 1) {
+                whereClauses.add("${DatabaseHelper.COL_STATION_IN_USE} = ?")
+                selectionArgs.add(inUse.toString())
             }
+
+            val whereClause = if (whereClauses.isNotEmpty()) {
+                "WHERE " + whereClauses.joinToString(" AND ")
+            } else {
+                ""
+            }
+
+            val query = "SELECT * FROM ${DatabaseHelper.TABLE_STATIONS} $whereClause"
+            val cursor = dbHelper.readableDatabase.rawQuery(query, if (selectionArgs.isNotEmpty()) selectionArgs.toTypedArray() else null)
+
+            cursor.use {
+                while (it.moveToNext()) {
+                    val station = createStationFromCursor(it)
+                    stations.add(station)
+                }
+            }
+
+            Pair(stations, 1) // Success
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Pair(emptyList(), 0) // Failure
         }
-        return stations
     }
+
 
     private fun createStationFromCursor(cursor: Cursor): Station {
         val id = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_STATION_ID))
@@ -172,7 +202,6 @@ object StationsFunctionality {
         return stationId
     }
 
-
     fun adjustStation(dbHelper: DatabaseHelper, stationId: Int, updatedStation: Station) {
         val db = dbHelper.writableDatabase
         db.beginTransaction()
@@ -181,6 +210,7 @@ object StationsFunctionality {
             val values = ContentValues().apply {
                 put(DatabaseHelper.COL_STATION_NAME, updatedStation.name)
                 put(DatabaseHelper.COL_STATION_PLACE, updatedStation.location)
+                put(DatabaseHelper.COL_STATION_IN_USE, updatedStation.inUse)
             }
 
             val rowsUpdated = db.update(

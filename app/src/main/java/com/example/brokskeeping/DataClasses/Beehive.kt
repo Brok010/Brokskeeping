@@ -11,10 +11,10 @@ data class Beehive(
     var framesPerSuper: Int = -1,
     var supers: Int = -1,
     var freeSpaceFrames: Int = -1,
-    var colonyOrigin: String? = null,
+    var colonyOrigin: String? = null, // string if external else hiveId  (as string)
+    var colonyEndState: Int = -1, // 0 = dead, -1 = alive, else hiveId
     var supplementedFeedCount: Int = -1,
     var winterReady: Boolean = false,
     var aggressivity: Int = -1,
-    var death: Boolean = false,
     var attentionWorth: Int = -1
 )

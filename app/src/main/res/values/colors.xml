@@ -6,6 +6,11 @@
     <color name="buttonColor">#FF000000</color>
     <color name="buttonTextColor">#FFFFFFFF</color>
     <color name="itemColor">#4ACAC7C7</color>
+    <color name="itemColorAttention1">#664CAF50</color>
+    <color name="itemColorAttention2">#668BC34A</color>
+    <color name="itemColorAttention3">#66FFEB3B</color>
+    <color name="itemColorAttention4">#66FF5722</color>
+    <color name="itemColorAttention5">#66F44336</color>
     <color name="headerColor">#00BCD4</color>
     <color name="graphHolderColor">#CD00D4</color>
 </resources>

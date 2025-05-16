@@ -47,6 +47,15 @@
         android:layout_marginBottom="16dp"/>
 
     <Button
+        android:id="@+id/btn_Supplemented_feed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Supplemented feed"
+        android:backgroundTint="@color/buttonColor"
+        android:textColor="@color/buttonTextColor"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
         android:id="@+id/btn_to_do"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

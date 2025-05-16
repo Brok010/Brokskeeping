@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.brokskeeping.DataClasses.Beehive
@@ -51,9 +52,20 @@ class HivesAdapter(private val hivesList: MutableList<Beehive>,
 
     inner class HiveViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val tvStationName: TextView = itemView.findViewById(R.id.tv_value_hives_name)
+        private val rlHiveBrowser: RelativeLayout = itemView.findViewById(R.id.rl_outer_hive_browser)
 
         fun bind(hive: Beehive) {
+            val context = itemView.context
             tvStationName.text = hive.nameTag
+            val colorResId = when (hive.attentionWorth) {
+                1 -> R.color.itemColorAttention1
+                2 -> R.color.itemColorAttention2
+                3 -> R.color.itemColorAttention3
+                4 -> R.color.itemColorAttention4
+                5 -> R.color.itemColorAttention5
+                else -> R.color.itemColor
+            }
+            rlHiveBrowser.setBackgroundColor(context.getColor(colorResId))
         }
     }
 

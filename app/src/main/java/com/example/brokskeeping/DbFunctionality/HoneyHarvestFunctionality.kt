@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.util.Log
 import com.example.brokskeeping.DataClasses.HoneyHarvest
+import com.example.brokskeeping.Functionality.Utils
 import java.util.Calendar
 import java.util.Date
 
@@ -24,83 +25,29 @@ object HoneyHarvestFunctionality {
 
     fun getFilteredHoneyHarvests(
         databaseHelper: DatabaseHelper,
-        year: Int,
-        month: Int,
+        year: Int? = null,
+        month: Int? = null,
         type: String
     ): Pair<List<Pair<Int, Int>>, Int> {
         val results = mutableListOf<Pair<Int, Int>>()
 
-        // Compute the date range
-        val calendar = Calendar.getInstance()
-        val startTime: Long
-        val endTime: Long
+        val (times, timesResult) = Utils.getStartAndEndTime(year, month)
+        if (timesResult == 0) return emptyList<Pair<Int, Int>>() to 0
+        val (startTime, endTime) = times
 
         try {
-            when {
-                year == 0 && month == 0 -> {
-                    startTime = 0L
-                    endTime = System.currentTimeMillis()
-                }
-                year > 0 && month == 0 -> {
-                    calendar.set(year, Calendar.JANUARY, 1, 0, 0, 0)
-                    startTime = calendar.timeInMillis
-                    calendar.set(year, Calendar.DECEMBER, 31, 23, 59, 59)
-                    endTime = calendar.timeInMillis
-                }
-                year > 0 && month in 1..12 -> {
-                    calendar.set(year, month - 1, 1, 0, 0, 0)
-                    startTime = calendar.timeInMillis
-                    calendar.set(year, month - 1, calendar.getActualMaximum(Calendar.DAY_OF_MONTH), 23, 59, 59)
-                    endTime = calendar.timeInMillis
-                }
-                else -> return Pair(emptyList(), 0)
-            }
-
             when (type.lowercase()) {
-                "station" -> {
-                    // Get all stations
-                    val stations = StationsFunctionality.getAllStations(databaseHelper)
-
-                    for (station in stations) {
-                        var totalHoneyFrames = 0
-                        val hiveIds = StationsFunctionality.GetHiveIdsOfStation(databaseHelper, station.id)
-
-                        // For each hive in the station
-                        for (hiveId in hiveIds) {
-                            databaseHelper.readableDatabase.use { db ->
-                                val query = """
-                                SELECT ${DatabaseHelper.COLUMN_HONEY_HARVESTS_HONEY_FRAMES}, ${DatabaseHelper.COLUMN_HONEY_HARVESTS_DATE}
-                                FROM ${DatabaseHelper.TABLE_HONEY_HARVESTS}
-                                WHERE ${DatabaseHelper.COLUMN_HIVE_ID_FK_HONEY_HARVEST} = ?
-                            """.trimIndent()
-
-                                db.rawQuery(query, arrayOf(hiveId.toString())).use { cursor ->
-                                    while (cursor.moveToNext()) {
-                                        val date = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_HONEY_HARVESTS_DATE))
-                                        if (date in startTime..endTime) {
-                                            val honeyFrames = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_HONEY_HARVESTS_HONEY_FRAMES))
-                                            totalHoneyFrames += honeyFrames
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        // Add the total honey frames for the station
-                        if (totalHoneyFrames > 0 ) {
-                            results.add(Pair(station.id, totalHoneyFrames))
-                        }
-                    }
+            "station" -> {
+                val (stations, stationsResult) = StationsFunctionality.getAllStations(databaseHelper, 1)
+                if (stationsResult == 0) {
+                    Log.e("HoneyHarvestFunctionality", "Station loading was not successful - stationFilter")
                 }
 
-                "hive" -> {
-                    val (hives, result) = HivesFunctionality.getAllHives(databaseHelper, dead = 0)
-                    if (result == 0) {
-                        Log.e("HoneyHarvestFunctionality", "getAllHives function did not finish properly")
-                    }
+                for (station in stations) {
+                    var totalHoneyFrames = 0
+                    val hiveIds = StationsFunctionality.GetHiveIdsOfStation(databaseHelper, station.id)
 
-                    for (hive in hives) {
-                        var totalHoneyFrames = 0
+                    for (hiveId in hiveIds) {
                         databaseHelper.readableDatabase.use { db ->
                             val query = """
                             SELECT ${DatabaseHelper.COLUMN_HONEY_HARVESTS_HONEY_FRAMES}, ${DatabaseHelper.COLUMN_HONEY_HARVESTS_DATE}
@@ -108,23 +55,59 @@ object HoneyHarvestFunctionality {
                             WHERE ${DatabaseHelper.COLUMN_HIVE_ID_FK_HONEY_HARVEST} = ?
                         """.trimIndent()
 
-                            db.rawQuery(query, arrayOf(hive.id.toString())).use { cursor ->
+                            db.rawQuery(query, arrayOf(hiveId.toString())).use { cursor ->
                                 while (cursor.moveToNext()) {
                                     val date = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_HONEY_HARVESTS_DATE))
-                                    if (date in startTime..endTime) {
+                                    if (date in startTime!!..endTime!!) {
                                         val honeyFrames = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_HONEY_HARVESTS_HONEY_FRAMES))
                                         totalHoneyFrames += honeyFrames
                                     }
                                 }
                             }
                         }
-                        if (totalHoneyFrames > 0 ) {
-                            results.add(Pair(hive.id, totalHoneyFrames))
-                        }
+                    }
+
+                    if (totalHoneyFrames > 0) {
+                        results.add(Pair(station.id, totalHoneyFrames))
                     }
                 }
-                else -> return Pair(emptyList(), 0)
             }
+
+            "hive" -> {
+                val (hives, result) = HivesFunctionality.getAllHives(databaseHelper, dead = 0)
+                if (result == 0) {
+                    Log.e("HoneyHarvestFunctionality", "getAllHives function did not finish properly")
+                }
+
+                for (hive in hives) {
+                    var totalHoneyFrames = 0
+                    databaseHelper.readableDatabase.use { db ->
+                        val query = """
+                        SELECT ${DatabaseHelper.COLUMN_HONEY_HARVESTS_HONEY_FRAMES}, ${DatabaseHelper.COLUMN_HONEY_HARVESTS_DATE}
+                        FROM ${DatabaseHelper.TABLE_HONEY_HARVESTS}
+                        WHERE ${DatabaseHelper.COLUMN_HIVE_ID_FK_HONEY_HARVEST} = ?
+                    """.trimIndent()
+
+                        db.rawQuery(query, arrayOf(hive.id.toString())).use { cursor ->
+                            while (cursor.moveToNext()) {
+                                val date = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_HONEY_HARVESTS_DATE))
+                                if (date in startTime!!..endTime!!) {
+                                    val honeyFrames = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_HONEY_HARVESTS_HONEY_FRAMES))
+                                    totalHoneyFrames += honeyFrames
+                                }
+                            }
+                        }
+                    }
+                    if (totalHoneyFrames > 0) {
+                        results.add(Pair(hive.id, totalHoneyFrames))
+                    }
+                }
+            }
+            else -> {
+                // If the type is not "station" or "hive", return an empty result
+                return Pair(emptyList(), 0)
+            }
+        }
 
             return Pair(results, 1)
         } catch (e: Exception) {
@@ -132,6 +115,7 @@ object HoneyHarvestFunctionality {
             return Pair(emptyList(), 0)
         }
     }
+
 
 
     private fun createHoneyHarvestFromCursor(cursor: Cursor): HoneyHarvest {

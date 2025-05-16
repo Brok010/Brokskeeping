@@ -37,7 +37,7 @@ class InspectionDataAdapter(private val inspectionDataList: MutableList<Inspecti
         holder.bind(currentInspectionData)
 
         holder.itemView.setOnClickListener {
-            inspectionDataBrowserActivity.startInspectionDataActivity(currentInspectionData.id)
+            inspectionDataBrowserActivity.startInspectionDataActivity(currentInspectionData.id, inspectionId)
         }
         holder.itemView.setOnLongClickListener() {
             showContextMenu(holder.itemView, currentInspectionData)

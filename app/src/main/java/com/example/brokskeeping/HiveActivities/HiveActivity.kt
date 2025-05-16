@@ -59,7 +59,15 @@ class HiveActivity : AppCompatActivity() {
         tvWinterReady.text = if (hive.winterReady) "Yes" else "No"
         tvAggressivity.text = hive.aggressivity.toString()
         tvAttention.text = hive.attentionWorth.toString()
-        tvDead.text = if (hive.death) "Yes" else "No"
+        if (hive.colonyEndState == 0) {
+            tvDead.text = "Yes"
+        } else if (hive.colonyEndState == -1) {
+            tvDead.text = "No"
+        } else {
+            val hiveName = HivesFunctionality.getHiveNameById(db, hive.colonyEndState)
+            tvDead.text = "Joined with $hiveName"
+        }
+
     }
 
     fun startAdjustHiveActivity(stationId: Int, hiveId: Int) {
