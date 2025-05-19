@@ -288,7 +288,7 @@ object InspectionsFunctionality {
             put(DatabaseHelper.COL_INSPECTION_DATA_DRONE_ADJUSTED, if (inspection.droneBroodFramesAdjusted) 1 else 0)
             put(DatabaseHelper.COL_INSPECTION_DATA_DRONE_CHANGE, inspection.droneBroodFramesChange)
             put(DatabaseHelper.COL_INSPECTION_DATA_FREE_SPACE, inspection.freeSpaceFrames)
-            put(DatabaseHelper.COL_INSPECTION_DATA_SUPPLEMENTAL_FEED, if (inspection.supplementedFeed) 1 else 0)
+            put(DatabaseHelper.COL_INSPECTION_DATA_SUPPLEMENTAL_FEED, inspection.supplementedFeed)
             put(DatabaseHelper.COL_INSPECTION_DATA_WINTER_READY, if (inspection.winterReady) 1 else 0)
             put(DatabaseHelper.COL_INSPECTION_DATA_AGGRESSIVITY, inspection.aggressivity)
             put(DatabaseHelper.COL_INSPECTION_DATA_HONEY_HARVESTED, inspection.honeyHarvested)
@@ -390,7 +390,7 @@ object InspectionsFunctionality {
         val droneBroodFramesChange = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_INSPECTION_DATA_DRONE_CHANGE))
         val framesPerSuper = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_INSPECTION_DATA_FRAMES_PER_SUPER))
         val supers = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_INSPECTION_DATA_SUPERS))
-        val supplementedFeed = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_INSPECTION_DATA_SUPPLEMENTAL_FEED)) == 1
+        val supplementedFeed = cursor.getDouble(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_INSPECTION_DATA_SUPPLEMENTAL_FEED))
         val winterReady = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_INSPECTION_DATA_WINTER_READY)) == 1
         val aggressivity = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_INSPECTION_DATA_AGGRESSIVITY))
         val honeyHarvested = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_INSPECTION_DATA_HONEY_HARVESTED))

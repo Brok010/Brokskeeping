@@ -11,7 +11,9 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             "$COL_STATION_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
             "$COL_STATION_NAME TEXT, " +
             "$COL_STATION_PLACE TEXT, " +
-            "$COL_STATION_IN_USE INTEGER)"
+            "$COL_STATION_IN_USE INTEGER, " +
+            "$COL_STATION_CREATION_TIME INTEGER, " +
+            "$COL_STATION_DEATH_TIME INTEGER)"
 
     internal val CREATE_TABLE_HIVES = "CREATE TABLE $TABLE_HIVES (" +
             "$COL_HIVE_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -27,9 +29,11 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             "$COL_HIVE_COLONY_ORIGIN TEXT, " +
             "$COL_HIVE_COLONY_END_STATE INTEGER, " +
             "$COL_HIVE_WINTER_READY INTEGER, " +
-            "$COL_HIVE_SUPPLEMENTED_FEED_COUNT INTEGER, " +
             "$COL_HIVE_AGGRESSIVITY INTEGER, " +
             "$COL_HIVE_ATTENTION_WORTH INTEGER, " +
+            "$COL_HIVE_CREATION_TIME INTEGER, " +
+            "$COL_HIVE_DEATH_TIME INTEGER, " +
+            "$COL_HIVE_STATION_ORDER INTEGER, " +
             "FOREIGN KEY($COL_STATION_ID_FK_HIVES) REFERENCES $TABLE_STATIONS($COL_STATION_ID))"
 
 
@@ -84,7 +88,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             "$COL_INSPECTION_DATA_DRONE_ADJUSTED INTEGER, " +
             "$COL_INSPECTION_DATA_DRONE_CHANGE INTEGER, " +
             "$COL_INSPECTION_DATA_FREE_SPACE INTEGER, " +
-            "$COL_INSPECTION_DATA_SUPPLEMENTAL_FEED INTEGER, " +
+            "$COL_INSPECTION_DATA_SUPPLEMENTAL_FEED REAL, " +
             "$COL_INSPECTION_DATA_WINTER_READY INTEGER, " +
             "$COL_INSPECTION_DATA_AGGRESSIVITY INTEGER, " +
             "$COL_INSPECTION_DATA_HONEY_HARVESTED INTEGER, " +
@@ -111,6 +115,12 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             "$COL_HISTORY_EVENT TEXT, " +
             "FOREIGN KEY($COL_HISTORY_ENTITY_ID) REFERENCES $TABLE_HIVES($COL_HIVE_ID))"
 
+    internal val CREATE_TABLE_SUPPLEMENTED_FEED = "CREATE TABLE $TABLE_SUPPLEMENTED_FEED (" +
+            "$COLUMN_SUPPLEMENTED_FEED_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            "$COLUMN_HIVE_ID_FK_SUPPLEMENTED_FEED INTEGER, " +
+            "$COLUMN_SUPPLEMENTED_FEED_DATE TEXT, " +
+            "$COLUMN_SUPPLEMENTED_FEED_KILOS REAL, " +
+            "FOREIGN KEY($COLUMN_HIVE_ID_FK_SUPPLEMENTED_FEED) REFERENCES $TABLE_HIVES($COL_HIVE_ID))"
 
     override fun onCreate(db: SQLiteDatabase?) {
         db?.execSQL(CREATE_TABLE_STATIONS)
@@ -122,6 +132,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db?.execSQL(CREATE_TABLE_INSPECTION_DATA)
         db?.execSQL(CREATE_TABLE_HONEY_HARVESTS)
         db?.execSQL(CREATE_TABLE_HISTORY)
+        db?.execSQL(CREATE_TABLE_SUPPLEMENTED_FEED)
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
@@ -134,6 +145,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db?.execSQL("DROP TABLE IF EXISTS $TABLE_INSPECTION_DATA")
         db?.execSQL("DROP TABLE IF EXISTS $TABLE_HONEY_HARVESTS")
         db?.execSQL("DROP TABLE IF EXISTS $TABLE_HISTORY")
+        db?.execSQL("DROP TABLE IF EXISTS $TABLE_SUPPLEMENTED_FEED")
 
 
         // Recreate tables with updated schema
@@ -141,7 +153,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     }
 
     companion object {
-        const val DATABASE_VERSION = 15
+        const val DATABASE_VERSION = 19
         const val DATABASE_NAME = "beehives.db"
 
         //Station
@@ -150,6 +162,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         const val COL_STATION_NAME = "stations_name"
         const val COL_STATION_PLACE = "stations_place"
         const val COL_STATION_IN_USE = "stations_in_use"
+        const val COL_STATION_CREATION_TIME = "station_creation_time"
+        const val COL_STATION_DEATH_TIME = "station_death_time"
 
         //Hive
         const val TABLE_HIVES = "tbl_hives"
@@ -166,9 +180,11 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         const val COL_HIVE_COLONY_ORIGIN = "hive_colony_origin"
         const val COL_HIVE_COLONY_END_STATE = "hive_colony_end_state"
         const val COL_HIVE_WINTER_READY = "hive_winter_ready"
-        const val COL_HIVE_SUPPLEMENTED_FEED_COUNT = "hive_supplemented_feed_count"
         const val COL_HIVE_AGGRESSIVITY = "hive_aggressivity"
         const val COL_HIVE_ATTENTION_WORTH = "hive_attention_worth"
+        const val COL_HIVE_CREATION_TIME = "hive_creation_time"
+        const val COL_HIVE_DEATH_TIME = "hive_death_time"
+        const val COL_HIVE_STATION_ORDER = "hive_station_order"
 
         //Datalogs
         const val TABLE_DATA_LOGS = "tbl_data_logs"
@@ -235,6 +251,14 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         const val COLUMN_HIVE_ID_FK_HONEY_HARVEST = "honey_harvest_hiveId"
         const val COLUMN_HONEY_HARVESTS_DATE = "honey_harvest_date"
         const val COLUMN_HONEY_HARVESTS_HONEY_FRAMES = "honey_harvest_honeyFrames"
+
+
+        // Supplemented feed
+        const val TABLE_SUPPLEMENTED_FEED = "tbl_supplemented_feed"
+        const val COLUMN_SUPPLEMENTED_FEED_ID = "supplemented_feed_id"
+        const val COLUMN_HIVE_ID_FK_SUPPLEMENTED_FEED = "supplemented_feed_hiveId"
+        const val COLUMN_SUPPLEMENTED_FEED_DATE = "supplemented_feed_date"
+        const val COLUMN_SUPPLEMENTED_FEED_KILOS = "supplemented_feed_kilos"
 
         // History
         const val TABLE_HISTORY = "tbl_history"

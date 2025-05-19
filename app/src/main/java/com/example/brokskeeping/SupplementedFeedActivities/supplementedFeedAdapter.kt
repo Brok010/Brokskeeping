@@ -1,4 +1,4 @@
-package com.example.brokskeeping.HoneyHarvestActivities
+package com.example.brokskeeping.SupplementedFeedActivities
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,36 +7,36 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.example.brokskeeping.DataClasses.HoneyHarvest
+
 import com.example.brokskeeping.DbFunctionality.DatabaseHelper
 import com.example.brokskeeping.DbFunctionality.HivesFunctionality
 import com.example.brokskeeping.DbFunctionality.StationsFunctionality
 import com.example.brokskeeping.R
 
 
-class HoneyHarvestAdapter(private val honeyHarvestList: MutableList<Pair<Int, Int>>,
+class SupplementedFeedAdapter(private val supplementedFeedList: MutableList<Pair<Int, Int>>,
                           private var type: String,
-                         private val db: DatabaseHelper,
-                         private val honeyHarvestBrowserActivity: HoneyHarvestBrowserActivity
-) : RecyclerView.Adapter<HoneyHarvestAdapter.HoneyHarvestViewHolder>() {
+                          private val db: DatabaseHelper,
+                          private val supplementedFeedBrowserActivity: SupplementedFeedBrowserActivity
+) : RecyclerView.Adapter<SupplementedFeedAdapter.SupplementedFeedViewHolder>() {
 
-    fun updateData(newHoneyHarvestList: List<Pair<Int, Int>>, type: String) {
-        honeyHarvestList.clear()
-        honeyHarvestList.addAll(newHoneyHarvestList)
+    fun updateData(newSupplementedFeedList: List<Pair<Int, Int>>, type: String) {
+        supplementedFeedList.clear()
+        supplementedFeedList.addAll(newSupplementedFeedList)
         this.type = type
         notifyDataSetChanged()
     }
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HoneyHarvestViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SupplementedFeedViewHolder {
         val itemView = LayoutInflater.from(parent.context)
             .inflate(R.layout.view_honey_harvest_browser, parent, false)
-        return HoneyHarvestViewHolder(itemView)
+        return SupplementedFeedViewHolder(itemView)
     }
 
-    override fun onBindViewHolder(holder: HoneyHarvestViewHolder, position: Int) {
-        val currentHoneyHarvest = honeyHarvestList[position]
-        holder.bind(currentHoneyHarvest, type)
+    override fun onBindViewHolder(holder: SupplementedFeedViewHolder, position: Int) {
+        val currentSupplementedFeed = supplementedFeedList[position]
+        holder.bind(currentSupplementedFeed, type)
 
         holder.itemView.setOnClickListener {
             //
@@ -44,31 +44,31 @@ class HoneyHarvestAdapter(private val honeyHarvestList: MutableList<Pair<Int, In
     }
 
     override fun getItemCount(): Int {
-        return honeyHarvestList.size
+        return supplementedFeedList.size
     }
 
-    inner class HoneyHarvestViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class SupplementedFeedViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val tvLocation = itemView.findViewById<TextView>(R.id.tv_location)
         private val tvHoneyFramesHarvested = itemView.findViewById<TextView>(R.id.tv_honey_harvested)
 
-        fun bind(honeyHarvest: Pair<Int, Int>, type: String) {
+        fun bind(supplementedFeed: Pair<Int, Int>, type: String) {
             if (type == "Station") {
-                val entityName = StationsFunctionality.getStationNameById(db, honeyHarvest.first)
+                val entityName = StationsFunctionality.getStationNameById(db, supplementedFeed.first)
                 tvLocation.text = entityName
             } else {
-                val entityName = HivesFunctionality.getHiveNameById(db, honeyHarvest.first)
+                val entityName = HivesFunctionality.getHiveNameById(db, supplementedFeed.first)
                 tvLocation.text = entityName
-                setStationName(honeyHarvest)
+                setStationName(supplementedFeed)
             }
-            tvHoneyFramesHarvested.text = honeyHarvest.second.toString()
+            tvHoneyFramesHarvested.text = supplementedFeed.second.toString()
         }
 
-        private fun setStationName(honeyHarvest: Pair<Int, Int>) {
+        private fun setStationName(supplementedFeed: Pair<Int, Int>) {
             val context = itemView.context
-            val stationId = HivesFunctionality.getStationIdByHiveId(db, honeyHarvest.first)
+            val stationId = HivesFunctionality.getStationIdByHiveId(db, supplementedFeed.first)
             val (station, stationResult) = StationsFunctionality.getStationsAttributes(db, stationId)
             if (stationResult == 0) {
-                Log.e("honeyHarvestAdapter", "Couldn't retrieve station")
+                Log.e("supplementedFeedAdapter", "Couldn't retrieve station")
             }
             val llDynamic = itemView.findViewById<ViewGroup>(R.id.ll_dynamic)
             llDynamic.removeAllViews()

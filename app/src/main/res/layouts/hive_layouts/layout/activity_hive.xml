@@ -390,6 +390,28 @@
                     android:text="Dead"
                     android:textSize="16sp" />
             </LinearLayout>
+            <!-- Station order row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Station order:"
+                    android:textSize="16sp"
+                    android:layout_gravity="start"
+                    android:paddingEnd="8dp" />
+
+                <TextView
+                    android:id="@+id/tv_station_order"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Station Order"
+                    android:textSize="16sp" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

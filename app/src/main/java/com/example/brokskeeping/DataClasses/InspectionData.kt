@@ -17,7 +17,7 @@ data class InspectionData(
     var droneBroodFramesChange: Int = -1,
     var framesPerSuper: Int = -1,
     var supers: Int = -1,
-    var supplementedFeed: Boolean = false,
+    var supplementedFeed: Double = -1.0,
     var winterReady: Boolean = false,
     var aggressivity: Int = -1,
     var honeyHarvested: Int = -1,

@@ -50,6 +50,7 @@ android {
                 srcDirs("src\\main\\res", "src\\main\\res\\layouts", "src\\main\\res\\layouts\\inspection_data_layouts")
                 srcDirs("src\\main\\res", "src\\main\\res\\layouts", "src\\main\\res\\layouts\\honey_harvest_layouts")
                 srcDirs("src\\main\\res", "src\\main\\res\\layouts", "src\\main\\res\\layouts\\history_layouts")
+                srcDirs("src\\main\\res", "src\\main\\res\\layouts", "src\\main\\res\\layouts\\discarded_entities_layouts")
             }
         }
     }

@@ -4,6 +4,9 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.util.Log
 import com.example.brokskeeping.DataClasses.Station
+import com.example.brokskeeping.Functionality.Utils
+import java.time.LocalDateTime
+import java.util.Date
 
 object StationsFunctionality {
 
@@ -78,54 +81,108 @@ object StationsFunctionality {
 
 
 
-    fun saveStation(dbHelper: DatabaseHelper, newStation: Station, startingHives: Int) {
+    fun saveStation(dbHelper: DatabaseHelper, newStation: Station, startingHives: Int? = null) {
         val db = dbHelper.writableDatabase
         db.beginTransaction()
-        var stationId = -1
+        var stationId = newStation.id
 
         try {
             val stationValues = ContentValues().apply {
                 put(DatabaseHelper.COL_STATION_NAME, newStation.name)
                 put(DatabaseHelper.COL_STATION_PLACE, newStation.location)
                 put(DatabaseHelper.COL_STATION_IN_USE, newStation.inUse)
+                put(DatabaseHelper.COL_STATION_CREATION_TIME, newStation.creationTime.time)
+                put(DatabaseHelper.COL_STATION_DEATH_TIME, newStation.deathTime.time)
             }
-            stationId = db.insert(DatabaseHelper.TABLE_STATIONS, null, stationValues).toInt()
-            newStation.id = stationId
-            // Check if station insertion was successful
-            if (stationId != -1) {
-                // Set the transaction as successful
-                db.setTransactionSuccessful()
 
+            if (stationId > 0) {
+                // Update existing station
+                val rowsUpdated = db.update(
+                    DatabaseHelper.TABLE_STATIONS,
+                    stationValues,
+                    "${DatabaseHelper.COL_STATION_ID} = ?",
+                    arrayOf(stationId.toString())
+                )
+
+                if (rowsUpdated == 0) {
+                    Log.e("DatabaseHelper", "Failed to update station with ID $stationId")
+                } else {
+                    db.setTransactionSuccessful()
+                }
             } else {
-                // Handle station insertion failure
-                Log.e("DatabaseHelper", "Failed to insert station into tbl_stations")
+                // Insert new station
+                stationId = db.insert(DatabaseHelper.TABLE_STATIONS, null, stationValues).toInt()
+                newStation.id = stationId
+
+                if (stationId != -1) {
+                    db.setTransactionSuccessful()
+                } else {
+                    Log.e("DatabaseHelper", "Failed to insert station")
+                }
             }
+
         } catch (e: Exception) {
-            // Handle any exceptions that may occur during the transaction
             e.printStackTrace()
         } finally {
             db.endTransaction()
             db.close()
-            createHivesForStation(dbHelper, newStation, startingHives)
+
+            if (startingHives != null && stationId != -1) {
+                createHivesForStation(dbHelper, newStation, startingHives)
+            }
         }
     }
 
+
     fun createHivesForStation(dbHelper: DatabaseHelper, newStation: Station, hiveCount: Int) {
-        val db = dbHelper.writableDatabase
         val newStationName = newStation.name
+        val currentTime = Date()
 
         for (i in 1..hiveCount) {
+            val (orderNum, result) = HivesFunctionality.getNextAvailableHiveStationOrder(dbHelper, newStation.id)
+            if (result == 0) {
+                Log.e("StationsFunctionality", "getNextAvailableHiveStationOrder failed")
+                continue
+            }
+
             val hiveValues = ContentValues().apply {
                 put(DatabaseHelper.COL_HIVE_NAME_TAG, "Hive $i for Station $newStationName")
                 put(DatabaseHelper.COL_STATION_ID_FK_HIVES, newStation.id)
                 put(DatabaseHelper.COL_HIVE_COLONY_END_STATE, -1)
+                put(DatabaseHelper.COL_HIVE_CREATION_TIME, currentTime.time)
+                put(DatabaseHelper.COL_HIVE_DEATH_TIME, 0)
+                put(DatabaseHelper.COL_HIVE_STATION_ORDER, orderNum)
             }
-            db.insert(DatabaseHelper.TABLE_HIVES, null, hiveValues)
+
+            val db = dbHelper.writableDatabase
+            try {
+                db.insert(DatabaseHelper.TABLE_HIVES, null, hiveValues)
+            } catch (e: Exception) {
+                Log.e("StationsFunctionality", "Error inserting hive: ${e.message}")
+            } finally {
+                db.close()
+            }
         }
-        db.close()
     }
-    fun getAllStations(dbHelper: DatabaseHelper, inUse: Int? = null): Pair<List<Station>, Int> {
+
+    fun getAllStations(
+        dbHelper: DatabaseHelper,
+        inUse: Int? = null,
+        creationYear: Int? = null,
+        creationMonth: Int? = null,
+        deathYear: Int? = null,
+        deathMonth: Int? = null
+    ): Pair<List<Station>, Int> {
         val stations = mutableListOf<Station>()
+
+        // Get time ranges
+        val (creationTimes, creationTimesResult) = Utils.getStartAndEndTime(creationYear, creationMonth)
+        if (creationTimesResult == 0) return emptyList<Station>() to 0
+        val (startCreationTime, endCreationTime) = creationTimes
+
+        val (deathTimes, deathTimesResult) = Utils.getStartAndEndTime(deathYear, deathMonth)
+        if (deathTimesResult == 0) return emptyList<Station>() to 0
+        val (startDeathTime, endDeathTime) = deathTimes
 
         return try {
             val selectionArgs = mutableListOf<String>()
@@ -136,14 +193,22 @@ object StationsFunctionality {
                 selectionArgs.add(inUse.toString())
             }
 
+            // Add creation time filter
+            whereClauses.add("${DatabaseHelper.COL_STATION_CREATION_TIME} BETWEEN ? AND ?")
+            selectionArgs.add(startCreationTime.toString())
+            selectionArgs.add(endCreationTime.toString())
+
+            // Add death time filter
+            whereClauses.add("${DatabaseHelper.COL_STATION_DEATH_TIME} BETWEEN ? AND ?")
+            selectionArgs.add(startDeathTime.toString())
+            selectionArgs.add(endDeathTime.toString())
+
             val whereClause = if (whereClauses.isNotEmpty()) {
                 "WHERE " + whereClauses.joinToString(" AND ")
-            } else {
-                ""
-            }
+            } else ""
 
             val query = "SELECT * FROM ${DatabaseHelper.TABLE_STATIONS} $whereClause"
-            val cursor = dbHelper.readableDatabase.rawQuery(query, if (selectionArgs.isNotEmpty()) selectionArgs.toTypedArray() else null)
+            val cursor = dbHelper.readableDatabase.rawQuery(query, selectionArgs.toTypedArray())
 
             cursor.use {
                 while (it.moveToNext()) {
@@ -165,23 +230,27 @@ object StationsFunctionality {
         val name = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_STATION_NAME))
         val location = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_STATION_PLACE))
         val inUse = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_STATION_IN_USE))
+        val creationTime = Date(cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_STATION_CREATION_TIME)))
+        val deathTime = Date(cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_STATION_DEATH_TIME)))
 
-        return Station(id, name, location, inUse)
+        return Station(id, name, location, inUse, creationTime, deathTime)
     }
 
-    fun getStationsAttributes(dbHelper: DatabaseHelper, stationId: Int): Station? {
+    fun getStationsAttributes(dbHelper: DatabaseHelper, stationId: Int): Pair<Station?, Int> {
         val query = "SELECT * FROM ${DatabaseHelper.TABLE_STATIONS} WHERE ${DatabaseHelper.COL_STATION_ID} = ?"
         val selectionArgs = arrayOf(stationId.toString())
         val cursor = dbHelper.readableDatabase.rawQuery(query, selectionArgs)
 
-        return cursor.use { cursor ->
-            if (cursor.moveToFirst()) {
-                createStationFromCursor(cursor)
+        return cursor.use {
+            if (it.moveToFirst()) {
+                val station = createStationFromCursor(it)
+                Pair(station, 1)
             } else {
-                null
+                Pair(null, 0)
             }
         }
     }
+
 
     fun getStationIdByName(dbHelper: DatabaseHelper, stationName: String): Int {
         var stationId = -1
@@ -200,33 +269,6 @@ object StationsFunctionality {
 
         db.close()
         return stationId
-    }
-
-    fun adjustStation(dbHelper: DatabaseHelper, stationId: Int, updatedStation: Station) {
-        val db = dbHelper.writableDatabase
-        db.beginTransaction()
-
-        try {
-            val values = ContentValues().apply {
-                put(DatabaseHelper.COL_STATION_NAME, updatedStation.name)
-                put(DatabaseHelper.COL_STATION_PLACE, updatedStation.location)
-                put(DatabaseHelper.COL_STATION_IN_USE, updatedStation.inUse)
-            }
-
-            val rowsUpdated = db.update(
-                DatabaseHelper.TABLE_STATIONS, values, "${DatabaseHelper.COL_STATION_ID} = ?",
-                arrayOf(stationId.toString()))
-
-            if (rowsUpdated > 0) {
-                db.setTransactionSuccessful()
-            } else {
-                Log.e("DatabaseHelper", "Failed to update station with ID $stationId")
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        } finally {
-            db.endTransaction()
-        }
     }
 
     fun deleteStation(dbHelper: DatabaseHelper, stationId: Int) {

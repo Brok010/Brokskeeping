@@ -7,9 +7,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Button
+import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.brokskeeping.BottomMenuFragment
@@ -18,10 +21,10 @@ import com.example.brokskeeping.DbFunctionality.HivesFunctionality
 import com.example.brokskeeping.DbFunctionality.StationsFunctionality
 import com.example.brokskeeping.DbFunctionality.ToDoFunctionality
 import com.example.brokskeeping.R
-import com.example.brokskeeping.databinding.ActivityToDoBrowserBinding
+import com.example.brokskeeping.databinding.CommonBrowserRecyclerBinding
 
 class ToDoBrowserActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityToDoBrowserBinding
+    private lateinit var binding: CommonBrowserRecyclerBinding
     private lateinit var db: DatabaseHelper
     private lateinit var toDoAdapter: ToDoAdapter
     private var stationId: Int = -1
@@ -29,10 +32,16 @@ class ToDoBrowserActivity : AppCompatActivity() {
     private var state: Int = -1
     private var stationName: String = ""
     private var hiveName: String = ""
+    private lateinit var header: TextView
+    private lateinit var stateFilterInput: EditText
+    private lateinit var stationFilterInput: EditText
+    private lateinit var hiveFilterInput: EditText
+    private lateinit var btnLayout: LinearLayout
+    private lateinit var addToDoBt: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityToDoBrowserBinding.inflate(layoutInflater)
+        binding = CommonBrowserRecyclerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         stationId = intent.getIntExtra("stationId", -1)
@@ -42,7 +51,7 @@ class ToDoBrowserActivity : AppCompatActivity() {
         toDoAdapter = ToDoAdapter(mutableListOf(), db, this, hiveId)
 
         // Set up the RecyclerView
-        binding.recyclerView.apply {
+        binding.commonRecyclerView.apply {
             layoutManager = LinearLayoutManager(this@ToDoBrowserActivity)
             itemAnimator = DefaultItemAnimator()
             setHasFixedSize(true)
@@ -54,61 +63,123 @@ class ToDoBrowserActivity : AppCompatActivity() {
         //get hiveName
         hiveName = HivesFunctionality.getHiveNameById(db, hiveId)
 
-        val headerText = findViewById<TextView>(R.id.tv_to_do_header)
-        val llStationFilter = findViewById<LinearLayout>(R.id.ll_station_filter)
-        val llHiveFilter = findViewById<LinearLayout>(R.id.ll_hive_filter)
+        // Bind views using ViewBinding
+        header = binding.tvCommonBrowserHeader
 
-        if (stationId != -1 && hiveId != -1) {
-            llStationFilter.visibility = View.GONE
-            llHiveFilter.visibility = View.GONE
-            headerText.text = "To Do's of hive [$hiveName]; [$stationName]"
-        } else {
-            headerText.text = "To Do's"
+        // buttons
+        btnLayout = binding.llCommonBrowserButtonLayout
+        addToDoBt = Button(this).apply {
+            id = View.generateViewId()
+            text = "Add ToDo"
+            setTextColor(ContextCompat.getColor(this@ToDoBrowserActivity, R.color.buttonTextColor))
+            backgroundTintList = ContextCompat.getColorStateList(this@ToDoBrowserActivity, R.color.buttonColor)
         }
+        btnLayout.addView(addToDoBt)
 
         // Set up the Floating Action Button (FAB) for adding a new station
-        binding.AddToDoBt.setOnClickListener {
+        addToDoBt.setOnClickListener {
             startAddToDoActivity()
         }
         // bottom menu
         if (savedInstanceState == null) {
             val fragment = BottomMenuFragment()
             supportFragmentManager.beginTransaction()
-                .replace(binding.fragmentContainer.id, fragment)
+                .replace(binding.commonFragmentContainer.id, fragment)
                 .commit()
         }
 
-        binding.stateFilterInput.setText("All")
+        createAndAddStationHiveStateFilterLayout()
+
+        stateFilterInput.setText("All")
         if (stationId < 1) {
-            binding.stationFilterInput.setText("All")
+            stationFilterInput.setText("All")
         }
         if (hiveId < 1) {
-            binding.hiveFilterInput.setText("All")
+           hiveFilterInput.setText("All")
         }
-
-
-        binding.stationFilterInput.setOnClickListener {
-            stationFilter()
-        }
-
-        binding.hiveFilterInput.setOnClickListener {
-            hiveFilter()
-        }
-
-        binding.stateFilterInput.setOnClickListener {
-            stateFilter()
-        }
-
     }
+
+    private fun createAndAddStationHiveStateFilterLayout() {
+        val filterLayout = binding.llFilters
+        filterLayout.removeAllViews()
+
+        // Colors
+        val textColor = ContextCompat.getColor(this, R.color.basicTextColor)
+
+        // Helper function to create filter item
+        fun createFilter(labelText: String, hintText: String, editTextId: Int): LinearLayout {
+            val layout = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
+                    marginEnd = 16
+                }
+            }
+
+            val label = TextView(this).apply {
+                text = labelText
+                setTextColor(textColor)
+            }
+
+            val input = EditText(this).apply {
+                id = editTextId
+                hint = hintText
+                isFocusable = false
+                isClickable = true
+                inputType = android.text.InputType.TYPE_NULL
+                setPadding(16, 0, 16, 0)
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).apply {
+                    marginStart = 8
+                    marginEnd = 8
+                }
+            }
+
+            layout.addView(label)
+            layout.addView(input)
+            return layout
+        }
+
+        // Create individual filter views
+        val stationLayout = createFilter("Station", "Station Filter", View.generateViewId())
+        val hiveLayout = createFilter("Hive", "Hive Filter", View.generateViewId())
+        val stateLayout = createFilter("State", "State Filter", View.generateViewId())
+
+        // Save references if needed
+        stationFilterInput = stationLayout.getChildAt(1) as EditText
+        hiveFilterInput = hiveLayout.getChildAt(1) as EditText
+        stateFilterInput = stateLayout.getChildAt(1) as EditText
+
+        // Apply visibility logic based on stationId and hiveId
+        if (stationId != -1 && hiveId != -1) {
+            stationLayout.visibility = View.GONE
+            hiveLayout.visibility = View.GONE
+            binding.tvCommonBrowserHeader.text = "To Do's of hive [$hiveName]; [$stationName]"
+        } else {
+            binding.tvCommonBrowserHeader.text = "To Do's"
+        }
+
+        // Add to container
+        filterLayout.addView(stationLayout)
+        filterLayout.addView(hiveLayout)
+        filterLayout.addView(stateLayout)
+
+        // Set listeners
+        stationFilterInput.setOnClickListener { stationFilter() }
+        hiveFilterInput.setOnClickListener { hiveFilter() }
+        stateFilterInput.setOnClickListener { stateFilter() }
+    }
+
 
     override fun onResume() {
         super.onResume()
 
         // Show or hide Add button based on selection
         if (stationId > 0 && hiveId > 0) {
-            binding.AddToDoBt.visibility = View.VISIBLE
+            addToDoBt.visibility = View.VISIBLE
         } else {
-            binding.AddToDoBt.visibility = View.GONE
+            addToDoBt.visibility = View.GONE
         }
 
         val (updatedToDoList, result) = ToDoFunctionality.getAllToDos(db, hiveId, stationId, state, 0)
@@ -138,8 +209,8 @@ class ToDoBrowserActivity : AppCompatActivity() {
         builder.setItems(stationNames.toTypedArray()) { _, which ->
             stationId = stationIds[which]
             hiveId = 0 // Reset to All since station changed
-            binding.stationFilterInput.setText(stationNames[which])
-            binding.hiveFilterInput.setText("All")
+            stationFilterInput.setText(stationNames[which])
+           hiveFilterInput.setText("All")
             onResume()
         }
         builder.show()
@@ -165,7 +236,7 @@ class ToDoBrowserActivity : AppCompatActivity() {
                 builder.setTitle("Choose a hive")
                 builder.setItems(hiveNames.toTypedArray()) { _, which ->
                     hiveId = hiveIds[which]
-                    binding.hiveFilterInput.setText(hiveNames[which])
+                    hiveFilterInput.setText(hiveNames[which])
                     onResume()
                 }
                 builder.show()
@@ -184,7 +255,7 @@ class ToDoBrowserActivity : AppCompatActivity() {
                 2 -> 0  // To Be Done
                 else -> -1
             }
-            binding.stateFilterInput.setText(options[which])
+            stateFilterInput.setText(options[which])
             onResume()
         }
         builder.show()

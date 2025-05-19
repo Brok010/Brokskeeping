@@ -57,7 +57,7 @@ class InspectionDataActivity : AppCompatActivity() {
         )
         val ivSupplementedFeed = findViewById<ImageView>(R.id.iv_supplemented_feed)
         ivSupplementedFeed.setImageResource(
-            if (currentInspectionData?.supplementedFeed == true) R.drawable.ic_yes else R.drawable.ic_no
+            if (currentInspectionData?.supplementedFeed!! > 0.0) R.drawable.ic_yes else R.drawable.ic_no
         )
         val ivWinterReady = findViewById<ImageView>(R.id.iv_winter_ready)
         ivWinterReady.setImageResource(

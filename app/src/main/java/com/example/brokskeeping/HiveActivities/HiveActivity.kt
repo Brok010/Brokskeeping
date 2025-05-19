@@ -55,7 +55,6 @@ class HiveActivity : AppCompatActivity() {
         tvDroneBroodFrames.text = hive.droneBroodFrames.toString()
         tvFreeSpaceFrames.text = hive.freeSpaceFrames.toString()
         tvColonyOrigin.text = hive.colonyOrigin ?: "No Origin"
-        tvSupplementedFeedCount.text = hive.supplementedFeedCount.toString()
         tvWinterReady.text = if (hive.winterReady) "Yes" else "No"
         tvAggressivity.text = hive.aggressivity.toString()
         tvAttention.text = hive.attentionWorth.toString()
@@ -67,6 +66,7 @@ class HiveActivity : AppCompatActivity() {
             val hiveName = HivesFunctionality.getHiveNameById(db, hive.colonyEndState)
             tvDead.text = "Joined with $hiveName"
         }
+        tvStationOrder.text = hive.stationOrder.toString()
 
     }
 

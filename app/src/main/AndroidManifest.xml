@@ -20,6 +20,15 @@
         android:theme="@style/Theme.Brokskeeping"
         tools:targetApi="31">
         <activity
+            android:name=".StationActivities.StationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DiscardedEntitiesActivities.DiscardedEntitiesBrowserActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SupplementedFeedActivities.SupplementedFeedBrowserActivity"
+            android:exported="false" />
+        <activity
             android:name=".InspectionDataActivities.HiveInspectionDataBrowserActivity"
             android:exported="false" />
         <activity

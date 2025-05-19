@@ -83,6 +83,11 @@ class StationsBrowserActivity : AppCompatActivity() {
         val intent = Intent(this, AddStationActivity::class.java)
         startActivity(intent)
     }
+    fun startStationActivity(stationId: Int) {
+        val intent = Intent(this, StationActivity::class.java)
+        intent.putExtra("stationId", stationId)
+        startActivity(intent)
+    }
     fun startBrowseHivesActivity(stationName: String, stationId: Int) {
         val intent = Intent(this, HivesBrowserActivity::class.java)
         intent.putExtra("stationId", stationId)

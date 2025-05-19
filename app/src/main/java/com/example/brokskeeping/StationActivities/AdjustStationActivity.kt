@@ -11,6 +11,7 @@ import com.example.brokskeeping.DbFunctionality.DatabaseHelper
 import com.example.brokskeeping.DbFunctionality.StationsFunctionality
 import com.example.brokskeeping.Functionality.Utils
 import com.example.brokskeeping.R
+import java.util.Date
 
 class AdjustStationActivity : AppCompatActivity() {
     private lateinit var db: DatabaseHelper
@@ -36,8 +37,8 @@ class AdjustStationActivity : AppCompatActivity() {
         checkboxInUse = findViewById(R.id.checkbox_in_use)
 
         // Load existing station data
-        var existingStation = StationsFunctionality.getStationsAttributes(db, stationId)
-        if (existingStation == null) {
+        var (existingStation, stationResult) = StationsFunctionality.getStationsAttributes(db, stationId)
+        if (existingStation == null || stationResult == 0) {
             Toast.makeText(this, "Station is null $stationId", Toast.LENGTH_SHORT).show()
             finish()
         }
@@ -72,6 +73,8 @@ class AdjustStationActivity : AppCompatActivity() {
         val newLocation = etLocation.text.toString()
         val newHiveCount = etHiveCount.text.toString().toIntOrNull()
         val newInUseBool = checkboxInUse.isChecked
+        val inUse = if (newInUseBool) 1 else 0
+        var deathTime = Date(0)
 
         if (newHiveCount != null && Utils.correctHiveCount(newHiveCount) && beehiveNum <= newHiveCount) {
             // Proceed with your logic when the conditions are met
@@ -79,21 +82,37 @@ class AdjustStationActivity : AppCompatActivity() {
 
             Utils.showConfirmationDialog(this, confirmationMessage) { confirmed ->
                 if (confirmed) {
-                    // User clicked "confirmed"
+                    if (inUse == 0) {
+                        val (hiveCount, stationResult) = StationsFunctionality.getHiveCount(db, existingStation.id)
+                        when {
+                            hiveCount > 0 -> {
+                                Toast.makeText(this, "Station has hives, can't discard", Toast.LENGTH_SHORT).show()
+                                return@showConfirmationDialog
+                            }
+                            stationResult == 0 -> {
+                                Toast.makeText(this, "Cannot retrieve station", Toast.LENGTH_SHORT).show()
+                                return@showConfirmationDialog
+                            }
+                            else -> {
+                                deathTime = Date(System.currentTimeMillis())
+                            }
+                        }
+                    }
                     val updatedStation = existingStation.copy(
                         name = newName,
                         location = newLocation,
-                        inUse = if (newInUseBool) 1 else 0
+                        inUse = inUse,
+                        deathTime = deathTime
                     )
 
                     if (newHiveCount > beehiveNum) {
                         val newHives = newHiveCount - beehiveNum
                         StationsFunctionality.createHivesForStation(db, updatedStation, newHives)
                     }
-                    StationsFunctionality.adjustStation(db, stationId, updatedStation)
+                    StationsFunctionality.saveStation(db, updatedStation)
                     finish()
                 } else {
-                    // not confirmed, dialog window closes
+                    return@showConfirmationDialog
                 }
             }
         } else {

@@ -10,6 +10,7 @@ import com.example.brokskeeping.DbFunctionality.DatabaseHelper
 import com.example.brokskeeping.DbFunctionality.StationsFunctionality
 import com.example.brokskeeping.Functionality.Utils
 import com.example.brokskeeping.R
+import java.util.Date
 
 class AddStationActivity : AppCompatActivity() {
     private lateinit var editTextStationName: EditText
@@ -57,7 +58,7 @@ class AddStationActivity : AppCompatActivity() {
     }
 
     private fun processStationInformation(stationName: String, stationLocation: String, beehiveNumber: Int) {
-        val newStation = Station(name = stationName, location = stationLocation, inUse = 1)
+        val newStation = Station(name = stationName, location = stationLocation, inUse = 1, creationTime = Date(System.currentTimeMillis()), deathTime = Date(0))
         StationsFunctionality.saveStation(db, newStation, beehiveNumber)
 
         // You can add additional logic as needed

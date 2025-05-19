@@ -8,6 +8,8 @@ import com.example.brokskeeping.DataClasses.Beehive
 import com.example.brokskeeping.DataClasses.HiveNotes
 import com.example.brokskeeping.DataClasses.HumTempData
 import com.example.brokskeeping.DataClasses.Station
+import com.example.brokskeeping.Functionality.Utils
+import java.util.Date
 
 object HivesFunctionality {
 
@@ -117,10 +119,12 @@ object HivesFunctionality {
         val freeSpaceFrames = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_HIVE_FREE_SPACE_FRAMES))
         val colonyOrigin = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_HIVE_COLONY_ORIGIN))
         val colonyEndState = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_HIVE_COLONY_END_STATE))
-        val supplementedFeedCount = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_HIVE_SUPPLEMENTED_FEED_COUNT))
         val winterReady = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_HIVE_WINTER_READY)) == 1
         val aggressivity = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_HIVE_AGGRESSIVITY))
         val attentionWorth = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_HIVE_ATTENTION_WORTH))
+        val creationTime = Date(cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_HIVE_CREATION_TIME)))
+        val deathTime = Date(cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_HIVE_DEATH_TIME)))
+        val stationOrder = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_HIVE_STATION_ORDER))
 
         return Beehive(
             id,
@@ -135,94 +139,127 @@ object HivesFunctionality {
             freeSpaceFrames,
             colonyOrigin,
             colonyEndState,
-            supplementedFeedCount,
             winterReady,
             aggressivity,
-            attentionWorth)
+            attentionWorth,
+            creationTime,
+            deathTime,
+            stationOrder
+        )
     }
 
-    fun updateHive(dbHelper: DatabaseHelper, beehive: Beehive): Int {
-         val db = dbHelper.writableDatabase
+    fun forceHiveStationOrder(dbHelper: DatabaseHelper, stationId: Int, newHiveOrder: Int, hiveId: Int? = null) {
+        val db = dbHelper.writableDatabase
         db.beginTransaction()
-        var result = 0
-
         try {
-            val values = ContentValues().apply {
-                if (!beehive.nameTag.isNullOrBlank()) {
-                    put(DatabaseHelper.COL_HIVE_NAME_TAG, beehive.nameTag)
-                }
-                if (!beehive.qrTag.isNullOrBlank()) {
-                    put(DatabaseHelper.COL_HIVE_QR_TAG, beehive.qrTag)
-                }
-                if (beehive.stationId != -1) {
-                    put(DatabaseHelper.COL_STATION_ID_FK_HIVES, beehive.stationId)
-                }
-                if (beehive.broodFrames != -1) {
-                    put(DatabaseHelper.COL_HIVE_BROOD_FRAMES, beehive.broodFrames)
-                }
-                if (beehive.honeyFrames != -1) {
-                    put(DatabaseHelper.COL_HIVE_HONEY_FRAMES, beehive.honeyFrames)
-                }
-                if (beehive.droneBroodFrames != -1) {
-                    put(DatabaseHelper.COL_HIVE_DRONE_BROOD_FRAMES, beehive.droneBroodFrames)
-                }
-                if (beehive.framesPerSuper != -1) {
-                    put(DatabaseHelper.COL_HIVE_FRAMES_PER_SUPER, beehive.framesPerSuper)
-                }
-                if (beehive.supers != -1) {
-                    put(DatabaseHelper.COL_HIVE_SUPERS, beehive.supers)
-                }
-                if (beehive.freeSpaceFrames != -1) {
-                    put(DatabaseHelper.COL_HIVE_FREE_SPACE_FRAMES, beehive.freeSpaceFrames)
-                }
-                if (!beehive.colonyOrigin.isNullOrBlank()) {
-                    put(DatabaseHelper.COL_HIVE_COLONY_ORIGIN, beehive.colonyOrigin)
-                }
-                if (beehive.colonyEndState != -1) {
-                    put(DatabaseHelper.COL_HIVE_COLONY_END_STATE, beehive.colonyEndState)
-                }
-                if (beehive.supplementedFeedCount != -1) {
-                    put(DatabaseHelper.COL_HIVE_SUPPLEMENTED_FEED_COUNT, beehive.supplementedFeedCount)
-                }
-                put(DatabaseHelper.COL_HIVE_WINTER_READY, if (beehive.winterReady) 1 else 0)
-                if (beehive.aggressivity != -1) {
-                    put(DatabaseHelper.COL_HIVE_AGGRESSIVITY, beehive.aggressivity)
-                }
-                if (beehive.attentionWorth != -1) {
-                    put(DatabaseHelper.COL_HIVE_ATTENTION_WORTH, beehive.attentionWorth)
-                }
+            // Step 1: Get total hives in the station
+            val countCursor = db.rawQuery(
+                """
+            SELECT COUNT(*) FROM ${DatabaseHelper.TABLE_HIVES}
+            WHERE ${DatabaseHelper.COL_STATION_ID_FK_HIVES} = ?
+        """.trimIndent(), arrayOf(stationId.toString())
+            )
+            var totalHives = 0
+            if (countCursor.moveToFirst()) {
+                totalHives = countCursor.getInt(0)
             }
+            countCursor.close()
 
-            if (values.size() > 0) {
-                val rowsUpdated = db.update(
-                    DatabaseHelper.TABLE_HIVES,
-                    values,
-                    "${DatabaseHelper.COL_HIVE_ID} = ?",
-                    arrayOf(beehive.id.toString())
+            val clampedOrder = newHiveOrder.coerceIn(1, totalHives)
+
+            if (hiveId != null) {
+                // Step 2: Get current order of the hive
+                val currentCursor = db.rawQuery(
+                    """
+                SELECT ${DatabaseHelper.COL_HIVE_STATION_ORDER}
+                FROM ${DatabaseHelper.TABLE_HIVES}
+                WHERE ${DatabaseHelper.COL_HIVE_ID} = ?
+            """.trimIndent(), arrayOf(hiveId.toString())
                 )
+                if (currentCursor.moveToFirst()) {
+                    val currentOrder = currentCursor.getInt(0)
+                    currentCursor.close()
 
-                if (rowsUpdated > 0) {
-                    db.setTransactionSuccessful()
-                    result = 1
+                    if (currentOrder == clampedOrder) {
+                        db.setTransactionSuccessful()
+                        return  // no change needed
+                    }
+
+                    // Step 3: Temporarily move current hive to placeholder order (-1)
+                    db.execSQL(
+                        """
+                    UPDATE ${DatabaseHelper.TABLE_HIVES}
+                    SET ${DatabaseHelper.COL_HIVE_STATION_ORDER} = -1
+                    WHERE ${DatabaseHelper.COL_HIVE_ID} = ?
+                """.trimIndent(), arrayOf(hiveId)
+                    )
+
+                    // Step 4: Shift the other hives
+                    if (currentOrder > clampedOrder) {
+                        // Moving up: shift all between clampedOrder and currentOrder-1 down (+1)
+                        db.execSQL(
+                            """
+                        UPDATE ${DatabaseHelper.TABLE_HIVES}
+                        SET ${DatabaseHelper.COL_HIVE_STATION_ORDER} = ${DatabaseHelper.COL_HIVE_STATION_ORDER} + 1
+                        WHERE ${DatabaseHelper.COL_STATION_ID_FK_HIVES} = ? 
+                          AND ${DatabaseHelper.COL_HIVE_STATION_ORDER} >= ? 
+                          AND ${DatabaseHelper.COL_HIVE_STATION_ORDER} < ?
+                    """.trimIndent(), arrayOf(stationId, clampedOrder, currentOrder)
+                        )
+                    } else {
+                        // Moving down: shift all between currentOrder+1 and clampedOrder up (-1)
+                        db.execSQL(
+                            """
+                        UPDATE ${DatabaseHelper.TABLE_HIVES}
+                        SET ${DatabaseHelper.COL_HIVE_STATION_ORDER} = ${DatabaseHelper.COL_HIVE_STATION_ORDER} - 1
+                        WHERE ${DatabaseHelper.COL_STATION_ID_FK_HIVES} = ? 
+                          AND ${DatabaseHelper.COL_HIVE_STATION_ORDER} > ? 
+                          AND ${DatabaseHelper.COL_HIVE_STATION_ORDER} <= ?
+                    """.trimIndent(), arrayOf(stationId, currentOrder, clampedOrder)
+                        )
+                    }
+
+                    // Step 5: Move current hive to its new correct position
+                    db.execSQL(
+                        """
+                    UPDATE ${DatabaseHelper.TABLE_HIVES}
+                    SET ${DatabaseHelper.COL_HIVE_STATION_ORDER} = ?
+                    WHERE ${DatabaseHelper.COL_HIVE_ID} = ?
+                """.trimIndent(), arrayOf(clampedOrder, hiveId)
+                    )
                 } else {
-                    Log.e("DatabaseHelper", "No rows updated for hive ID ${beehive.id}")
+                    currentCursor.close()
                 }
-            } else {
-                Log.w("DatabaseHelper", "No valid fields to update for hive ID ${beehive.id}")
             }
+
+            db.setTransactionSuccessful()
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e("DBHelper", "Error forcing hive station order", e)
         } finally {
             db.endTransaction()
         }
-
-        return result
     }
 
 
-
-    fun getAllHives(dbHelper: DatabaseHelper, stationId: Int? = null, dead: Int? = null): Pair<List<Beehive>, Int> {
+    fun getAllHives(
+        dbHelper: DatabaseHelper,
+        stationId: Int? = null,
+        dead: Int? = null,
+        creationYear: Int? = null,
+        creationMonth: Int? = null,
+        deathYear: Int? = null,
+        deathMonth: Int? = null,
+        ordered: Boolean? = false
+    ): Pair<List<Beehive>, Int> {
         val hives = mutableListOf<Beehive>()
+
+        val (creationTimes, creationTimesResult) = Utils.getStartAndEndTime(creationYear, creationMonth)
+        if (creationTimesResult == 0) return emptyList<Beehive>() to 0
+        val (startCreationTime, endCreationTime) = creationTimes
+
+        val (deathTimes, deathTimesResult) = Utils.getStartAndEndTime(deathYear, deathMonth)
+        if (deathTimesResult == 0) return emptyList<Beehive>() to 0
+        val (startDeathTime, endDeathTime) = deathTimes
 
         return try {
             val selectionArgs = mutableListOf<String>()
@@ -239,15 +276,28 @@ object HivesFunctionality {
                 whereConditions.add("${DatabaseHelper.COL_HIVE_COLONY_END_STATE} = -1")
             }
 
+            whereConditions.add("${DatabaseHelper.COL_HIVE_CREATION_TIME} BETWEEN ? AND ?")
+            selectionArgs.add(startCreationTime.toString())
+            selectionArgs.add(endCreationTime.toString())
+
+            whereConditions.add("${DatabaseHelper.COL_HIVE_DEATH_TIME} BETWEEN ? AND ?")
+            selectionArgs.add(startDeathTime.toString())
+            selectionArgs.add(endDeathTime.toString())
+
             val whereClause = if (whereConditions.isNotEmpty()) {
                 "WHERE ${whereConditions.joinToString(" AND ")}"
-            } else {
-                ""
-            }
+            } else ""
 
-            val query = "SELECT * FROM ${DatabaseHelper.TABLE_HIVES} $whereClause"
+            val orderByClause = if (ordered == true) {
+                "ORDER BY ${DatabaseHelper.COL_HIVE_STATION_ORDER}"
+            } else ""
 
-            val cursor = dbHelper.readableDatabase.rawQuery(query, if (selectionArgs.isNotEmpty()) selectionArgs.toTypedArray() else null)
+            val query = "SELECT * FROM ${DatabaseHelper.TABLE_HIVES} $whereClause $orderByClause"
+
+            val cursor = dbHelper.readableDatabase.rawQuery(
+                query,
+                if (selectionArgs.isNotEmpty()) selectionArgs.toTypedArray() else null
+            )
 
             cursor.use {
                 while (it.moveToNext()) {
@@ -256,19 +306,54 @@ object HivesFunctionality {
                 }
             }
 
-            Pair(hives, 1) // Success
+            Pair(hives, 1)
         } catch (e: Exception) {
             e.printStackTrace()
-            Pair(emptyList(), 0) // Failure
+            Pair(emptyList(), 0)
         }
     }
+
+
+    fun getNextAvailableHiveStationOrder(dbHelper: DatabaseHelper, stationID: Int): Pair<Int, Int> {
+        val db = dbHelper.readableDatabase
+        val usedOrders = mutableSetOf<Int>()
+
+        return try {
+            val cursor = db.rawQuery(
+                "SELECT ${DatabaseHelper.COL_HIVE_STATION_ORDER} FROM ${DatabaseHelper.TABLE_HIVES} WHERE ${DatabaseHelper.COL_STATION_ID_FK_HIVES} = ?",
+                arrayOf(stationID.toString())
+            )
+
+            cursor.use {
+                while (it.moveToNext()) {
+                    val order = it.getInt(it.getColumnIndexOrThrow(DatabaseHelper.COL_HIVE_STATION_ORDER))
+                    if (order > 0) {
+                        usedOrders.add(order)
+                    }
+                }
+            }
+
+            var nextOrder = 1
+            while (usedOrders.contains(nextOrder)) {
+                nextOrder++
+            }
+
+            Pair(nextOrder, 1)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Pair(-1, 0) // -1 as error indicator, 0 means error occurred
+        } finally {
+            db.close()
+        }
+    }
+
+
     fun saveHive(
         dbHelper: DatabaseHelper,
         beehive: Beehive,
-        fileData: String,
-        currentNotes: String
+        fileData: String? = null,
+        currentNotes: String? = null
     ): Pair<Int, Int> {
-        val db = dbHelper.writableDatabase
         val values = ContentValues().apply {
             put(DatabaseHelper.COL_STATION_ID_FK_HIVES, beehive.stationId)
             put(DatabaseHelper.COL_HIVE_NAME_TAG, beehive.nameTag)
@@ -282,16 +367,43 @@ object HivesFunctionality {
             put(DatabaseHelper.COL_HIVE_COLONY_ORIGIN, beehive.colonyOrigin)
             put(DatabaseHelper.COL_HIVE_COLONY_END_STATE, beehive.colonyEndState)
             put(DatabaseHelper.COL_HIVE_WINTER_READY, if (beehive.winterReady) 1 else 0)
-            put(DatabaseHelper.COL_HIVE_SUPPLEMENTED_FEED_COUNT, beehive.supplementedFeedCount)
             put(DatabaseHelper.COL_HIVE_AGGRESSIVITY, beehive.aggressivity)
             put(DatabaseHelper.COL_HIVE_ATTENTION_WORTH, beehive.attentionWorth)
+            put(
+                DatabaseHelper.COL_HIVE_CREATION_TIME,
+                if (beehive.creationTime.time != 0L) beehive.creationTime.time else System.currentTimeMillis()
+            )
+            put(DatabaseHelper.COL_HIVE_DEATH_TIME, beehive.deathTime.time)
+            if (beehive.stationOrder < 0) {
+                val (orderNum, result) = getNextAvailableHiveStationOrder(dbHelper, beehive.stationId)
+                if (result == 0) {
+                    Log.e("HiveFunctionality", "saveHive - couldn't retrieve stationOrder")
+                }
+                put(DatabaseHelper.COL_HIVE_STATION_ORDER, orderNum)
+            }
         }
 
-        val currentHiveId = db.insert(DatabaseHelper.TABLE_HIVES, null, values).toInt()
+        val currentHiveId: Int
+        val db = dbHelper.writableDatabase
+
+        if (beehive.id > 0) {
+            // Update existing hive
+            val rowsUpdated = db.update(
+                DatabaseHelper.TABLE_HIVES,
+                values,
+                "${DatabaseHelper.COL_HIVE_ID} = ?",
+                arrayOf(beehive.id.toString())
+            )
+            currentHiveId = if (rowsUpdated > 0) beehive.id else -1
+        } else {
+            // Insert new hive
+            currentHiveId = db.insert(DatabaseHelper.TABLE_HIVES, null, values).toInt()
+        }
+
         db.close()
 
         if (currentHiveId != -1) {
-            if (fileData != "None") {
+            if (!fileData.isNullOrEmpty() && fileData != "None") {
                 val data = HumTempData(
                     stationId = beehive.stationId,
                     hiveId = currentHiveId,
@@ -299,7 +411,7 @@ object HivesFunctionality {
                 )
                 HumTempDataFunctionality.addDataLogs(dbHelper, data)
             }
-            if (currentNotes != "None") {
+            if (!currentNotes.isNullOrEmpty() && currentNotes != "None") {
                 val note = HiveNotes(
                     stationId = beehive.stationId,
                     hiveId = currentHiveId,
@@ -312,6 +424,7 @@ object HivesFunctionality {
 
         return Pair(-1, 0)
     }
+
 
     fun deleteHive(dbHelper: DatabaseHelper, stationId: Int, hiveId: Int) {
         if (NotesFunctionality.deleteNotes(dbHelper, hiveId) == 0) {
@@ -330,6 +443,8 @@ object HivesFunctionality {
                 InspectionsFunctionality.deleteInspectionData(dbHelper, insData.id)
             }
         }
+
+        //todo delete harvests and supplemented feed
 
         val db = dbHelper.writableDatabase
         db.beginTransaction()

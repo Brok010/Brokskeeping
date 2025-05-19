@@ -96,13 +96,12 @@ class HivesBrowserActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        val (updatedHivesList, result) = HivesFunctionality.getAllHives(db, stationId, 0)
+        val (updatedHivesList, result) = HivesFunctionality.getAllHives(db, stationId, 0, ordered = true)
         if (result == 1) {
             hivesAdapter.updateData(updatedHivesList)
         } else {
             Toast.makeText(this, "HivesUpdateData did not finish successfully", Toast.LENGTH_SHORT).show()
         }
-
     }
 
     fun startHiveInspectionDataBrowserActivity(hiveId: Int) {

@@ -126,7 +126,6 @@ class AddHiveActivity : AppCompatActivity() {
             freeSpaceFrames = framesPerSuper * supers - (broodFrames + honeyFrames + droneBroodFrames),
             colonyOrigin = colonyOrigin,
             winterReady = isWinterReady,
-            supplementedFeedCount = supplementedFeed,
             aggressivity = aggressivity,
             colonyEndState = -1,
             attentionWorth = attentionWorth

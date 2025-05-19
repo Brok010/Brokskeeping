@@ -4,66 +4,165 @@ import android.R
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
+import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.brokskeeping.DbFunctionality.DatabaseHelper
 import com.example.brokskeeping.DbFunctionality.InspectionsFunctionality
 import com.example.brokskeeping.DbFunctionality.StationsFunctionality
 import com.example.brokskeeping.InspectionDataActivities.InspectionDataBrowserActivity
-import com.example.brokskeeping.databinding.ActivityInspectionsBrowserBinding
+import com.example.brokskeeping.databinding.CommonBrowserRecyclerBinding
 import java.util.Calendar
 
 class InspectionsBrowserActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityInspectionsBrowserBinding
+    private lateinit var binding: CommonBrowserRecyclerBinding
     private lateinit var db: DatabaseHelper
     private lateinit var inspectionsAdapter: InspectionsAdapter
     private var filterStationId: Int? = null
     private var selectedYear: Int? = null
     private var selectedMonth: Int? = null
+    private lateinit var header: TextView
+    private lateinit var btnLayout: LinearLayout
+    private lateinit var stationFilterInput: EditText
+    private lateinit var dateFilterInput: EditText
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityInspectionsBrowserBinding.inflate(layoutInflater)
+        binding = CommonBrowserRecyclerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         // Initialize the database helper and RecyclerView adapter
         db = DatabaseHelper(this)
         inspectionsAdapter = InspectionsAdapter(mutableListOf(), db, this)
+        header = binding.tvCommonBrowserHeader
+        header.text = "Inspections"
+
+        // buttons
+        btnLayout = binding.llCommonBrowserButtonLayout
+        val newInspectionButton = Button(this).apply {
+            id = View.generateViewId()
+            text = "New inspection"
+            setTextColor(ContextCompat.getColor(this@InspectionsBrowserActivity, com.example.brokskeeping.R.color.buttonTextColor))
+            backgroundTintList = ContextCompat.getColorStateList(this@InspectionsBrowserActivity, com.example.brokskeeping.R.color.buttonColor)
+        }
+        btnLayout.addView(newInspectionButton)
 
         // Set up the RecyclerView
-        binding.recyclerView.apply {
+        binding.commonRecyclerView.apply {
             layoutManager = LinearLayoutManager(this@InspectionsBrowserActivity)
             itemAnimator = DefaultItemAnimator()
             setHasFixedSize(true)
             adapter = inspectionsAdapter
         }
 
-        binding.NewInspectionBt.setOnClickListener {
+        newInspectionButton.setOnClickListener {
             startNewInspectionActivity()
         }
 
-        binding.stationFilterInput.setOnClickListener {
+        createAndAddFilterLayout()
+
+        stationFilterInput.setOnClickListener {
             stationFilter()
         }
 
-        binding.dateFilterInput.setOnClickListener {
+        dateFilterInput.setOnClickListener {
             showTimeFilterDialog()
         }
+    }
+
+    private fun createAndAddFilterLayout() {
+        val filterLayout = binding.llFilters
+        filterLayout.removeAllViews()
+
+        // Station filter layout
+        val stationLayout = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
+                marginEnd = 8
+            }
+        }
+
+        val stationLabel = TextView(this).apply {
+            text = "Station"
+            setTextColor(ContextCompat.getColor(this@InspectionsBrowserActivity, com.example.brokskeeping.R.color.basicTextColor))
+        }
+
+        stationFilterInput = EditText(this).apply {
+            id = View.generateViewId()
+            hint = "Station Filter"
+            isFocusable = false
+            isClickable = true
+            inputType = InputType.TYPE_NULL
+            setPadding(16, 0, 16, 0)
+            layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
+                marginStart = 8
+                marginEnd = 8
+            }
+        }
+
+        stationLayout.addView(stationLabel)
+        stationLayout.addView(stationFilterInput)
+
+        // Date filter layout
+        val dateLayout = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
+                marginEnd = 16
+            }
+        }
+
+        val dateLabel = TextView(this).apply {
+            text = "Date"
+            setTextColor(ContextCompat.getColor(this@InspectionsBrowserActivity, com.example.brokskeeping.R.color.basicTextColor))
+        }
+
+        dateFilterInput = EditText(this).apply {
+            id = View.generateViewId()
+            hint = "Date Filter"
+            isFocusable = false
+            isClickable = true
+            inputType = InputType.TYPE_NULL
+            setPadding(16, 0, 16, 0)
+            layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f).apply {
+                marginStart = 8
+                marginEnd = 8
+            }
+        }
+
+        dateLayout.addView(dateLabel)
+        dateLayout.addView(dateFilterInput)
+
+        // Add both to root filter layout
+        filterLayout.addView(stationLayout)
+        filterLayout.addView(dateLayout)
+
+        stationFilterInput.setOnClickListener {
+            stationFilter()
+        }
+
+        dateFilterInput.setOnClickListener {
+            showTimeFilterDialog()
+        }
+
     }
     
     override fun onResume() {
         super.onResume()
         if (filterStationId == null || filterStationId == 0) {
-            binding.stationFilterInput.setText("All")
+            stationFilterInput.setText("All")
         }
         if (selectedYear == null || selectedYear == 0) {
-            binding.dateFilterInput.setText("All Time")
+            dateFilterInput.setText("All Time")
         }
         val (updatedInspectionsList, result) = InspectionsFunctionality.getAllInspections(db, filterStationId, selectedYear, selectedMonth)
         if (result != 1) {
@@ -86,7 +185,7 @@ class InspectionsBrowserActivity : AppCompatActivity() {
                     showYearPicker()
                 }
                 "All Time" -> {
-                    binding.dateFilterInput.setText("All Time")
+                    dateFilterInput.setText("All Time")
                     selectedYear = null
                     selectedMonth = null
                     onResume()
@@ -116,7 +215,7 @@ class InspectionsBrowserActivity : AppCompatActivity() {
             .setPositiveButton("OK") { _, _ ->
                 selectedYear = yearPicker.selectedItem.toString().toIntOrNull()
                 selectedMonth = null
-                binding.dateFilterInput.setText("${selectedYear.toString()}")
+                dateFilterInput.setText("${selectedYear.toString()}")
                 onResume()
             }
             .setNegativeButton("Cancel", null)
@@ -149,7 +248,7 @@ class InspectionsBrowserActivity : AppCompatActivity() {
             .setPositiveButton("OK") { _, _ ->
                 selectedYear = yearPicker.selectedItem.toString().toIntOrNull()
                 selectedMonth = monthPicker.selectedItem.toString().toIntOrNull()
-                binding.dateFilterInput.setText("${selectedMonth.toString()}/${selectedYear.toString()}")
+                dateFilterInput.setText("${selectedMonth.toString()}/${selectedYear.toString()}")
                 onResume()
             }
             .setNegativeButton("Cancel", null)
@@ -173,7 +272,7 @@ class InspectionsBrowserActivity : AppCompatActivity() {
         builder.setTitle("Choose a station")
         builder.setItems(stationNames.toTypedArray()) { _, which ->
             filterStationId = if (which == 0) null else stationIds[which]
-            binding.stationFilterInput.setText(stationNames[which])
+            stationFilterInput.setText(stationNames[which])
             onResume()
         }
         builder.show()

@@ -1,4 +1,4 @@
-package com.example.brokskeeping.HoneyHarvestActivities
+package com.example.brokskeeping.SupplementedFeedActivities
 
 import android.R
 import androidx.appcompat.app.AppCompatActivity
@@ -16,20 +16,21 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.brokskeeping.DbFunctionality.DatabaseHelper
 import com.example.brokskeeping.DbFunctionality.HoneyHarvestFunctionality
+import com.example.brokskeeping.DbFunctionality.SupplementedFeedFunctionality
+import com.example.brokskeeping.HoneyHarvestActivities.HoneyHarvestAdapter
 import com.example.brokskeeping.databinding.CommonBrowserRecyclerBinding
 import java.util.Calendar
 
-class HoneyHarvestBrowserActivity : AppCompatActivity() {
+class SupplementedFeedBrowserActivity : AppCompatActivity() {
     private lateinit var binding: CommonBrowserRecyclerBinding
     private lateinit var db: DatabaseHelper
-    private lateinit var honeyHarvestAdapter: HoneyHarvestAdapter
+    private lateinit var supplementedFeedAdapter: SupplementedFeedAdapter
     private var selectedYear: Int? = null
     private var selectedMonth: Int? = null
     private var selectedType: String = "Station"
     private lateinit var header: TextView
     private lateinit var timeFilterInput: EditText
     private lateinit var typeFilterInput: EditText
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = CommonBrowserRecyclerBinding.inflate(layoutInflater)
@@ -37,16 +38,16 @@ class HoneyHarvestBrowserActivity : AppCompatActivity() {
 
         // Initialize the database helper and RecyclerView adapter
         db = DatabaseHelper(this)
-        honeyHarvestAdapter = HoneyHarvestAdapter(mutableListOf(), "Station", db, this)
+        supplementedFeedAdapter = SupplementedFeedAdapter(mutableListOf(), "Station", db, this)
 
         header = binding.tvCommonBrowserHeader
-        header.text = "Honey harvests"
+        header.text = "Supplemented feed"
         // Set up the RecyclerView
         binding.commonRecyclerView.apply {
-            layoutManager = LinearLayoutManager(this@HoneyHarvestBrowserActivity)
+            layoutManager = LinearLayoutManager(this@SupplementedFeedBrowserActivity)
             itemAnimator = DefaultItemAnimator()
             setHasFixedSize(true)
-            adapter = honeyHarvestAdapter
+            adapter = supplementedFeedAdapter
         }
 
         createAndAddFilterLayout()
@@ -54,10 +55,10 @@ class HoneyHarvestBrowserActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        val (filteredList, result) = HoneyHarvestFunctionality.getFilteredHoneyHarvests(db, selectedYear, selectedMonth, selectedType)
+        val (filteredList, result) = SupplementedFeedFunctionality.getFilteredSupplementedFeed(db, selectedYear, selectedMonth, selectedType)
 
         if (result == 1) {
-            honeyHarvestAdapter.updateData(filteredList, selectedType)
+            supplementedFeedAdapter.updateData(filteredList, selectedType)
         } else {
             Toast.makeText(this, "Wrong filter selection or no data found", Toast.LENGTH_SHORT).show()
         }
@@ -76,7 +77,7 @@ class HoneyHarvestBrowserActivity : AppCompatActivity() {
 
         val timeLabel = TextView(this).apply {
             text = "Time"
-            setTextColor(ContextCompat.getColor(this@HoneyHarvestBrowserActivity, com.example.brokskeeping.R.color.basicTextColor))
+            setTextColor(ContextCompat.getColor(this@SupplementedFeedBrowserActivity, com.example.brokskeeping.R.color.basicTextColor))
         }
 
         timeFilterInput = EditText(this).apply {
@@ -106,7 +107,7 @@ class HoneyHarvestBrowserActivity : AppCompatActivity() {
 
         val typeLabel = TextView(this).apply {
             text = "Type"
-            setTextColor(ContextCompat.getColor(this@HoneyHarvestBrowserActivity, com.example.brokskeeping.R.color.basicTextColor))
+            setTextColor(ContextCompat.getColor(this@SupplementedFeedBrowserActivity, com.example.brokskeeping.R.color.basicTextColor))
         }
 
         typeFilterInput = EditText(this).apply {
@@ -173,7 +174,7 @@ class HoneyHarvestBrowserActivity : AppCompatActivity() {
         }
 
         val yearPicker = Spinner(this)
-        yearPicker.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, years)
+        yearPicker.adapter = ArrayAdapter(this, R.layout.simple_spinner_dropdown_item, years)
         layout.addView(TextView(this).apply { text = "Select Year" })
         layout.addView(yearPicker)
 
@@ -206,7 +207,7 @@ class HoneyHarvestBrowserActivity : AppCompatActivity() {
         layout.addView(yearPicker)
 
         val monthPicker = Spinner(this)
-        monthPicker.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, months)
+        monthPicker.adapter = ArrayAdapter(this, R.layout.simple_spinner_dropdown_item, months)
         layout.addView(TextView(this).apply { text = "Select Month" })
         layout.addView(monthPicker)
 
@@ -235,4 +236,3 @@ class HoneyHarvestBrowserActivity : AppCompatActivity() {
             .show()
     }
 }
-

@@ -315,8 +315,7 @@
                 android:id="@+id/checkbox_supplemented_feed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:contentDescription="Drone brood taken" />
+                android:layout_marginStart="8dp" />
 
         </LinearLayout>
         <LinearLayout

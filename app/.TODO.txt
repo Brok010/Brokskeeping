@@ -1,10 +1,8 @@
-    # after scanning wrong barcode - cache it
-    # it gives u hives in ordered list - the lists order = order of hives in station
-    # db migration
-    # dead entities browser
-    # make a table for supplemented feed
-    # adjust hive - option for qr set is not working
+not before I leave
     # localization options
+    # adjust hive - option for qr set is not working
+    # after scanning wrong barcode - cache it
+    # db migration - necessary after live usage
 
 long term
     # family tracking -> graph?

@@ -91,6 +91,10 @@ class StationsAdapter(private val stationsList: MutableList<Station>,
                     stationsBrowserActivity.startAdjustStationActivity(station.id)
                     true
                 }
+                R.id.menu_long_click_details -> {
+                    stationsBrowserActivity.startStationActivity(station.id)
+                    true
+                }
                 else -> false
             }
         }
