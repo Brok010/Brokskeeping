@@ -28,7 +28,7 @@ class ToDoActivity : AppCompatActivity() {
         tvToDoText = findViewById(R.id.to_do_text)
         tvToDoDate = findViewById(R.id.to_do_date)
 
-        var (toDoList, _) = ToDoFunctionality.getAllToDos(db, hiveId, 0, 0, 1)
+        var (toDoList, _) = ToDoFunctionality.getAllToDos(db, hiveId, 0, 0, 1, true)
         var toDoId = showFirstToDo(toDoList)
 
         binding.toDoDone.setOnClickListener {

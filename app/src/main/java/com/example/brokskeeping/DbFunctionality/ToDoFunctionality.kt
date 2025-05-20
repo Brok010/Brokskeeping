@@ -143,7 +143,7 @@ object ToDoFunctionality {
         db.close()
     }
 
-    fun getAllToDos(dbHelper: DatabaseHelper, hiveId: Int, stationId: Int, state: Int, pending: Int): Pair<List<ToDo>, Int> {
+    fun getAllToDos(dbHelper: DatabaseHelper, hiveId: Int, stationId: Int, state: Int, pending: Int, dateOrder: Boolean): Pair<List<ToDo>, Int> {
         // hiveID is enough, else stationId for all station's t0d0s, state if i want only finished ones or not
         // pending if i want the one that are not finished and pending
         val todos = mutableListOf<ToDo>()
@@ -186,6 +186,8 @@ object ToDoFunctionality {
                     selectionArgs.add(state.toString())
                 }
 
+                val orderBy = if (dateOrder) DatabaseHelper.COL_TODO_DATE else null
+
                 val cursor = db.query(
                     DatabaseHelper.TABLE_TODO,
                     null,
@@ -193,7 +195,7 @@ object ToDoFunctionality {
                     selectionArgs.toTypedArray(),
                     null,
                     null,
-                    null
+                    orderBy
                 )
 
                 cursor.use {
