@@ -23,7 +23,7 @@ import com.example.brokskeeping.R
 import com.example.brokskeeping.databinding.CommonBrowserRecyclerBinding
 import java.util.Calendar
 
-class HiveInspectionDataBrowserActivity : AppCompatActivity() {
+class HiveInspectionDataBrowserActivity : AppCompatActivity(), HiveInspectionDataAdapter.OnDataChangedListener {
     private lateinit var binding: CommonBrowserRecyclerBinding
     private lateinit var db: DatabaseHelper
     private lateinit var hiveInspectionDataAdapter: HiveInspectionDataAdapter
@@ -41,7 +41,7 @@ class HiveInspectionDataBrowserActivity : AppCompatActivity() {
         // Initialize the database helper and RecyclerView adapter
         db = DatabaseHelper(this)
         hiveId = intent.getIntExtra("hiveId", -1)
-        hiveInspectionDataAdapter = HiveInspectionDataAdapter(mutableListOf(), hiveId!!, db, this)
+        hiveInspectionDataAdapter = HiveInspectionDataAdapter(mutableListOf(), hiveId!!, db, this, this)
         val hiveName = HivesFunctionality.getHiveNameById(db, hiveId!!)
 
         // Bind views using ViewBinding
@@ -66,6 +66,11 @@ class HiveInspectionDataBrowserActivity : AppCompatActivity() {
         createAndAddFilterLayout()
 
     }
+    override fun onDataChanged() {
+        // This will refresh data correctly
+        onResume()
+    }
+
 
     override fun onResume() {
         super.onResume()

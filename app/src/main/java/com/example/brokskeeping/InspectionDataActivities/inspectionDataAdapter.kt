@@ -77,7 +77,7 @@ class InspectionDataAdapter(private val inspectionDataList: MutableList<Inspecti
                     ) { confirmed ->
                         if (confirmed) {
                             // User confirmed the deletion
-                            InspectionsFunctionality.deleteInspectionData(db, inspectionData.id) // todo
+                            InspectionsFunctionality.deleteInspectionData(db, inspectionData.id)
                             val (inspectionData, result) = InspectionsFunctionality.getAllInspectionDataForInspectionId(db, inspectionId)
                             if (result == 1) {
                                 updateData(inspectionData)

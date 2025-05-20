@@ -17,9 +17,13 @@ import com.example.brokskeeping.R
 class HiveInspectionDataAdapter(private val hiveInspectionDataList: MutableList<InspectionData>,
                             private val hiveId: Int,
                             private val db: DatabaseHelper,
-                            private val hiveInspectionDataBrowserActivity: HiveInspectionDataBrowserActivity
+                            private val hiveInspectionDataBrowserActivity: HiveInspectionDataBrowserActivity,
+                            private val dataChangedListener: OnDataChangedListener
 ) : RecyclerView.Adapter<HiveInspectionDataAdapter.HiveInspectionDataViewHolder>() {
 
+    interface OnDataChangedListener {
+        fun onDataChanged()
+    }
     fun updateData(newHiveInspectionDataList: List<InspectionData>) {
         hiveInspectionDataList.clear()
         hiveInspectionDataList.addAll(newHiveInspectionDataList)
@@ -76,12 +80,8 @@ class HiveInspectionDataAdapter(private val hiveInspectionDataList: MutableList<
                         view.context.getString(R.string.are_you_sure_you_want_to_delete_this_inspection_data)
                     ) { confirmed ->
                         if (confirmed) {
-                            // User confirmed the deletion
-                            InspectionsFunctionality.deleteInspectionData(db, inspectionData.id) // todo
-                            val (inspectionData, result) = InspectionsFunctionality.getAllInspectionDataForHiveId(db, hiveId)
-                            if (result == 1) {
-                                updateData(inspectionData)
-                            }
+                            InspectionsFunctionality.deleteInspectionData(db, inspectionData.id)
+                            dataChangedListener.onDataChanged()
                         }
                     }
                     true
