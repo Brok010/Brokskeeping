@@ -1,5 +1,6 @@
 package com.example.brokskeeping.InspectionDataActivities
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -57,13 +58,19 @@ class HiveInspectionDataAdapter(private val hiveInspectionDataList: MutableList<
         private val tvHiveName = itemView.findViewById<TextView>(R.id.tv_hive_name)
         private val tvFreeFrames = itemView.findViewById<TextView>(R.id.tv_free_frames)
         private val tvInspectionNotes = itemView.findViewById<TextView>(R.id.tv_inspection_notes)
+        private val tvDate = itemView.findViewById<TextView>(R.id.tv_date)
 
         fun bind(inspectionData: InspectionData) {
+            val (inspection, result) = InspectionsFunctionality.getInspection(db, inspectionData.inspectionId)
+            if (result == 0) {
+                Log.e("inspectionDataAdapter", "InspectionsFunctionality.getInspection returned 0")
+            }
             val hiveName = HivesFunctionality.getHiveNameById(db, inspectionData.hiveId )
             val hiveNotes = NotesFunctionality.getNote(db, inspectionData.noteId)
             tvHiveName.text = hiveName
             tvFreeFrames.text = inspectionData.freeSpaceFrames.toString()
             tvInspectionNotes.text = hiveNotes.noteText
+            tvDate.text = inspection!!.date.toString()
         }
     }
 

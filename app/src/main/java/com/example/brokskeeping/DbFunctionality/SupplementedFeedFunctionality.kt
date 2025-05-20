@@ -11,7 +11,11 @@ import java.util.Date
 
 object SupplementedFeedFunctionality {
 
-    fun saveSupplementedFeed(dbHelper: DatabaseHelper, feed: SupplementedFeed): Int {
+    fun saveSupplementedFeed(dbHelper: DatabaseHelper, feed: SupplementedFeed): Pair<Int, Int> {
+        if (feed.kilos == null || feed.kilos < 0.0 || feed.date == null || feed.date == Date(0)) {
+            Log.e("SupplementedFeedFunctionality", "saveSupplementedFeed, wrong inputs")
+            return Pair(-1, 0)
+        }
         return try {
             val db = dbHelper.writableDatabase
             val values = ContentValues().apply {
@@ -21,10 +25,14 @@ object SupplementedFeedFunctionality {
             }
 
             val result = db.insert(DatabaseHelper.TABLE_SUPPLEMENTED_FEED, null, values)
-            if (result == -1L) 0 else 1
+            if (result == -1L) {
+                Pair(0, 0)  // insert failed, use 0 for ID
+            } else {
+                Pair(1, result.toInt())  // cast Long to Int
+            }
         } catch (e: Exception) {
             e.printStackTrace()
-            0
+            Pair(0, 0)
         }
     }
 

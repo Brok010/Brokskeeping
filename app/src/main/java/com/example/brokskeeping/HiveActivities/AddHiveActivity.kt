@@ -1,5 +1,6 @@
 package com.example.brokskeeping.HiveActivities
 
+import SupplementedFeed
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -12,11 +13,13 @@ import android.widget.Toast
 import com.example.brokskeeping.DataClasses.Beehive
 import com.example.brokskeeping.DbFunctionality.DatabaseHelper
 import com.example.brokskeeping.DbFunctionality.HivesFunctionality
+import com.example.brokskeeping.DbFunctionality.SupplementedFeedFunctionality
 import com.example.brokskeeping.Functionality.Utils
 import com.example.brokskeeping.R
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
+import java.util.Date
 
 class AddHiveActivity : AppCompatActivity() {
     private lateinit var editTextNameTag: EditText
@@ -107,7 +110,7 @@ class AddHiveActivity : AppCompatActivity() {
         val droneBroodFrames = findViewById<EditText>(R.id.et_drone_brood_frames).text.toString().toIntOrNull() ?: 0
         val framesPerSuper = findViewById<EditText>(R.id.et_frames_per_super).text.toString().toIntOrNull() ?: 0
         val supers = findViewById<EditText>(R.id.et_supers).text.toString().toIntOrNull() ?: 0
-        val supplementedFeed = findViewById<EditText>(R.id.et_supplemented_feed).text.toString().toIntOrNull() ?: 0
+        val supplementedFeedAmount = findViewById<EditText>(R.id.et_supplemented_feed).text.toString().toDoubleOrNull()
         val colonyOrigin = findViewById<EditText>(R.id.et_colony_origin).text.toString()
 
         val isWinterReady = findViewById<android.widget.CheckBox>(R.id.checkbox_winter_ready).isChecked
@@ -132,15 +135,25 @@ class AddHiveActivity : AppCompatActivity() {
             attentionWorth = attentionWorth
         )
         val notes = editTextNotes.text.toString()
-        val selectedFile = textViewFileName.text.toString().removePrefix(getString(R.string.selected_file))
+//        val selectedFile = textViewFileName.text.toString().removePrefix(getString(R.string.selected_file))
+        if (beehive.nameTag == "") {
+            Toast.makeText(this, getString(R.string.cannot_save_hive), Toast.LENGTH_SHORT).show()
+        } else {
+            val (hiveId, hiveResult) = HivesFunctionality.saveHive(db, beehive, fileData, notes)
+            if (hiveResult == 0) {
+                Toast.makeText(this, getString(R.string.cannot_save_hive), Toast.LENGTH_SHORT).show()
+            }
+            if (supplementedFeedAmount != null && supplementedFeedAmount > 0.0) {
+                val supplementedFeed = SupplementedFeed (
+                    hiveId = hiveId,
+                    date = Date(System.currentTimeMillis()),
+                    kilos = supplementedFeedAmount
+                )
+                SupplementedFeedFunctionality.saveSupplementedFeed(db, supplementedFeed)
+            }
 
-        if (Utils.notesFormat(notes) && isValidFile(selectedFile, fileData)) {
-            HivesFunctionality.saveHive(db, beehive, fileData, notes)
             Toast.makeText(this, getString(R.string.new_hive_added), Toast.LENGTH_SHORT).show()
             finish()
-        } else {
-            Toast.makeText(this, getString(R.string.invalid_notes_or_file), Toast.LENGTH_SHORT).show()
-            return
         }
     }
     private fun readFileContent(uri: Uri): String {

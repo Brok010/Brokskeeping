@@ -237,5 +237,6 @@
     <string name="app_will_restart_to_apply_language">Aplikace se restartuje, aby se změna jazyka projevila.</string>
     <string name="hive_for_station">Úl %1$d pro stanici %2$s</string>
     <string name="inspections_of_hive">Prohlídky úlu {%1$s}</string>
+    <string name="cannot_save_hive">Není možné uložit úl</string>
 
 </resources>

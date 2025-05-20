@@ -1,10 +1,12 @@
 package com.example.brokskeeping.InspectionDataActivities
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.TextView
+import androidx.appcompat.view.menu.MenuView.ItemView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.brokskeeping.DataClasses.InspectionData
 import com.example.brokskeeping.DbFunctionality.InspectionsFunctionality
@@ -50,16 +52,24 @@ class InspectionDataAdapter(private val inspectionDataList: MutableList<Inspecti
     }
 
     inner class InspectionDataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val llDate = itemView.findViewById<View>(R.id.ll_date)
         private val tvHiveName = itemView.findViewById<TextView>(R.id.tv_hive_name)
         private val tvFreeFrames = itemView.findViewById<TextView>(R.id.tv_free_frames)
         private val tvInspectionNotes = itemView.findViewById<TextView>(R.id.tv_inspection_notes)
+//        private val tvDate = itemView.findViewById<TextView>(R.id.tv_date)
 
         fun bind(inspectionData: InspectionData) {
+//            val (inspection, result) = InspectionsFunctionality.getInspection(db, inspectionData.inspectionId)
+//            if (result == 0) {
+//                Log.e("inspectionDataAdapter", "InspectionsFunctionality.getInspection returned 0")
+//            }
+            llDate.visibility = View.GONE
             val hiveName = HivesFunctionality.getHiveNameById(db, inspectionData.hiveId )
             val hiveNotes = NotesFunctionality.getNote(db, inspectionData.noteId)
             tvHiveName.text = hiveName
             tvFreeFrames.text = inspectionData.freeSpaceFrames.toString()
             tvInspectionNotes.text = hiveNotes.noteText
+//            tvDate.text = inspection!!.date.toString()
         }
     }
 

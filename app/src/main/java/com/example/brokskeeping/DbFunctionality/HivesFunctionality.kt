@@ -271,7 +271,7 @@ object HivesFunctionality {
             }
 
             if (dead == 1) {
-                whereConditions.add("${DatabaseHelper.COL_HIVE_COLONY_END_STATE} = 0")
+                whereConditions.add("${DatabaseHelper.COL_HIVE_COLONY_END_STATE} != -1")
             } else if (dead == 0) {
                 whereConditions.add("${DatabaseHelper.COL_HIVE_COLONY_END_STATE} = -1")
             }

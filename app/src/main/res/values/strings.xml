@@ -237,5 +237,6 @@
     <string name="app_will_restart_to_apply_language">The app will restart to apply the language change.</string>
     <string name="hive_for_station">Hive %1$d for Station %2$s</string>
     <string name="inspections_of_hive">Inspections of hive {%1$s}</string>
+    <string name="cannot_save_hive">Cannot save hive</string>
 
 </resources>

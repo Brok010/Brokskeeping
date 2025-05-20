@@ -106,7 +106,7 @@ class InspectionActivity : AppCompatActivity() {
         if (hive.framesPerSuper >= 1) {
             spinner.setSelection(hive.framesPerSuper - 1)
         } else {
-            spinner.setSelection(12)
+            spinner.setSelection(11)
         }
 
         // supers, Handle + / - buttons
@@ -629,7 +629,7 @@ class InspectionActivity : AppCompatActivity() {
 
             val beehive = hive.copy(
                 broodFrames = broodFrames,
-                honeyFrames = honeyFrames,
+                honeyFrames = honeyFrames - honeyHarvested,
                 framesPerSuper = framesPerSuper,
                 supers = superCount,
                 droneBroodFrames = droneFrames,
