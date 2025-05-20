@@ -1,13 +1,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/menu_long_click_change_state"
-        android:title="Change state" />
+        android:title="@string/change_state" />
 
     <item
         android:id="@+id/menu_long_click_adjust"
-        android:title="Adjust" />
+        android:title="@string/adjust" />
 
     <item
         android:id="@+id/menu_long_click_delete"
-        android:title="Delete" />
+        android:title="@string/delete" />
 </menu>

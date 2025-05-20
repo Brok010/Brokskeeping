@@ -8,7 +8,6 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -47,7 +46,7 @@ class HivesBrowserActivity : AppCompatActivity() {
         // get station name of db
         stationName = StationsFunctionality.getStationNameById(db, stationId)
         // Set the text of the TextView to the stationName
-        val hivesLabel = "Hives of [$stationName]"
+        val hivesLabel = getString(R.string.hives_of, stationName)
         // Bind views using ViewBinding
         header = binding.tvCommonBrowserHeader
         header.text = hivesLabel
@@ -56,13 +55,13 @@ class HivesBrowserActivity : AppCompatActivity() {
         btnLayout = binding.llCommonBrowserButtonLayout
         val addHiveButton = Button(this).apply {
             id = View.generateViewId()
-            text = "Add Hive"
+            text = context.getString(R.string.add_hive)
             setTextColor(ContextCompat.getColor(this@HivesBrowserActivity, R.color.buttonTextColor))
             backgroundTintList = ContextCompat.getColorStateList(this@HivesBrowserActivity, R.color.buttonColor)
         }
         val newInspectionButton = Button(this).apply {
             id = View.generateViewId()
-            text = "New Inspection"
+            text = context.getString(R.string.new_inspection)
             setTextColor(ContextCompat.getColor(this@HivesBrowserActivity, R.color.buttonTextColor))
             backgroundTintList = ContextCompat.getColorStateList(this@HivesBrowserActivity, R.color.buttonColor)
         }
@@ -100,7 +99,7 @@ class HivesBrowserActivity : AppCompatActivity() {
         if (result == 1) {
             hivesAdapter.updateData(updatedHivesList)
         } else {
-            Toast.makeText(this, "HivesUpdateData did not finish successfully", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.hives_update_failed), Toast.LENGTH_SHORT).show()
         }
     }
 

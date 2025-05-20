@@ -66,7 +66,7 @@ class InspectionActivity : AppCompatActivity() {
         inspectionContainer = binding.inspectionContainer
         val (data, result) = HivesFunctionality.getAllHives(db, stationId, 0, ordered = true)
         if (result == 0 || data.isEmpty()) {
-            Toast.makeText(this, "Could not load hives", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.could_not_load_hives), Toast.LENGTH_SHORT).show()
             finish()
             return
         }
@@ -94,7 +94,7 @@ class InspectionActivity : AppCompatActivity() {
             inflater.inflate(R.layout.view_inspection_content, inspectionContainer, false)
 
         // Fill in hive-specific data
-        inspectionView.findViewById<TextView>(R.id.tv_hive_name).text = "Hive: ${hive.nameTag}"
+        inspectionView.findViewById<TextView>(R.id.tv_hive_name).text = hive.nameTag
 
         val spinner = inspectionView.findViewById<Spinner>(R.id.spinner_frames_per_super)
         val framesPerSuperOptions = (1..18).map { it.toString() }
@@ -155,7 +155,7 @@ class InspectionActivity : AppCompatActivity() {
         val broodAdjustedCheckbox = inspectionView.findViewById<CheckBox>(R.id.checkbox_brood_taken)
         broodAdjustedCheckbox.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                askAdjustment("Brood frames") { result ->
+                askAdjustment(getString(R.string.brood_frames)) { result ->
                     // Save the change to the tag
                     broodAdjustedCheckbox.tag = result
                 }
@@ -167,7 +167,7 @@ class InspectionActivity : AppCompatActivity() {
         val honeyAdjustedCheckbox = inspectionView.findViewById<CheckBox>(R.id.checkbox_honey_taken)
         honeyAdjustedCheckbox.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                askAdjustment("Honey frames") { result ->
+                askAdjustment(getString(R.string.honey_frames)) { result ->
                     honeyAdjustedCheckbox.tag = result
                 }
             } else {
@@ -178,7 +178,7 @@ class InspectionActivity : AppCompatActivity() {
         val droneAdjustedCheckbox = inspectionView.findViewById<CheckBox>(R.id.checkbox_drone_taken)
         droneAdjustedCheckbox.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                askAdjustment("Drone frames") { result ->
+                askAdjustment(getString(R.string.drone_brood_frames)) { result ->
                     droneAdjustedCheckbox.tag = result
                 }
             } else {
@@ -191,7 +191,7 @@ class InspectionActivity : AppCompatActivity() {
         honeyHarvested.text = ""
 
         // separation and join
-        val separationCheckbox = inspectionView.findViewById<CheckBox>(R.id.checkbox_seperate)
+        val separationCheckbox = inspectionView.findViewById<CheckBox>(R.id.checkbox_separate)
         separationCheckbox.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 separationPopUp(hive, db, this, separationCheckbox)
@@ -225,14 +225,15 @@ class InspectionActivity : AppCompatActivity() {
 
         // ToD0's
         val btnAddToDo = inspectionView.findViewById<Button>(R.id.bt_add_todo)
-        val (getPendingToDos, _) = ToDoFunctionality.getAllToDos(db, hive.id, 0, 0, 1)
-        btnAddToDo.text = "Pending todo's (${getPendingToDos.size})"
+        val (getPendingToDos, _) = ToDoFunctionality.getAllToDos(db, hive.id, 0, 0, 1, true)
+        btnAddToDo.text = getString(R.string.pending_todo_s, getPendingToDos.size)
 
         btnAddToDo.setOnClickListener {
             if (getPendingToDos.isNotEmpty()) {
-                val options = arrayOf("Add new to-do", "Show pending to-dos")
-                val builder = androidx.appcompat.app.AlertDialog.Builder(this)
-                builder.setTitle("Choose an option for to-do")
+                val options = arrayOf(getString(R.string.add_new_to_do),
+                    getString(R.string.show_pending_to_dos))
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle(getString(R.string.choose_an_option_for_to_do))
                     .setItems(options) { _, which ->
                         when (which) {
                             0 -> startAddToDoActivity(hive.id, index)
@@ -267,7 +268,8 @@ class InspectionActivity : AppCompatActivity() {
                 true
             )
             if (result == 0 || inspectionData.isEmpty()) {
-                Toast.makeText(this, "No previous inspections this year", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this,
+                    getString(R.string.no_previous_inspections_this_year), Toast.LENGTH_SHORT).show()
             } else {
                 startInspectionDataActivity(inspectionData[0].id)
             }
@@ -291,12 +293,12 @@ class InspectionActivity : AppCompatActivity() {
             val lastNote = notes[0].noteText
 
             AlertDialog.Builder(context)
-                .setTitle("Last notes")
+                .setTitle(getString(R.string.last_notes))
                 .setMessage(lastNote)
-                .setPositiveButton("OK", null)
+                .setPositiveButton(getString(R.string.ok), null)
                 .show()
         } else {
-            Toast.makeText(context, "Couldn't retrieve note", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, getString(R.string.couldn_t_retrieve_note), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -304,7 +306,7 @@ class InspectionActivity : AppCompatActivity() {
         val (stations, stationResult) = StationsFunctionality.getAllStations(db, 1)
 
         if (stationResult == 0 || stations.isEmpty()) {
-            Toast.makeText(context, "Cannot find stations", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, getString(R.string.cannot_find_stations), Toast.LENGTH_SHORT).show()
             checkbox.isChecked = false
             return
         }
@@ -312,7 +314,7 @@ class InspectionActivity : AppCompatActivity() {
         val stationNames = stations.map { it.name }.toTypedArray()
 
         val stationDialog = AlertDialog.Builder(context)
-        stationDialog.setTitle("Select station to join into")
+        stationDialog.setTitle(getString(R.string.select_station_to_join_into))
         stationDialog.setItems(stationNames) { _, stationIndex ->
             val selectedStationId = stations[stationIndex].id
 
@@ -320,7 +322,8 @@ class InspectionActivity : AppCompatActivity() {
             val hives = allHives.filter { it.id != hive.id }
 
             if (hiveResult == 0 || hives.isEmpty()) {
-                Toast.makeText(context, "Cannot find hives in selected station", Toast.LENGTH_SHORT)
+                Toast.makeText(context,
+                    getString(R.string.cannot_find_hives_in_selected_station), Toast.LENGTH_SHORT)
                     .show()
                 checkbox.isChecked = false
                 return@setItems
@@ -329,7 +332,7 @@ class InspectionActivity : AppCompatActivity() {
             val hiveNames = hives.map { it.nameTag }.toTypedArray()
 
             AlertDialog.Builder(context)
-                .setTitle("Select hive to join into")
+                .setTitle(getString(R.string.select_hive_to_join_into))
                 .setItems(hiveNames) { _, hiveIndex ->
                     val selectedHiveId = hives[hiveIndex].id
                     val newHive = hive.copy()
@@ -355,28 +358,28 @@ class InspectionActivity : AppCompatActivity() {
             if (isChecked) {
                 val input = EditText(buttonView.context).apply {
                     inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
-                    hint = "Enter kilos"
+                    hint = context.getString(R.string.enter_kilos)
                 }
 
                 AlertDialog.Builder(buttonView.context)
-                    .setTitle("Supplemented Feed")
-                    .setMessage("How many kilos?")
+                    .setTitle(getString(R.string.supplemented_feed))
+                    .setMessage(getString(R.string.how_many_kilos))
                     .setView(input)
-                    .setPositiveButton("OK") { dialog, _ ->
+                    .setPositiveButton(getString(R.string.ok)) { dialog, _ ->
                         val value = input.text.toString().toDoubleOrNull()
                         if (value != null && value > 0) {
                             buttonView.tag = value
                         } else {
                             Toast.makeText(
                                 buttonView.context,
-                                "Invalid input. Please try again.",
+                                getString(R.string.invalid_input_please_try_again),
                                 Toast.LENGTH_SHORT
                             ).show()
                             buttonView.isChecked = false
                         }
                         dialog.dismiss()
                     }
-                    .setNegativeButton("Cancel") { dialog, _ ->
+                    .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
                         buttonView.isChecked = false
                         dialog.dismiss()
                     }
@@ -392,7 +395,7 @@ class InspectionActivity : AppCompatActivity() {
         val (stations, result) = StationsFunctionality.getAllStations(db, 1)
 
         if (result == 0 || stations.isEmpty()) {
-            Toast.makeText(context, "Cannot find stations", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, getString(R.string.cannot_find_stations), Toast.LENGTH_SHORT).show()
             checkbox.isChecked = false
             return
         }
@@ -400,18 +403,18 @@ class InspectionActivity : AppCompatActivity() {
         val stationNames = stations.map { it.name }.toTypedArray()
 
         val builder = AlertDialog.Builder(context)
-        builder.setTitle("Select station for new hive")
+        builder.setTitle(getString(R.string.select_station_for_new_hive))
         builder.setItems(stationNames) { _, which ->
             val selectedStationId = stations[which].id
 
             // Prompt for hive name
             val nameInput = EditText(context)
-            nameInput.hint = "Enter new hive name"
+            nameInput.hint = getString(R.string.enter_new_hive_name)
 
             AlertDialog.Builder(context)
-                .setTitle("New Hive Name")
+                .setTitle(getString(R.string.new_hive_name))
                 .setView(nameInput)
-                .setPositiveButton("Create") { _, _ ->
+                .setPositiveButton(getString(R.string.create)) { _, _ ->
                     val newName = nameInput.text.toString().trim()
                     if (newName.isNotEmpty()) {
                         val newHive = Beehive().apply {
@@ -423,14 +426,16 @@ class InspectionActivity : AppCompatActivity() {
                         val (newHiveId, saveHiveResult) = HivesFunctionality.saveHive(db, newHive, "", "")
                         checkbox.tag = newHiveId
                         if (saveHiveResult == 0) {
-                            Toast.makeText(context, "Could not save new hive", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context,
+                                getString(R.string.could_not_save_new_hive), Toast.LENGTH_SHORT).show()
                         }
                     } else {
-                        Toast.makeText(context, "Hive name cannot be empty", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context,
+                            getString(R.string.hive_name_cannot_be_empty), Toast.LENGTH_SHORT).show()
                         checkbox.isChecked = false
                     }
                 }
-                .setNegativeButton("Cancel") { _, _ ->
+                .setNegativeButton(getString(R.string.cancel)) { _, _ ->
                     checkbox.isChecked = false
                 }
                 .show()
@@ -469,19 +474,19 @@ class InspectionActivity : AppCompatActivity() {
     }
 
     private fun askAdjustment(frameType: String, onResult: (Int) -> Unit) {
-        val builder = androidx.appcompat.app.AlertDialog.Builder(this)
+        val builder = AlertDialog.Builder(this)
         builder.setTitle("$frameType Adjusted")
-        builder.setMessage("Did you add or remove $frameType?")
+        builder.setMessage(getString(R.string.did_you_add_or_remove, frameType))
 
-        builder.setPositiveButton("Added") { _, _ ->
+        builder.setPositiveButton(getString(R.string.added)) { _, _ ->
             askHowMany { amount -> onResult(amount) } // Positive
         }
 
-        builder.setNegativeButton("Removed") { _, _ ->
+        builder.setNegativeButton(getString(R.string.removed)) { _, _ ->
             askHowMany { amount -> onResult(-amount) } // Negative
         }
 
-        builder.setNeutralButton("Cancel") { dialog, _ ->
+        builder.setNeutralButton(getString(R.string.cancel)) { dialog, _ ->
             dialog.dismiss()
         }
 
@@ -490,28 +495,28 @@ class InspectionActivity : AppCompatActivity() {
 
     private fun askHowMany(onAmountEntered: (Int) -> Unit) {
         val input = EditText(this).apply {
-            hint = "Enter number of frames"
-            inputType = android.text.InputType.TYPE_CLASS_NUMBER
+            hint = context.getString(R.string.enter_number_of_frames)
+            inputType = InputType.TYPE_CLASS_NUMBER
         }
 
         val layout = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(50, 40, 50, 10)
             addView(TextView(this@InspectionActivity).apply {
-                text = "How many?"
+                text = context.getString(R.string.how_many)
                 setPadding(0, 0, 0, 10)
             })
             addView(input)
         }
 
-        val dialog = androidx.appcompat.app.AlertDialog.Builder(this)
-            .setTitle("Specify Amount")
+        val dialog = AlertDialog.Builder(this)
+            .setTitle(getString(R.string.specify_amount))
             .setView(layout)
-            .setPositiveButton("OK") { _, _ ->
+            .setPositiveButton(getString(R.string.ok)) { _, _ ->
                 val amount = input.text.toString().toIntOrNull() ?: 0
                 onAmountEntered(amount)
             }
-            .setNegativeButton("Cancel") { dialog, _ ->
+            .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
                 dialog.dismiss()
             }
             .create()
@@ -568,14 +573,15 @@ class InspectionActivity : AppCompatActivity() {
 
             val (noteId, result) = NotesFunctionality.addNote(db, hiveNotes)
             if (result != 1) {
-                Toast.makeText(this, "addNote function crashed", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this,
+                    getString(R.string.addnote_function_crashed), Toast.LENGTH_SHORT).show()
                 finish()
             }
 
             val aggressivity = view.findViewById<Slider>(R.id.aggressivity_slider).value.toInt()
             val attention = view.findViewById<Slider>(R.id.slider_attention_worth).value.toInt()
 
-            val separateCheckbox = view.findViewById<CheckBox>(R.id.checkbox_seperate)
+            val separateCheckbox = view.findViewById<CheckBox>(R.id.checkbox_separate)
             val separatedHiveId = (separateCheckbox.tag as? Int) ?: -1
 
             val joinedCheckbox = view.findViewById<CheckBox>(R.id.checkbox_join)
@@ -710,25 +716,25 @@ class InspectionActivity : AppCompatActivity() {
 
         // Add Previous button if we're not at the first inspection
         if (currentInspectionIndex > 0) {
-            btnLayout.addView(createNavButton("Previous") {
+            btnLayout.addView(createNavButton(getString(R.string.previous)) {
                 showInspection(currentInspectionIndex - 1)
             })
         }
 
         // Add Next button if we're not at the last inspection
         if (currentInspectionIndex < inspectionData.size - 1) {
-            btnLayout.addView(createNavButton("Next") {
+            btnLayout.addView(createNavButton(getString(R.string.next)) {
                 showInspection(currentInspectionIndex + 1)
             })
-            btnLayout.addView(createNavButton("Skip") {
+            btnLayout.addView(createNavButton(getString(R.string.skip)) {
                 skip()
             })
         } else {
             // If at the last inspection, show "Save All" and "Skip and Save All"
-            btnLayout.addView(createNavButton("Save All") {
+            btnLayout.addView(createNavButton(getString(R.string.save_all)) {
                 saveAllToDatabase()
             })
-            btnLayout.addView(createNavButton("Skip and Save All") {
+            btnLayout.addView(createNavButton(getString(R.string.skip_and_save_all)) {
                 skip()
                 saveAllToDatabase()
             })

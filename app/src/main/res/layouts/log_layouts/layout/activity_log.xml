@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:text="First Date"
+            android:text="@string/first_date"
             android:layout_weight="1"
             android:textColor="@color/basicTextColor"
             android:gravity="center"
@@ -33,7 +33,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:textColor="@color/basicTextColor"
-            android:text="Last Date"
+            android:text="@string/last_date"
             android:textSize="18sp"
             android:textStyle="bold"
             android:layout_marginStart="16dp" />
@@ -54,7 +54,7 @@
             android:gravity="center"
             android:textColor="@color/basicTextColor"
             android:layout_margin="8dp"
-            android:text="TextView 1" />
+            android:text="@string/place_holder" />
 
         <TextView
             android:id="@+id/max_temp"
@@ -64,7 +64,7 @@
             android:layout_margin="8dp"
             android:gravity="center"
             android:textColor="@color/basicTextColor"
-            android:text="TextView 2" />
+            android:text="@string/place_holder" />
 
         <TextView
             android:id="@+id/min_hum"
@@ -74,7 +74,7 @@
             android:gravity="center"
             android:layout_margin="8dp"
             android:textColor="@color/basicTextColor"
-            android:text="TextView 3" />
+            android:text="@string/place_holder" />
 
         <TextView
             android:id="@+id/max_hum"
@@ -84,7 +84,7 @@
             android:layout_margin="8dp"
             android:textColor="@color/basicTextColor"
             android:gravity="center"
-            android:text="TextView 4" />
+            android:text="@string/place_holder" />
     </LinearLayout>
 
     <!-- Graph Placeholder -->
@@ -104,7 +104,7 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/buttonColor"
         android:textColor="@color/buttonTextColor"
-        android:text="Reset" />
+        android:text="@string/reset" />
 
 
 </LinearLayout>

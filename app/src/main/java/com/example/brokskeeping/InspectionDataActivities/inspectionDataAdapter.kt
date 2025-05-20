@@ -39,7 +39,7 @@ class InspectionDataAdapter(private val inspectionDataList: MutableList<Inspecti
         holder.itemView.setOnClickListener {
             inspectionDataBrowserActivity.startInspectionDataActivity(currentInspectionData.id, inspectionId)
         }
-        holder.itemView.setOnLongClickListener() {
+        holder.itemView.setOnLongClickListener {
             showContextMenu(holder.itemView, currentInspectionData)
             true
         }
@@ -73,7 +73,7 @@ class InspectionDataAdapter(private val inspectionDataList: MutableList<Inspecti
                 R.id.menu_long_click_delete -> {
                     Utils.showConfirmationDialog(
                         view.context,
-                        "Are you sure you want to delete this inspection data?"
+                        view.context.getString(R.string.are_you_sure_you_want_to_delete_this_inspection_data)
                     ) { confirmed ->
                         if (confirmed) {
                             // User confirmed the deletion

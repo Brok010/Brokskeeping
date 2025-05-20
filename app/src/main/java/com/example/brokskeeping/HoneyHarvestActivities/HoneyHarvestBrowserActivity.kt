@@ -1,6 +1,5 @@
 package com.example.brokskeeping.HoneyHarvestActivities
 
-import android.R
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -16,6 +15,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.brokskeeping.DbFunctionality.DatabaseHelper
 import com.example.brokskeeping.DbFunctionality.HoneyHarvestFunctionality
+import com.example.brokskeeping.R
 import com.example.brokskeeping.databinding.CommonBrowserRecyclerBinding
 import java.util.Calendar
 
@@ -25,7 +25,7 @@ class HoneyHarvestBrowserActivity : AppCompatActivity() {
     private lateinit var honeyHarvestAdapter: HoneyHarvestAdapter
     private var selectedYear: Int? = null
     private var selectedMonth: Int? = null
-    private var selectedType: String = "Station"
+    private var selectedType: String = ""
     private lateinit var header: TextView
     private lateinit var timeFilterInput: EditText
     private lateinit var typeFilterInput: EditText
@@ -37,10 +37,11 @@ class HoneyHarvestBrowserActivity : AppCompatActivity() {
 
         // Initialize the database helper and RecyclerView adapter
         db = DatabaseHelper(this)
-        honeyHarvestAdapter = HoneyHarvestAdapter(mutableListOf(), "Station", db, this)
+        honeyHarvestAdapter = HoneyHarvestAdapter(mutableListOf(), getString(R.string.station), db, this)
+        selectedType = getString(R.string.station)
 
         header = binding.tvCommonBrowserHeader
-        header.text = "Honey harvests"
+        header.text = getString(R.string.honey_harvests)
         // Set up the RecyclerView
         binding.commonRecyclerView.apply {
             layoutManager = LinearLayoutManager(this@HoneyHarvestBrowserActivity)
@@ -54,12 +55,13 @@ class HoneyHarvestBrowserActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        val (filteredList, result) = HoneyHarvestFunctionality.getFilteredHoneyHarvests(db, selectedYear, selectedMonth, selectedType)
+        val (filteredList, result) = HoneyHarvestFunctionality.getFilteredHoneyHarvests(this, db, selectedYear, selectedMonth, selectedType)
 
         if (result == 1) {
             honeyHarvestAdapter.updateData(filteredList, selectedType)
         } else {
-            Toast.makeText(this, "Wrong filter selection or no data found", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,
+                getString(R.string.wrong_filter_selection_or_no_data_found), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -75,16 +77,16 @@ class HoneyHarvestBrowserActivity : AppCompatActivity() {
         }
 
         val timeLabel = TextView(this).apply {
-            text = "Time"
+            text = context.getString(R.string.time)
             setTextColor(ContextCompat.getColor(this@HoneyHarvestBrowserActivity, com.example.brokskeeping.R.color.basicTextColor))
         }
 
         timeFilterInput = EditText(this).apply {
             id = View.generateViewId()
-            hint = "Time Filter"
+            hint = context.getString(R.string.time_filter)
             isFocusable = false
             isClickable = true
-            setText("All Time")
+            setText(getString(R.string.all_time))
             inputType = android.text.InputType.TYPE_NULL
             setPadding(16, 0, 16, 0)
             layoutParams = LinearLayout.LayoutParams(
@@ -105,16 +107,16 @@ class HoneyHarvestBrowserActivity : AppCompatActivity() {
         }
 
         val typeLabel = TextView(this).apply {
-            text = "Type"
+            text = getString(R.string.type)
             setTextColor(ContextCompat.getColor(this@HoneyHarvestBrowserActivity, com.example.brokskeeping.R.color.basicTextColor))
         }
 
         typeFilterInput = EditText(this).apply {
             id = View.generateViewId()
-            hint = "Type Filter"
+            hint = context.getString(R.string.type_filter)
             isFocusable = false
             isClickable = true
-            setText("Station")
+            setText(getString(R.string.station))
             inputType = android.text.InputType.TYPE_NULL
             setPadding(16, 0, 16, 0)
             layoutParams = LinearLayout.LayoutParams(
@@ -141,19 +143,19 @@ class HoneyHarvestBrowserActivity : AppCompatActivity() {
 
 
     private fun showTimeFilterDialog() {
-        val options = arrayOf("Month", "Year", "All Time")
+        val options = arrayOf(getString(R.string.month), getString(R.string.year), getString(R.string.all_time))
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("Select Time Filter")
+        builder.setTitle(getString(R.string.select_time_filter))
         builder.setItems(options) { _, which ->
             when (options[which]) {
-                "Month" -> {
+                getString(R.string.month) -> {
                     showMonthYearPicker()
                 }
-                "Year" -> {
+                getString(R.string.year) -> {
                     showYearPicker()
                 }
-                "All Time" -> {
-                    timeFilterInput.setText("All Time")
+                getString(R.string.all_time) -> {
+                    timeFilterInput.setText(getString(R.string.all_time))
                     selectedMonth = null
                     selectedYear = null
                     onResume()
@@ -174,19 +176,19 @@ class HoneyHarvestBrowserActivity : AppCompatActivity() {
 
         val yearPicker = Spinner(this)
         yearPicker.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, years)
-        layout.addView(TextView(this).apply { text = "Select Year" })
+        layout.addView(TextView(this).apply { text = getString(R.string.select_year) })
         layout.addView(yearPicker)
 
         AlertDialog.Builder(this)
-            .setTitle("Choose Year")
+            .setTitle(getString(R.string.choose_year))
             .setView(layout)
-            .setPositiveButton("OK") { _, _ ->
+            .setPositiveButton(getString(R.string.ok)) { _, _ ->
                 selectedYear = yearPicker.selectedItem.toString().toIntOrNull()
                 timeFilterInput.setText(selectedYear.toString())
                 selectedMonth = null
                 onResume()
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(getString(R.string.cancel), null)
             .show()
     }
 
@@ -201,32 +203,32 @@ class HoneyHarvestBrowserActivity : AppCompatActivity() {
         }
 
         val yearPicker = Spinner(this)
-        yearPicker.adapter = ArrayAdapter(this, R.layout.simple_spinner_dropdown_item, years)
-        layout.addView(TextView(this).apply { text = "Select Year" })
+        yearPicker.adapter = ArrayAdapter(this,android.R.layout.simple_spinner_dropdown_item, years)
+        layout.addView(TextView(this).apply { text = getString(R.string.select_year) })
         layout.addView(yearPicker)
 
         val monthPicker = Spinner(this)
         monthPicker.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, months)
-        layout.addView(TextView(this).apply { text = "Select Month" })
+        layout.addView(TextView(this).apply { text = getString(R.string.select_month) })
         layout.addView(monthPicker)
 
         AlertDialog.Builder(this)
-            .setTitle("Choose Month and Year")
+            .setTitle(getString(R.string.choose_month_and_year))
             .setView(layout)
-            .setPositiveButton("OK") { _, _ ->
+            .setPositiveButton(getString(R.string.ok)) { _, _ ->
                 selectedYear = yearPicker.selectedItem.toString().toIntOrNull()
                 selectedMonth = monthPicker.selectedItem.toString().toIntOrNull()
                 timeFilterInput.setText("${selectedMonth.toString()}/${selectedYear.toString()}")
                 onResume()
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(getString(R.string.cancel), null)
             .show()
     }
 
     private fun showTypeFilterDialog() {
-        val options = arrayOf("Hive", "Station")
+        val options = arrayOf(getString(R.string.hive), getString(R.string.station))
         AlertDialog.Builder(this)
-            .setTitle("Select Type Filter")
+            .setTitle(getString(R.string.select_type_filter))
             .setItems(options) { _, which ->
                 typeFilterInput.setText(options[which])
                 selectedType = options[which]

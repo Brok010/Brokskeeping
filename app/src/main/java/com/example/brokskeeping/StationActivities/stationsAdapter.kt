@@ -37,7 +37,7 @@ class StationsAdapter(private val stationsList: MutableList<Station>,
         holder.itemView.setOnClickListener {
             stationsBrowserActivity.startBrowseHivesActivity(currentStation.name, currentStation.id)
         }
-        holder.itemView.setOnLongClickListener() {
+        holder.itemView.setOnLongClickListener {
             showContextMenu(holder.itemView, currentStation)
             true
         }
@@ -71,7 +71,7 @@ class StationsAdapter(private val stationsList: MutableList<Station>,
                 R.id.menu_long_click_delete -> {
                     Utils.showConfirmationDialog(
                         view.context,
-                        "Are you sure you want to delete this station?"
+                        view.context.getString(R.string.are_you_sure_you_want_to_delete_this_station)
                     ) { confirmed ->
                         if (confirmed) {
                             // User confirmed the deletion

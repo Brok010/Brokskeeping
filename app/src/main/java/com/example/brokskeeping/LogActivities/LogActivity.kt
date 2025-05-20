@@ -62,7 +62,7 @@ class LogActivity : AppCompatActivity() {
         val originalData = HumTempDataFunctionality.getHumTempData(db, logId)
         var cutOriginalData = ""
         if (originalData.logText == "") {
-            Toast.makeText(this, "Empty data", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.empty_data), Toast.LENGTH_SHORT).show()
             finish()
         } else if (originalData.logText.isNotEmpty()) {
             cutOriginalData = originalData.logText.substringAfter("\n", "")
@@ -81,10 +81,10 @@ class LogActivity : AppCompatActivity() {
         val formattedLastDate = dateFormat.format(originalData.lastDate)
 
         //set 1st date and lastdate, put maxmins and avg graph in there
-        minTemp.text = "Min temp: ${maxMins.minTemp}°C"
-        maxTemp.text = "Max temp: ${maxMins.maxTemp}°C"
-        minHum.text = "Min hum: ${maxMins.minHum}%"
-        maxHum.text = "Max hum: ${maxMins.maxHum}%"
+        minTemp.text = getString(R.string.min_temp_c, maxMins.minTemp)
+        maxTemp.text = getString(R.string.max_temp_c, maxMins.maxTemp)
+        minHum.text = getString(R.string.min_hum, maxMins.minHum)
+        maxHum.text = getString(R.string.max_hum, maxMins.maxHum)
         tvFirstDate.text = formattedFirstDate
         tvLastDate.text = formattedLastDate
         btnReset = findViewById(R.id.btn_reset)
@@ -149,7 +149,7 @@ class LogActivity : AppCompatActivity() {
 
         for ((xValue, group) in groupedEntries) {
             // Calculate average y value for each x-axis value
-            val sum = group.sumByDouble { it.y.toDouble() }
+            val sum = group.sumOf { it.y.toDouble() }
             val average = sum / group.size.toFloat()
             avgEntries.add(Entry(xValue, average.toFloat()))
         }
@@ -181,7 +181,7 @@ class LogActivity : AppCompatActivity() {
     }
 
     private fun createTempDataSet(tempEntries: MutableList<Entry>): LineDataSet {
-        val tempDataSet = LineDataSet(tempEntries, "Temperature °C")
+        val tempDataSet = LineDataSet(tempEntries, getString(R.string.temperature_c))
         tempDataSet.color = Color.BLUE
         tempDataSet.setCircleColor(Color.BLUE)
         tempDataSet.setDrawValues(false) // Disable drawing values on points
@@ -189,7 +189,7 @@ class LogActivity : AppCompatActivity() {
     }
 
     private fun createHumDataSet(humEntries: MutableList<Entry>): LineDataSet {
-        val humDataSet = LineDataSet(humEntries, "Humidity %")
+        val humDataSet = LineDataSet(humEntries, getString(R.string.humidity))
         humDataSet.color = Color.RED
         humDataSet.setCircleColor(Color.RED)
         humDataSet.setDrawValues(false) // Disable drawing values on points
@@ -204,7 +204,7 @@ class LogActivity : AppCompatActivity() {
             }
         }
         xAxis.position = XAxis.XAxisPosition.BOTTOM
-        xAxis.setGranularity(1f) // Set the granularity to 1 to show all values
+        xAxis.granularity = 1f // Set the granularity to 1 to show all values
     }
 
 
@@ -219,7 +219,8 @@ class LogActivity : AppCompatActivity() {
         val firstDate = tvFirstDate.text.toString()
         val lastDate = tvLastDate.text.toString()
         if (firstDate.isEmpty() || lastDate.isEmpty()) {
-            Toast.makeText(this, "Please select both first and last dates", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,
+                getString(R.string.please_select_both_first_and_last_dates), Toast.LENGTH_SHORT).show()
         } else {
             val dateFormat = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault())
 
@@ -228,13 +229,14 @@ class LogActivity : AppCompatActivity() {
                 val lastDateTime = dateFormat.parse(lastDate)?.time ?: 0L
 
                 if (firstDateTime > lastDateTime) {
-                    Toast.makeText(this, "First date cannot be after the last date", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this,
+                        getString(R.string.first_date_cannot_be_after_the_last_date), Toast.LENGTH_SHORT).show()
                 } else {
                     val newData = Utils.getNewData(data, firstDateTime, lastDateTime)
                     makeGraph(newData)
                 }
             } catch (e: ParseException) {
-                Toast.makeText(this, "Error parsing dates", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.error_parsing_dates), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -268,14 +270,14 @@ class LogActivity : AppCompatActivity() {
 
         val dialog = AlertDialog.Builder(this)
             .setView(dialogView)
-            .setPositiveButton("OK") { _, _ ->
+            .setPositiveButton(getString(R.string.ok)) { _, _ ->
                 // Update the TextView with the formatted date and time
                 calLastDate.set(Calendar.HOUR_OF_DAY, hourPicker.value)
                 calLastDate.set(Calendar.MINUTE, minutePicker.value)
                 val formattedDate = dateFormat.format(calLastDate.time)
                 textViewToUpdate.text = formattedDate
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(getString(R.string.cancel), null)
             .create()
 
         dialog.show()

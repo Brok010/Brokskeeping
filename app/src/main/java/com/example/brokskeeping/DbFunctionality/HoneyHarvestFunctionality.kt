@@ -1,10 +1,12 @@
 package com.example.brokskeeping.DbFunctionality
 
 import android.content.ContentValues
+import android.content.Context
 import android.database.Cursor
 import android.util.Log
 import com.example.brokskeeping.DataClasses.HoneyHarvest
 import com.example.brokskeeping.Functionality.Utils
+import com.example.brokskeeping.R
 import java.util.Calendar
 import java.util.Date
 
@@ -24,6 +26,7 @@ object HoneyHarvestFunctionality {
     }
 
     fun getFilteredHoneyHarvests(
+        context: Context,
         databaseHelper: DatabaseHelper,
         year: Int? = null,
         month: Int? = null,
@@ -36,8 +39,8 @@ object HoneyHarvestFunctionality {
         val (startTime, endTime) = times
 
         try {
-            when (type.lowercase()) {
-            "station" -> {
+            when (type) {
+                context.getString(R.string.station) -> {
                 val (stations, stationsResult) = StationsFunctionality.getAllStations(databaseHelper, 1)
                 if (stationsResult == 0) {
                     Log.e("HoneyHarvestFunctionality", "Station loading was not successful - stationFilter")
@@ -73,7 +76,7 @@ object HoneyHarvestFunctionality {
                 }
             }
 
-            "hive" -> {
+                context.getString(R.string.hive) -> {
                 val (hives, result) = HivesFunctionality.getAllHives(databaseHelper, dead = 0)
                 if (result == 0) {
                     Log.e("HoneyHarvestFunctionality", "getAllHives function did not finish properly")

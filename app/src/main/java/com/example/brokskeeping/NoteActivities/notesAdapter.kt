@@ -13,6 +13,8 @@ import com.example.brokskeeping.DbFunctionality.DatabaseHelper
 import com.example.brokskeeping.DbFunctionality.NotesFunctionality
 import com.example.brokskeeping.Functionality.Utils
 import com.example.brokskeeping.R
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class NotesAdapter(private val notesList: MutableList<HiveNotes>,
                    private val hiveId: Int,
@@ -40,7 +42,7 @@ class NotesAdapter(private val notesList: MutableList<HiveNotes>,
             notesBrowserActivity.startNoteActivity(currentHiveNotes.id)
         }
 
-        holder.itemView.setOnLongClickListener() {
+        holder.itemView.setOnLongClickListener {
             showContextMenu(holder.itemView, currentHiveNotes)
             true
         }
@@ -56,7 +58,8 @@ class NotesAdapter(private val notesList: MutableList<HiveNotes>,
 
         fun bind(note: HiveNotes) {
             tvNotesText.text = note.noteText
-            tvNotesDate.text = note.noteDate.toString()
+            val formattedDate = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(note.noteDate)
+            tvNotesDate.text = formattedDate
         }
     }
     private fun showContextMenu(view: View, note: HiveNotes) {
@@ -68,7 +71,7 @@ class NotesAdapter(private val notesList: MutableList<HiveNotes>,
                 R.id.menu_long_click_delete -> {
                     Utils.showConfirmationDialog(
                         view.context,
-                        "Are you sure you want to delete this note?"
+                        view.context.getString(R.string.are_you_sure_you_want_to_delete_this_note)
                     ) { confirmed ->
                         if (confirmed) {
                             // User confirmed the deletion

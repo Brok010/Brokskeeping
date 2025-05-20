@@ -52,7 +52,7 @@ class HoneyHarvestAdapter(private val honeyHarvestList: MutableList<Pair<Int, In
         private val tvHoneyFramesHarvested = itemView.findViewById<TextView>(R.id.tv_honey_harvested)
 
         fun bind(honeyHarvest: Pair<Int, Int>, type: String) {
-            if (type == "Station") {
+            if (type == itemView.context.getString(R.string.station)) {
                 val entityName = StationsFunctionality.getStationNameById(db, honeyHarvest.first)
                 tvLocation.text = entityName
             } else {
@@ -80,7 +80,7 @@ class HoneyHarvestAdapter(private val honeyHarvestList: MutableList<Pair<Int, In
                 ).apply {
                     marginEnd = 4.dpToPx(context)
                 }
-                text = "Station: "
+                text = context.getString(R.string.station)
                 setTextColor(context.getColor(R.color.basicTextColor))
             }
 
@@ -104,3 +104,5 @@ class HoneyHarvestAdapter(private val honeyHarvestList: MutableList<Pair<Int, In
         return (this * context.resources.displayMetrics.density).toInt()
     }
 }
+
+

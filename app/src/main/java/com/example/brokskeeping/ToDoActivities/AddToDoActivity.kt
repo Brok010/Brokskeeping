@@ -12,6 +12,7 @@ import com.example.brokskeeping.DataClasses.ToDo
 import com.example.brokskeeping.DbFunctionality.DatabaseHelper
 import com.example.brokskeeping.DbFunctionality.NotesFunctionality
 import com.example.brokskeeping.DbFunctionality.ToDoFunctionality
+import com.example.brokskeeping.R
 import com.example.brokskeeping.databinding.ActivityAddToDoBinding
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -54,7 +55,8 @@ class AddToDoActivity : AppCompatActivity() {
     private fun submitToDo() {
         val toDoText = etToDoText.text.toString().trim()
         if (toDoText.isEmpty()) {
-            Toast.makeText(this, "Please enter a to-do description.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,
+                getString(R.string.please_enter_a_to_do_description), Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -67,7 +69,8 @@ class AddToDoActivity : AppCompatActivity() {
         val selectedDate = if (date != null && date!!.after(currentDate)) {
             date!!
         } else {
-            Toast.makeText(this, "Date is invalid or in the past. Defaulting to 6 days in future.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,
+                getString(R.string.date_is_invalid_or_in_the_past_defaulting_to_6_days_in_future), Toast.LENGTH_SHORT).show()
             defaultFutureDate
         }
 
@@ -80,9 +83,10 @@ class AddToDoActivity : AppCompatActivity() {
 
         val result = ToDoFunctionality.addToDo(db, toDo)
         if (result == 0) {
-            Toast.makeText(this, "Error adding to-do to database.", Toast.LENGTH_LONG).show()
+            Toast.makeText(this,
+                getString(R.string.error_adding_to_do_to_database), Toast.LENGTH_LONG).show()
         } else {
-            Toast.makeText(this, "To-do added successfully.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.to_do_added_successfully), Toast.LENGTH_SHORT).show()
             setResult(RESULT_OK)
             finish()
         }

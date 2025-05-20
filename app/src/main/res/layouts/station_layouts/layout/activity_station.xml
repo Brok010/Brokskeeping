@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Station"
+            android:text="@string/station"
             android:textColor="@color/basicTextColor"
             android:textSize="30dp"
             android:textStyle="bold" />
@@ -45,7 +45,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Station name:"
+                    android:text="@string/station_name"
                     android:textSize="16sp"
                     android:layout_gravity="start"
                     android:paddingEnd="8dp" />
@@ -54,7 +54,7 @@
                     android:id="@+id/tv_station_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0"
+                    android:text="@string/place_holder"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -67,16 +67,16 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Location:"
-                    android:textSize="16sp"
                     android:layout_gravity="start"
-                    android:paddingEnd="8dp" />
+                    android:paddingEnd="8dp"
+                    android:text="@string/location"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/tv_location"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0"
+                    android:text="@string/place_holder"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -89,7 +89,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="In Use:"
+                    android:text="@string/in_use"
                     android:textSize="16sp"
                     android:layout_gravity="start"
                     android:paddingEnd="8dp" />
@@ -98,7 +98,7 @@
                     android:id="@+id/tv_in_use"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0"
+                    android:text="@string/place_holder"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -113,7 +113,7 @@
                     android:id="@+id/btn_adjust_station"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Adjust Station"
+                    android:text="@string/adjust"
                     android:textColor="@color/buttonTextColor"
                     android:layout_marginHorizontal="4dp"
                     android:backgroundTint="@color/buttonColor">
@@ -123,7 +123,7 @@
                     android:id="@+id/btn_delete_station"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Delete Station"
+                    android:text="@string/delete"
                     android:textColor="@color/buttonTextColor"
                     android:layout_marginHorizontal="4dp"
                     android:backgroundTint="@color/buttonColor">

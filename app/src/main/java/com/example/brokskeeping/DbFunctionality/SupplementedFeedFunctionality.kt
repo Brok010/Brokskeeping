@@ -2,9 +2,11 @@ package com.example.brokskeeping.DbFunctionality
 
 import SupplementedFeed
 import android.content.ContentValues
+import android.content.Context
 import android.database.Cursor
 import android.util.Log
 import com.example.brokskeeping.Functionality.Utils
+import com.example.brokskeeping.R
 import java.util.Date
 
 object SupplementedFeedFunctionality {
@@ -67,6 +69,7 @@ object SupplementedFeedFunctionality {
     }
 
     fun getFilteredSupplementedFeed(
+        context: Context,
         databaseHelper: DatabaseHelper,
         year: Int? = null,
         month: Int? = null,
@@ -79,8 +82,8 @@ object SupplementedFeedFunctionality {
         val (startTime, endTime) = times
 
         try {
-            when (type.lowercase()) {
-                "station" -> {
+            when (type) {
+                context.getString(R.string.station) -> {
                     val (stations, stationsResult) = StationsFunctionality.getAllStations(databaseHelper, 1)
                     if (stationsResult == 0) {
                         Log.e("SupplementedFeedFunctionality", "Station loading was not successful - stationFilter")
@@ -116,7 +119,7 @@ object SupplementedFeedFunctionality {
                     }
                 }
 
-                "hive" -> {
+                context.getString(R.string.hive) -> {
                     val (hives, result) = HivesFunctionality.getAllHives(databaseHelper, dead = 0)
                     if (result == 0) {
                         Log.e("HoneyHarvestFunctionality", "getAllHives function did not finish properly")

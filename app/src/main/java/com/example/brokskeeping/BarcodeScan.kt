@@ -36,11 +36,11 @@ class BarcodeScan : AppCompatActivity() {
             .setAutoFocusEnabled(true)
             .setFacing(CameraSource.CAMERA_FACING_BACK)
             .build()
-        binding.surfaceView!!.holder.addCallback(object :SurfaceHolder.Callback{
+        binding.surfaceView.holder.addCallback(object :SurfaceHolder.Callback{
             @SuppressLint("MissingPermission")  //is this a good idea?
             override fun surfaceCreated(holder: SurfaceHolder) {
                 try {
-                    cameraSource.start(binding.surfaceView!!.holder)
+                    cameraSource.start(binding.surfaceView.holder)
                 }catch (e:IOException){
                     e.printStackTrace()
                 }
@@ -81,7 +81,7 @@ class BarcodeScan : AppCompatActivity() {
     }
     override fun onPause() {
         super.onPause()
-        cameraSource!!.release()
+        cameraSource.release()
     }
 
     override fun onResume() {

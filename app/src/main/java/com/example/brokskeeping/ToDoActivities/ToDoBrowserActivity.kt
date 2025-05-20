@@ -70,7 +70,7 @@ class ToDoBrowserActivity : AppCompatActivity() {
         btnLayout = binding.llCommonBrowserButtonLayout
         addToDoBt = Button(this).apply {
             id = View.generateViewId()
-            text = "Add ToDo"
+            text = context.getString(R.string.add_todo)
             setTextColor(ContextCompat.getColor(this@ToDoBrowserActivity, R.color.buttonTextColor))
             backgroundTintList = ContextCompat.getColorStateList(this@ToDoBrowserActivity, R.color.buttonColor)
         }
@@ -90,12 +90,12 @@ class ToDoBrowserActivity : AppCompatActivity() {
 
         createAndAddStationHiveStateFilterLayout()
 
-        stateFilterInput.setText("All")
+        stateFilterInput.setText(getString(R.string.all))
         if (stationId < 1) {
-            stationFilterInput.setText("All")
+            stationFilterInput.setText(getString(R.string.all))
         }
         if (hiveId < 1) {
-           hiveFilterInput.setText("All")
+           hiveFilterInput.setText(getString(R.string.all))
         }
     }
 
@@ -142,9 +142,9 @@ class ToDoBrowserActivity : AppCompatActivity() {
         }
 
         // Create individual filter views
-        val stationLayout = createFilter("Station", "Station Filter", View.generateViewId())
-        val hiveLayout = createFilter("Hive", "Hive Filter", View.generateViewId())
-        val stateLayout = createFilter("State", "State Filter", View.generateViewId())
+        val stationLayout = createFilter(getString(R.string.station), getString(R.string.station_filter), View.generateViewId())
+        val hiveLayout = createFilter(getString(R.string.hive), getString(R.string.hive_filter), View.generateViewId())
+        val stateLayout = createFilter(getString(R.string.state), getString(R.string.state_filter), View.generateViewId())
 
         // Save references if needed
         stationFilterInput = stationLayout.getChildAt(1) as EditText
@@ -155,9 +155,9 @@ class ToDoBrowserActivity : AppCompatActivity() {
         if (stationId != -1 && hiveId != -1) {
             stationLayout.visibility = View.GONE
             hiveLayout.visibility = View.GONE
-            binding.tvCommonBrowserHeader.text = "To Do's of hive [$hiveName]; [$stationName]"
+            binding.tvCommonBrowserHeader.text = getString(R.string.to_do_s_of_hive_s_s, hiveName, stationName)
         } else {
-            binding.tvCommonBrowserHeader.text = "To Do's"
+            binding.tvCommonBrowserHeader.text = getString(R.string.to_do_s)
         }
 
         // Add to container
@@ -182,11 +182,12 @@ class ToDoBrowserActivity : AppCompatActivity() {
             addToDoBt.visibility = View.GONE
         }
 
-        val (updatedToDoList, result) = ToDoFunctionality.getAllToDos(db, hiveId, stationId, state, 0)
+        val (updatedToDoList, result) = ToDoFunctionality.getAllToDos(db, hiveId, stationId, state, 0, true)
         if (result == 1) {
             toDoAdapter.updateData(updatedToDoList)
         } else {
-            Toast.makeText(this, "ToDoUpdate didn't finish successfully", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,
+                getString(R.string.todoupdate_didn_t_finish_successfully), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -205,7 +206,7 @@ class ToDoBrowserActivity : AppCompatActivity() {
         }
 
         val builder = android.app.AlertDialog.Builder(this)
-        builder.setTitle("Choose a station")
+        builder.setTitle(getString(R.string.choose_a_station))
         builder.setItems(stationNames.toTypedArray()) { _, which ->
             stationId = stationIds[which]
             hiveId = 0 // Reset to All since station changed
@@ -218,13 +219,15 @@ class ToDoBrowserActivity : AppCompatActivity() {
 
     private fun hiveFilter() {
         if (stationId < 1) {
-            Toast.makeText(this, "Please choose a station first.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,
+                getString(R.string.please_choose_a_station_first), Toast.LENGTH_SHORT).show()
         } else {
             val (hives, result) = HivesFunctionality.getAllHives(db, stationId, 0)
             if (result != 1 || hives.isEmpty()) {
-                Toast.makeText(this, "No hives found for this station.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this,
+                    getString(R.string.no_hives_found_for_this_station), Toast.LENGTH_SHORT).show()
             } else {
-                val hiveNames = mutableListOf("All")
+                val hiveNames = mutableListOf(getString(R.string.all))
                 val hiveIds = mutableListOf(0)
 
                 hives.forEach {
@@ -233,7 +236,7 @@ class ToDoBrowserActivity : AppCompatActivity() {
                 }
 
                 val builder = android.app.AlertDialog.Builder(this)
-                builder.setTitle("Choose a hive")
+                builder.setTitle(getString(R.string.choose_a_hive))
                 builder.setItems(hiveNames.toTypedArray()) { _, which ->
                     hiveId = hiveIds[which]
                     hiveFilterInput.setText(hiveNames[which])
@@ -245,9 +248,9 @@ class ToDoBrowserActivity : AppCompatActivity() {
     }
 
     fun stateFilter() {
-        val options = arrayOf("All", "Done", "To be done")
+        val options = arrayOf(getString(R.string.all), getString(R.string.done), getString(R.string.to_be_done))
         val builder = android.app.AlertDialog.Builder(this)
-        builder.setTitle("Choose State")
+        builder.setTitle(getString(R.string.choose_state))
         builder.setItems(options) { _, which ->
             state = when (which) {
                 0 -> -1 // All

@@ -30,7 +30,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:text="Name:"
+                    android:text="@string/name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/basicTextColor"
@@ -44,7 +44,7 @@
                     android:maxLines="1"
                     android:paddingHorizontal="8dp"
                     android:textColor="@color/basicTextColor"
-                    android:text="0"
+                    android:text="@string/place_holder"
                     android:gravity="end"
                     android:textSize="18sp" />
             </LinearLayout>
@@ -56,7 +56,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:text="Type:"
+                    android:text="@string/type"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/basicTextColor"
@@ -70,7 +70,7 @@
                     android:maxLines="1"
                     android:paddingHorizontal="8dp"
                     android:textColor="@color/basicTextColor"
-                    android:text="0"
+                    android:text="@string/place_holder"
                     android:gravity="end"
                     android:textSize="18sp" />
             </LinearLayout>
@@ -90,7 +90,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:text="Creation:"
+                    android:text="@string/creation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/basicTextColor"
@@ -104,7 +104,7 @@
                     android:maxLines="1"
                     android:paddingHorizontal="8dp"
                     android:textColor="@color/basicTextColor"
-                    android:text="0"
+                    android:text="@string/place_holder"
                     android:gravity="end"
                     android:textSize="18sp" />
             </LinearLayout>
@@ -116,7 +116,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:text="Death:"
+                    android:text="@string/death"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/basicTextColor"
@@ -130,7 +130,7 @@
                     android:maxLines="1"
                     android:paddingHorizontal="8dp"
                     android:textColor="@color/basicTextColor"
-                    android:text="0"
+                    android:text="@string/place_holder"
                     android:gravity="end"
                     android:textSize="18sp" />
             </LinearLayout>

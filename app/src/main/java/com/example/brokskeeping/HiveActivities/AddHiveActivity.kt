@@ -74,15 +74,16 @@ class AddHiveActivity : AppCompatActivity() {
 
                 if (fileName?.endsWith(".txt") == true) {
                     // Valid text file, update the UI
-                    textViewFileName.text = "Selected File: $fileName"
+                    textViewFileName.text = fileName
                     // Call the function to read file content and store it
                     fileData = readFileContent(uri)
 
                 } else {
                     // Invalid file, show a Toast to the user
-                    Toast.makeText(this, "Please choose a valid text file (.txt)", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this,
+                        getString(R.string.please_choose_a_valid_text_file_txt), Toast.LENGTH_SHORT).show()
                     // Clear the file name from the UI
-                    textViewFileName.text = "Selected File: None"
+                    textViewFileName.text = getString(R.string.none)
                 }
             }
         }
@@ -131,14 +132,14 @@ class AddHiveActivity : AppCompatActivity() {
             attentionWorth = attentionWorth
         )
         val notes = editTextNotes.text.toString()
-        val selectedFile = textViewFileName.text.toString().removePrefix("Selected File: ")
+        val selectedFile = textViewFileName.text.toString().removePrefix(getString(R.string.selected_file))
 
         if (Utils.notesFormat(notes) && isValidFile(selectedFile, fileData)) {
             HivesFunctionality.saveHive(db, beehive, fileData, notes)
-            Toast.makeText(this, "New hive added", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.new_hive_added), Toast.LENGTH_SHORT).show()
             finish()
         } else {
-            Toast.makeText(this, "Invalid notes or file", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.invalid_notes_or_file), Toast.LENGTH_SHORT).show()
             return
         }
     }
@@ -163,7 +164,7 @@ class AddHiveActivity : AppCompatActivity() {
     }
 
     private fun isValidFile(fileName: String, fileData: String): Boolean {
-        return fileName.endsWith(".txt") || fileName == "None"
+        return fileName.endsWith(".txt") || fileName == getString(R.string.none)
     }
 
 

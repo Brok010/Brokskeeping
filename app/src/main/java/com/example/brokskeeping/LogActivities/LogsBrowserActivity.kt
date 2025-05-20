@@ -47,13 +47,13 @@ class LogsBrowserActivity : AppCompatActivity() {
 
         // Set the text of the TextView to the stationName
         header = binding.tvCommonBrowserHeader
-        header.text = "Logs of [$stationName], [$hiveName]"
+        header.text = getString(R.string.logs_of_station_name_hive_name, stationName, hiveName)
 
         // buttons
         btnLayout = binding.llCommonBrowserButtonLayout
         val addLogButton = Button(this).apply {
             id = View.generateViewId()
-            text = "Add Log"
+            text = context.getString(R.string.add_log)
             setTextColor(ContextCompat.getColor(this@LogsBrowserActivity, R.color.buttonTextColor))
             backgroundTintList = ContextCompat.getColorStateList(this@LogsBrowserActivity, R.color.buttonColor)
         }

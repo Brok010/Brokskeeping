@@ -10,6 +10,7 @@ import android.widget.Toast
 import com.example.brokskeeping.DataClasses.ToDo
 import com.example.brokskeeping.DbFunctionality.DatabaseHelper
 import com.example.brokskeeping.DbFunctionality.ToDoFunctionality
+import com.example.brokskeeping.R
 import com.example.brokskeeping.databinding.ActivityAdjustToDoBinding
 import org.w3c.dom.Text
 import java.text.SimpleDateFormat
@@ -79,7 +80,7 @@ class AdjustToDoActivity : AppCompatActivity() {
             ToDoFunctionality.adjustToDo(db, newToDo)
             finish()
         } else {
-            Toast.makeText(this, "No changes made", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.no_changes_made), Toast.LENGTH_SHORT).show()
             finish()
         }
     }

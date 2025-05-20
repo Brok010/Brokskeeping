@@ -11,6 +11,7 @@ import com.example.brokskeeping.DataClasses.Station
 import com.example.brokskeeping.DbFunctionality.DatabaseHelper
 import com.example.brokskeeping.DbFunctionality.HivesFunctionality
 import com.example.brokskeeping.DbFunctionality.StationsFunctionality
+import com.example.brokskeeping.R
 import com.example.brokskeeping.databinding.ActivityAdjustHiveBinding
 import java.util.Date
 
@@ -37,14 +38,15 @@ class AdjustHiveActivity : AppCompatActivity() {
         val (stationAttrs, stationResult) = StationsFunctionality.getStationsAttributes(db, stationId)
         stationAttributes = stationAttrs
         if (stationResult == 0) {
-            Toast.makeText(this, "Couldn't retrieve station", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.couldn_t_retrieve_station), Toast.LENGTH_SHORT).show()
 
         }
         val stationName = stationAttributes?.name
 
         val (hive, hiveResult) = HivesFunctionality.getHiveAttributesById(db, hiveId)
         if (hiveResult == 0 || hive == null) {
-            Toast.makeText(this, "Hive couldn't be retrieved from db", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,
+                getString(R.string.hive_couldn_t_be_retrieved_from_db), Toast.LENGTH_SHORT).show()
             finish()
             return
         }
@@ -54,7 +56,8 @@ class AdjustHiveActivity : AppCompatActivity() {
 
         val (stations, stationsResult) = StationsFunctionality.getAllStations(db, 1)
         if (stationsResult == 0) {
-            Toast.makeText(this, "Station loading was not successful", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,
+                getString(R.string.station_loading_was_not_successful), Toast.LENGTH_SHORT).show()
             finish()
         }
 
@@ -102,7 +105,8 @@ class AdjustHiveActivity : AppCompatActivity() {
         } ?: stationAttributes?.id
 
         if (newStationId == null) {
-            Toast.makeText(this@AdjustHiveActivity, "Invalid station selection", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@AdjustHiveActivity,
+                getString(com.example.brokskeeping.R.string.invalid_station_selection), Toast.LENGTH_SHORT).show()
             return
         }
 

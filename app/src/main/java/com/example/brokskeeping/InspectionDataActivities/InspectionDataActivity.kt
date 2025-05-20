@@ -26,50 +26,52 @@ class InspectionDataActivity : AppCompatActivity() {
 
         val (currentInspectionData, result) = InspectionsFunctionality.getAllInspectionDataById(db, inspectionDataId)
         if (result != 1 && currentInspectionData != null) {
-            Toast.makeText(this, "InspectionDataLoad not successful", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,
+                getString(R.string.inspectiondataload_not_successful), Toast.LENGTH_SHORT).show()
             finish()
         }
 
         // date
         val (inspection, inspectionResult) = InspectionsFunctionality.getInspection(db, currentInspectionData!!.inspectionId)
         if (inspectionResult == 0) {
-            Toast.makeText(this, "Inspection load not successful", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,
+                getString(R.string.inspection_load_not_successful), Toast.LENGTH_SHORT).show()
         }
         val tvDate = findViewById<TextView>(R.id.tv_date)
         if (inspection != null) {
             tvDate.text = inspection.date.toString()
         } else {
-            Toast.makeText(this, "Inspection has no date", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.inspection_has_no_date), Toast.LENGTH_SHORT).show()
         }
 
         // checkboxes
         val ivBroodFrame = findViewById<ImageView>(R.id.iv_brood_frames)
         ivBroodFrame.setImageResource(
-            if (currentInspectionData?.broodFramesAdjusted == true) R.drawable.ic_yes else R.drawable.ic_no
+            if (currentInspectionData.broodFramesAdjusted == true) R.drawable.ic_yes else R.drawable.ic_no
         )
         val ivDroneBroodFrame = findViewById<ImageView>(R.id.iv_drone_frames)
         ivDroneBroodFrame.setImageResource(
-            if (currentInspectionData?.droneBroodFramesAdjusted == true) R.drawable.ic_yes else R.drawable.ic_no
+            if (currentInspectionData.droneBroodFramesAdjusted == true) R.drawable.ic_yes else R.drawable.ic_no
         )
         val ivHoneyFrame = findViewById<ImageView>(R.id.iv_honey_frames)
         ivHoneyFrame.setImageResource(
-            if (currentInspectionData?.honeyFramesAdjusted == true) R.drawable.ic_yes else R.drawable.ic_no
+            if (currentInspectionData.honeyFramesAdjusted == true) R.drawable.ic_yes else R.drawable.ic_no
         )
         val ivSupplementedFeed = findViewById<ImageView>(R.id.iv_supplemented_feed)
         ivSupplementedFeed.setImageResource(
-            if (currentInspectionData?.supplementedFeed!! > 0.0) R.drawable.ic_yes else R.drawable.ic_no
+            if (currentInspectionData.supplementedFeed > 0.0) R.drawable.ic_yes else R.drawable.ic_no
         )
         val ivWinterReady = findViewById<ImageView>(R.id.iv_winter_ready)
         ivWinterReady.setImageResource(
-            if (currentInspectionData?.winterReady == true) R.drawable.ic_yes else R.drawable.ic_no
+            if (currentInspectionData.winterReady == true) R.drawable.ic_yes else R.drawable.ic_no
         )
         val ivSeparated = findViewById<ImageView>(R.id.iv_separated)
         ivSeparated.setImageResource(
-            if (currentInspectionData?.separated != -1) R.drawable.ic_yes else R.drawable.ic_no
+            if (currentInspectionData.separated != -1) R.drawable.ic_yes else R.drawable.ic_no
         )
         val ivJoined = findViewById<ImageView>(R.id.iv_joined)
         ivJoined.setImageResource(
-            if (currentInspectionData?.joined != -1) R.drawable.ic_yes else R.drawable.ic_no
+            if (currentInspectionData.joined != -1) R.drawable.ic_yes else R.drawable.ic_no
         )
         val tvHoneyHarvested = findViewById<TextView>(R.id.tv_honey_frames_harvested)
         val tvAggressivity = findViewById<TextView>(R.id.tv_aggressivity)
@@ -88,30 +90,30 @@ class InspectionDataActivity : AppCompatActivity() {
         val tvSeparated = findViewById<TextView>(R.id.tv_separated_count)
         val tvJoined = findViewById<TextView>(R.id.tv_joined_count)
 
-        val note = currentInspectionData?.let { NotesFunctionality.getNote(db, it.noteId) }
-        tvNotes.text = note?.noteText ?: ""
+        val note = currentInspectionData.let { NotesFunctionality.getNote(db, it.noteId) }
+        tvNotes.text = note.noteText
 
-        val colonyEndState = if (currentInspectionData?.colonyEndState == 0) {
-            "Dead"
-        } else if (currentInspectionData?.colonyEndState == -1) {
-            "Alive"
+        val colonyEndState = if (currentInspectionData.colonyEndState == 0) {
+            getString(R.string.dead)
+        } else if (currentInspectionData.colonyEndState == -1) {
+            getString(R.string.alive)
         } else {
-            currentInspectionData?.colonyEndState.toString()
+            currentInspectionData.colonyEndState.toString()
         }
 
-        val separatedValue = if (currentInspectionData?.separated == -1) {
+        val separatedValue = if (currentInspectionData.separated == -1) {
             ""
         } else {
-            currentInspectionData?.separated.toString()
+            currentInspectionData.separated.toString()
         }
 
-        val joinedValue = if (currentInspectionData?.joined == -1) {
+        val joinedValue = if (currentInspectionData.joined == -1) {
             ""
         } else {
-            currentInspectionData?.joined.toString()
+            currentInspectionData.joined.toString()
         }
 
-        currentInspectionData?.let { data ->
+        currentInspectionData.let { data ->
             tvHoneyHarvested.text = data.honeyHarvested.toString()
             tvAggressivity.text = data.aggressivity.toString()
             tvAttention.text = data.attentionWorth.toString()

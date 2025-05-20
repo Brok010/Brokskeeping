@@ -12,6 +12,7 @@ import com.example.brokskeeping.BottomMenuFragment
 import com.example.brokskeeping.DbFunctionality.DatabaseHelper
 import com.example.brokskeeping.DbFunctionality.InspectionsFunctionality
 import com.example.brokskeeping.DbFunctionality.StationsFunctionality
+import com.example.brokskeeping.R
 import com.example.brokskeeping.databinding.CommonBrowserRecyclerBinding
 
 class InspectionDataBrowserActivity : AppCompatActivity() {
@@ -34,7 +35,8 @@ class InspectionDataBrowserActivity : AppCompatActivity() {
         val stationName = StationsFunctionality.getStationNameById(db, stationId)
         val (inspection, inspectionResult) = InspectionsFunctionality.getInspection(db, inspectionId)
         if (inspectionResult == 0) {
-            Toast.makeText(this, "Could not retrieve inspection data", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,
+                getString(R.string.could_not_retrieve_inspection_data), Toast.LENGTH_SHORT).show()
             finish()
         }
         val inspectionDate = inspection?.date
@@ -42,7 +44,7 @@ class InspectionDataBrowserActivity : AppCompatActivity() {
 
         // Bind views using ViewBinding
         header = binding.tvCommonBrowserHeader
-        header.text = "Inspection of station ${stationName} on ${inspectionDate}"
+        header.text = getString(R.string.inspection_of_station_on, stationName, inspectionDate)
 
         // Set up the RecyclerView
         binding.commonRecyclerView.apply {
@@ -66,7 +68,7 @@ class InspectionDataBrowserActivity : AppCompatActivity() {
         if (result == 1) {
             inspectionDataAdapter.updateData(updatedInspectionDataList)
         } else {
-            Toast.makeText(this, "Cannot load inspection data", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.cannot_load_inspection_data), Toast.LENGTH_SHORT).show()
             finish()
         }
     }

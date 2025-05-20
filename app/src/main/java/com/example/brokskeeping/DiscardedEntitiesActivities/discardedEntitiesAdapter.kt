@@ -1,5 +1,6 @@
 package com.example.brokskeeping.DiscardedEntitiesActivities
 
+import android.provider.Settings.Global.getString
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,12 +38,11 @@ class DiscardedEntitiesAdapter(private val discardedEntitiesList: MutableList<Di
     override fun onBindViewHolder(holder: DiscardedEntitiesViewHolder, position: Int) {
         val currentDiscardedEntity = discardedEntitiesList[position]
         holder.bind(currentDiscardedEntity)
-        val activity = DiscardedEntitiesBrowserActivity()
 
         holder.itemView.setOnClickListener {
             when (currentDiscardedEntity) {
-                is DiscardedEntity.DiscardedHive -> activity.startHiveActivity(currentDiscardedEntity.hive.id)
-                is DiscardedEntity.DiscardedStation -> activity.startStationActivity(currentDiscardedEntity.station.id)
+                is DiscardedEntity.DiscardedHive -> discardedEntitiesBrowserActivity.startHiveActivity(currentDiscardedEntity.hive.id)
+                is DiscardedEntity.DiscardedStation -> discardedEntitiesBrowserActivity.startStationActivity(currentDiscardedEntity.station.id)
             }
         }
     }
@@ -64,14 +64,14 @@ class DiscardedEntitiesAdapter(private val discardedEntitiesList: MutableList<Di
             when (discardedEntity) {
                 is DiscardedEntity.DiscardedHive -> {
                     tvName.text = discardedEntity.hive.nameTag
-                    tvType.text = "Hive"
+                    tvType.text = itemView.context.getString(R.string.hive)
                     tvCreation.text = sdf.format(discardedEntity.hive.creationTime)
                     tvDeath.text = sdf.format(discardedEntity.hive.deathTime)
                 }
 
                 is DiscardedEntity.DiscardedStation -> {
                     tvName.text = discardedEntity.station.name
-                    tvType.text = "Station"
+                    tvType.text = itemView.context.getString(R.string.station)
                     tvCreation.text = sdf.format(discardedEntity.station.creationTime)
                     tvDeath.text = sdf.format(discardedEntity.station.deathTime)
                 }

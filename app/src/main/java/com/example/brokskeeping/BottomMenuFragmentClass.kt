@@ -18,6 +18,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.example.brokskeeping.DbFunctionality.DatabaseHelper
 import com.example.brokskeeping.DbFunctionality.OtherFunctionality
+import com.example.brokskeeping.Functionality.Reused_functions
 import com.example.brokskeeping.Functionality.Utils
 
 class BottomMenuFragment : Fragment() {
@@ -39,7 +40,8 @@ class BottomMenuFragment : Fragment() {
                 startActivity(intent)
             } else {
                 // Permission not granted, show a toast message
-                Toast.makeText(requireContext(), "Camera permission not given", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.camera_permission_not_given), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -60,30 +62,8 @@ class BottomMenuFragment : Fragment() {
         }
 
         settingsButton.setOnClickListener {
-            val popup = PopupMenu(requireContext(), settingsButton)
-            popup.menu.add("Yearly Reset")
-
-            popup.setOnMenuItemClickListener { item ->
-                if (item.title == "Yearly Reset") {
-                    AlertDialog.Builder(requireContext())
-                        .setTitle("Confirm Reset")
-                        .setMessage("Are you sure you want to perform a yearly reset? This action cannot be undone.")
-                        .setPositiveButton("Yes") { _, _ ->
-                            OtherFunctionality.yearlyReset(db)
-                        }
-                        .setNegativeButton("No", null)
-                        .show()
-                    true
-                } else {
-                    false
-                }
-            }
-
-            popup.show()
+            Reused_functions.showSettingsMenu(requireContext(), it, db)
         }
-
-
-
         return view
     }
 }

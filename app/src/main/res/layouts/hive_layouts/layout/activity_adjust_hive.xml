@@ -19,7 +19,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Name:"
+            android:text="@string/name"
             android:paddingEnd="8dp">
         </TextView>
 
@@ -43,7 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingEnd="8dp"
-            android:text="QR string:">
+            android:text="@string/qr_string">
         </TextView>
 
         <EditText
@@ -57,7 +57,7 @@
             android:id="@+id/btn_scan_QR"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Scan QR"
+            android:text="@string/scan_qr"
             android:textColor="@color/buttonTextColor"
             android:layout_marginStart="4dp"
             android:backgroundTint="@color/buttonColor"/>
@@ -75,7 +75,7 @@
             android:id="@+id/station_change_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Station:"
+            android:text="@string/station"
             android:textColor="@color/basicTextColor"
             android:layout_marginEnd="8dp" />
 
@@ -102,7 +102,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingEnd="8dp"
-                android:text="Brood frames:" />
+                android:text="@string/brood_frames" />
 
             <EditText
                 android:id="@+id/tv_brood_frames"
@@ -123,7 +123,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingEnd="8dp"
-                android:text="Honey frames:" />
+                android:text="@string/honey_frames" />
 
             <EditText
                 android:id="@+id/et_honey_frames"
@@ -148,7 +148,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Drone brood frames:"
+                android:text="@string/drone_brood_frames"
                 android:paddingEnd="8dp" />
 
             <EditText
@@ -168,7 +168,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Frames per super:"
+                android:text="@string/frames_per_super"
                 android:paddingEnd="8dp" />
 
             <EditText
@@ -188,7 +188,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Supers:"
+            android:text="@string/supers"
             android:paddingEnd="8dp" />
 
         <EditText
@@ -207,14 +207,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Colony origin:"
+            android:text="@string/colony_origin"
             android:paddingEnd="8dp" />
 
         <EditText
             android:id="@+id/et_colony_origin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Origin"/>
+            android:hint="@string/origin"/>
     </LinearLayout>
 
     <LinearLayout
@@ -231,7 +231,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Supplemented Feed:"
+                android:text="@string/supplemented_feed"
                 android:paddingEnd="8dp" />
 
             <EditText
@@ -250,7 +250,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Winter ready:"
+                android:text="@string/winter_ready"
                 android:paddingEnd="8dp" />
 
             <CheckBox
@@ -267,7 +267,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Agresivity:"
+            android:text="@string/aggressivity"
             android:textColor="@color/basicTextColor" />
 
         <com.google.android.material.slider.Slider
@@ -286,7 +286,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Attention worth:"
+            android:text="@string/attention_worth"
             android:textColor="@color/basicTextColor" />
 
         <com.google.android.material.slider.Slider
@@ -312,7 +312,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Dead:"
+                android:text="@string/dead"
                 android:paddingEnd="8dp" />
 
             <CheckBox
@@ -329,13 +329,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingEnd="8dp"
-                android:text="Station order:" />
+                android:text="@string/station_order" />
 
             <EditText
                 android:id="@+id/tv_station_order"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0"
+                android:text="@string/place_holder"
                 android:inputType="number"
                 android:textSize="16sp" />
         </LinearLayout>
@@ -356,7 +356,7 @@
             android:backgroundTint="@color/buttonColor"
             android:textColor="@color/buttonTextColor"
             android:layout_margin="8dp"
-            android:text="Save"/>
+            android:text="@string/save_hive"/>
 
         <Button
             android:id="@+id/btn_adjust_hive_back"
@@ -365,7 +365,7 @@
             android:layout_margin="8dp"
             android:backgroundTint="@color/buttonColor"
             android:textColor="@color/buttonTextColor"
-            android:text="Back" />
+            android:text="@string/back" />
     </LinearLayout>
 
 </LinearLayout>

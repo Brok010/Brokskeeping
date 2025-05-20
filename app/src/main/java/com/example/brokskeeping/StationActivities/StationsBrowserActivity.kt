@@ -37,13 +37,13 @@ class StationsBrowserActivity : AppCompatActivity() {
 
         // Bind views using ViewBinding
         header = binding.tvCommonBrowserHeader
-        header.text = "My stations"
+        header.text = getString(R.string.my_stations)
 
         // buttons
         btnLayout = binding.llCommonBrowserButtonLayout
         val addStationButton = Button(this).apply {
             id = View.generateViewId()
-            text = "Add Station"
+            text = context.getString(R.string.add_station)
             setTextColor(ContextCompat.getColor(this@StationsBrowserActivity, R.color.buttonTextColor))
             backgroundTintList = ContextCompat.getColorStateList(this@StationsBrowserActivity, R.color.buttonColor)
         }

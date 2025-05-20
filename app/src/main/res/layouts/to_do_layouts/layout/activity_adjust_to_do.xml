@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColorHint="@color/hintColor"
-        android:hint="Enter to do text"
+        android:hint="@string/enter_to_do_text"
         android:inputType="textMultiLine"
         android:minLines="5" />
     <LinearLayout
@@ -30,7 +30,7 @@
             android:focusable="false"
             android:clickable="true"
             android:backgroundTint="@color/buttonColor"
-            android:text="Pick Date"/>
+            android:text="@string/pick_date"/>
 
         <TextView
             android:id="@+id/adjust_to_do_date_text"
@@ -38,7 +38,7 @@
             android:layout_height="match_parent"
             android:layout_margin="8dp"
             android:gravity="center"
-            android:text="date"
+            android:text="@string/place_holder"
             android:textSize="15dp">
 
         </TextView>
@@ -53,7 +53,7 @@
             android:id="@+id/adjust_to_do_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Done?"
+            android:text="@string/done"
             android:layout_margin="8dp">
         </CheckBox>
 
@@ -80,7 +80,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:backgroundTint="@color/buttonColor"
-                android:text="Adjust" />
+                android:text="@string/adjust" />
 
         </LinearLayout>
     </LinearLayout>

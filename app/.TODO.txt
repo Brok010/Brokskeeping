@@ -1,8 +1,6 @@
 not before I leave
-    # localization options
     # adjust hive - option for qr set is not working
     # after scanning wrong barcode - cache it
-    # db migration - necessary after live usage
 
 long term
     # family tracking -> graph?

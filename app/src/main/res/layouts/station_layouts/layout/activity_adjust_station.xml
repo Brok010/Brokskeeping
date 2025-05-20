@@ -12,7 +12,7 @@
         android:id="@+id/et_adjust_station_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Station Name"
+        android:hint="@string/station_name"
         android:textColor="@color/basicTextColor"
         android:textColorHint="@color/hintColor" />
 
@@ -20,7 +20,7 @@
         android:id="@+id/et_adjust_station_location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Location"
+        android:hint="@string/location"
         android:layout_marginTop="8dp"
         android:textColor="@color/basicTextColor"
         android:textColorHint="@color/hintColor" />
@@ -29,7 +29,7 @@
         android:id="@+id/et_adjust_station_hive_count"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Hive Count"
+        android:hint="@string/hive_count"
         android:layout_marginTop="8dp"
         android:inputType="number"
         android:textColor="@color/basicTextColor"
@@ -45,7 +45,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="In use:"
+            android:text="@string/in_use"
             android:paddingEnd="8dp"
             android:textColor="@color/basicTextColor" />
 
@@ -66,7 +66,7 @@
             android:id="@+id/btn_adjust_station_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Save"
+            android:text="@string/save"
             android:layout_margin="8dp"
             android:backgroundTint="@color/buttonColor"
             android:textColor="@color/buttonTextColor" />
@@ -75,7 +75,7 @@
             android:id="@+id/btn_adjust_station_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Back"
+            android:text="@string/back"
             android:layout_margin="8dp"
             android:backgroundTint="@color/buttonColor"
             android:textColor="@color/buttonTextColor" />

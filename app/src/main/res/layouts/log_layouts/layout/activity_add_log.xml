@@ -14,7 +14,7 @@
         android:layout_marginTop="16dp"
         android:backgroundTint="@color/buttonColor"
         android:textColor="@color/buttonTextColor"
-        android:text="Import enviroment data" />
+        android:text="@string/import_environment_data" />
 
     <EditText
         android:id="@+id/edit_text_File_Name"
@@ -24,7 +24,7 @@
         android:textColorHint="@color/hintColor"
         android:textColor="@color/basicTextColor"
         android:textSize="16sp"
-        android:text="Selected file name" />
+        android:text="@string/selected_file_name" />
 
     <Button
         android:id="@+id/btn_add_data"
@@ -34,6 +34,6 @@
         android:layout_marginTop="16dp"
         android:backgroundTint="@color/buttonColor"
         android:textColor="@color/buttonTextColor"
-        android:text="Add data" />
+        android:text="@string/add_data" />
 
 </LinearLayout>

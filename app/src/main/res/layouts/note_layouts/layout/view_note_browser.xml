@@ -30,14 +30,14 @@
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="8dp"
                 android:textColor="@color/basicTextColor"
-                android:text="00/00/0000 00:00:00"
+                android:text="@string/place_holder"
                 android:gravity="end"
                 android:maxLines="2"
                 android:textSize="18dp" />
 
             <TextView
                 android:id="@+id/tv_note_text"
-                android:text="Lorem"
+                android:text="@string/place_holder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="8dp"

@@ -45,7 +45,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Station name:"
+                    android:text="@string/station_name"
                     android:textSize="16sp"
                     android:layout_gravity="start"
                     android:paddingEnd="8dp" />
@@ -55,7 +55,7 @@
                     android:id="@+id/tv_station_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Station Name"
+                    android:text="@string/place_holder"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -69,7 +69,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Hive name:"
+                    android:text="@string/hive_name"
                     android:textSize="16sp"
                     android:layout_gravity="start"
                     android:paddingEnd="8dp" />
@@ -79,7 +79,7 @@
                     android:id="@+id/tv_hive_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Hive Name"
+                    android:text="@string/place_holder"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -93,7 +93,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="QR tag:"
+                    android:text="@string/qr_tag"
                     android:textSize="16sp"
                     android:layout_gravity="start"
                     android:paddingEnd="8dp" />
@@ -103,7 +103,7 @@
                     android:id="@+id/tv_qr_tag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="QR Tag"
+                    android:text="@string/place_holder"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -117,7 +117,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Brood frames:"
+                    android:text="@string/brood_frames"
                     android:textSize="16sp"
                     android:layout_gravity="start"
                     android:paddingEnd="8dp" />
@@ -127,7 +127,7 @@
                     android:id="@+id/tv_brood_frames"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Brood Frames"
+                    android:text="@string/place_holder"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -141,7 +141,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Honey frames:"
+                    android:text="@string/honey_frames"
                     android:textSize="16sp"
                     android:layout_gravity="start"
                     android:paddingEnd="8dp" />
@@ -151,7 +151,7 @@
                     android:id="@+id/tv_honey_frames"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Honey Frames"
+                    android:text="@string/place_holder"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -165,7 +165,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Frames per super:"
+                    android:text="@string/frames_per_super"
                     android:textSize="16sp"
                     android:layout_gravity="start"
                     android:paddingEnd="8dp" />
@@ -175,7 +175,7 @@
                     android:id="@+id/tv_frames_per_super"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Frames Per Super"
+                    android:text="@string/place_holder"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -189,7 +189,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Supers:"
+                    android:text="@string/supers"
                     android:textSize="16sp"
                     android:layout_gravity="start"
                     android:paddingEnd="8dp" />
@@ -199,7 +199,7 @@
                     android:id="@+id/tv_supers"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Supers"
+                    android:text="@string/place_holder"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -213,7 +213,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Drone brood frames:"
+                    android:text="@string/drone_brood_frames"
                     android:textSize="16sp"
                     android:layout_gravity="start"
                     android:paddingEnd="8dp" />
@@ -223,7 +223,7 @@
                     android:id="@+id/tv_drone_brood_frames"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Drone Brood Frames"
+                    android:text="@string/place_holder"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -237,7 +237,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Free space frames:"
+                    android:text="@string/free_space_frames"
                     android:textSize="16sp"
                     android:layout_gravity="start"
                     android:paddingEnd="8dp" />
@@ -247,7 +247,7 @@
                     android:id="@+id/tv_free_space_frames"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Free Space Frames"
+                    android:text="@string/place_holder"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -261,7 +261,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Colony origin:"
+                    android:text="@string/colony_origin"
                     android:textSize="16sp"
                     android:layout_gravity="start"
                     android:paddingEnd="8dp" />
@@ -271,7 +271,7 @@
                     android:id="@+id/tv_colony_origin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Colony Origin"
+                    android:text="@string/place_holder"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -285,7 +285,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Supplemented feed count:"
+                    android:text="@string/supplemented_feed_count"
                     android:textSize="16sp"
                     android:layout_gravity="start"
                     android:paddingEnd="8dp" />
@@ -309,7 +309,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Winter ready:"
+                    android:text="@string/winter_ready"
                     android:textSize="16sp"
                     android:layout_gravity="start"
                     android:paddingEnd="8dp" />
@@ -318,7 +318,7 @@
                     android:id="@+id/tv_winter_ready"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Winter Ready"
+                    android:text="@string/place_holder"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -332,7 +332,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Aggressivity:"
+                    android:text="@string/aggressivity"
                     android:textSize="16sp"
                     android:layout_gravity="start"
                     android:paddingEnd="8dp" />
@@ -341,7 +341,7 @@
                     android:id="@+id/tv_aggressivity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Aggressivity"
+                    android:text="@string/place_holder"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -355,7 +355,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Attention:"
+                    android:text="@string/attention_worth"
                     android:textSize="16sp"
                     android:layout_gravity="start"
                     android:paddingEnd="8dp" />
@@ -364,7 +364,7 @@
                     android:id="@+id/tv_attention"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Attention"
+                    android:text="@string/place_holder"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -378,7 +378,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Dead:"
+                    android:text="@string/dead"
                     android:textSize="16sp"
                     android:layout_gravity="start"
                     android:paddingEnd="8dp" />
@@ -387,7 +387,7 @@
                     android:id="@+id/tv_dead"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Dead"
+                    android:text="@string/place_holder"
                     android:textSize="16sp" />
             </LinearLayout>
             <!-- Station order row -->
@@ -400,7 +400,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Station order:"
+                    android:text="@string/station_order"
                     android:textSize="16sp"
                     android:layout_gravity="start"
                     android:paddingEnd="8dp" />
@@ -409,7 +409,7 @@
                     android:id="@+id/tv_station_order"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Station Order"
+                    android:text="@string/place_holder"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -424,7 +424,7 @@
                     android:id="@+id/btn_adjust_hive"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Adjust Hive"
+                    android:text="@string/adjust_hive"
                     android:textColor="@color/buttonTextColor"
                     android:layout_marginHorizontal="4dp"
                     android:backgroundTint="@color/buttonColor">
@@ -434,7 +434,7 @@
                     android:id="@+id/btn_delete_hive"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Delete Hive"
+                    android:text="@string/delete_hive"
                     android:textColor="@color/buttonTextColor"
                     android:layout_marginHorizontal="4dp"
                     android:backgroundTint="@color/buttonColor">

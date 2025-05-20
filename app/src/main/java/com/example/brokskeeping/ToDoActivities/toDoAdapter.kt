@@ -40,7 +40,7 @@ class ToDoAdapter(private val toDosList: MutableList<ToDo>,
         holder.itemView.setOnClickListener {
             //
         }
-        holder.itemView.setOnLongClickListener() {
+        holder.itemView.setOnLongClickListener {
             showContextMenu(holder.itemView, currentToDo)
             true
         }
@@ -64,13 +64,14 @@ class ToDoAdapter(private val toDosList: MutableList<ToDo>,
     }
     private fun showContextMenu(view: View, toDo: ToDo) {
         val popupMenu = PopupMenu(view.context, view)
+        val context = view.context
         popupMenu.menuInflater.inflate(R.menu.dropdown_menu_long_click_todo_browser, popupMenu.menu)
 
         val stateMenuItem = popupMenu.menu.findItem(R.id.menu_long_click_change_state)
         stateMenuItem.title = if (toDo.toDoState) {
-            "Change to not done"
+            context.getString(R.string.change_to_not_done)
         } else {
-            "Change to done"
+            context.getString(R.string.change_to_done)
         }
 
         popupMenu.setOnMenuItemClickListener { item ->
@@ -78,12 +79,12 @@ class ToDoAdapter(private val toDosList: MutableList<ToDo>,
                 R.id.menu_long_click_delete -> {
                     Utils.showConfirmationDialog(
                         view.context,
-                        "Are you sure you want to delete this To Do?"
+                        context.getString(R.string.are_you_sure_you_want_to_delete_this_to_do)
                     ) { confirmed ->
                         if (confirmed) {
                             // User confirmed the deletion
                             ToDoFunctionality.deleteToDo(db, toDo.id)
-                            val (toDoList, result) = ToDoFunctionality.getAllToDos(db, hiveId, 0, 0, 1)
+                            val (toDoList, result) = ToDoFunctionality.getAllToDos(db, hiveId, 0, 0, 1, true)
                             if (result == 1) {
                                 updateData(toDoList)
                             } else {

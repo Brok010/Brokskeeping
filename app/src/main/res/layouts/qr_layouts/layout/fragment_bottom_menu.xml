@@ -16,7 +16,7 @@
         android:layout_marginHorizontal="10dp"
         android:layout_weight="1"
         android:backgroundTint="@color/buttonColor"
-        android:text="QR Scan"
+        android:text="@string/qr_scan"
         android:textColor="@color/buttonTextColor" />
 
     <ImageButton

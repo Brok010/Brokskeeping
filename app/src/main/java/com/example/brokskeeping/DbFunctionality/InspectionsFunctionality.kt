@@ -32,7 +32,7 @@ object InspectionsFunctionality {
             "SELECT * FROM ${DatabaseHelper.TABLE_INSPECTION_DATA} WHERE ${DatabaseHelper.COL_INSPECTION_DATA_ID} = ?"
         val selectionArgs = arrayOf(inspectionDataId.toString())
         val cursor = dbHelper.readableDatabase.rawQuery(query, selectionArgs)
-        var returnCode = 0;
+        var returnCode = 0
         var inspectionData: InspectionData? = null
 
         cursor?.use { cursor ->

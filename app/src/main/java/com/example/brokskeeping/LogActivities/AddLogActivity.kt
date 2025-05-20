@@ -71,9 +71,9 @@ class AddLogActivity : AppCompatActivity() {
 
                 } else {
                     // Invalid file, show a Toast to the user
-                    Toast.makeText(this, "Please choose a valid text file (.txt)", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.please_choose_a_valid_text_file_txt), Toast.LENGTH_SHORT).show()
                     // Clear the file name from the UI
-                    etFileName.text = "Selected File: None"
+                    etFileName.text = getString(R.string.none)
                 }
             }
         }
@@ -97,12 +97,12 @@ class AddLogActivity : AppCompatActivity() {
             val dateRange = Utils.getFirstAndLastDate(fileData)
             val data = HumTempData(stationId = stationId, hiveId = hiveId, logText = fileData, firstDate = dateRange.firstDate, lastDate = dateRange.lastDate)
             HumTempDataFunctionality.addDataLogs(db, data)
-            Toast.makeText(this, "New hive added", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.new_hive_added), Toast.LENGTH_SHORT).show()
             finish()
 
         } else {
             // Show a Toast indicating an issue with notes or file
-            Toast.makeText(this, "Invalid file", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.invalid_file), Toast.LENGTH_SHORT).show()
             return
         }
     }

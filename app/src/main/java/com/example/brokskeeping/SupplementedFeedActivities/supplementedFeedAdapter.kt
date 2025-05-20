@@ -30,7 +30,7 @@ class SupplementedFeedAdapter(private val supplementedFeedList: MutableList<Pair
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SupplementedFeedViewHolder {
         val itemView = LayoutInflater.from(parent.context)
-            .inflate(R.layout.view_honey_harvest_browser, parent, false)
+            .inflate(R.layout.view_supplemented_feed_browser, parent, false)
         return SupplementedFeedViewHolder(itemView)
     }
 
@@ -52,7 +52,7 @@ class SupplementedFeedAdapter(private val supplementedFeedList: MutableList<Pair
         private val tvHoneyFramesHarvested = itemView.findViewById<TextView>(R.id.tv_honey_harvested)
 
         fun bind(supplementedFeed: Pair<Int, Int>, type: String) {
-            if (type == "Station") {
+            if (type == itemView.context.getString(R.string.station)) {
                 val entityName = StationsFunctionality.getStationNameById(db, supplementedFeed.first)
                 tvLocation.text = entityName
             } else {
@@ -80,7 +80,7 @@ class SupplementedFeedAdapter(private val supplementedFeedList: MutableList<Pair
                 ).apply {
                     marginEnd = 4.dpToPx(context)
                 }
-                text = "Station: "
+                text = context.getString(R.string.invalid_text)
                 setTextColor(context.getColor(R.color.basicTextColor))
             }
 

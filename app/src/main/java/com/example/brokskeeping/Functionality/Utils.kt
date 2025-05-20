@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.appcompat.app.AlertDialog
 import com.example.brokskeeping.DataClasses.DateRange
 import com.example.brokskeeping.DataClasses.MaxMins
+import com.example.brokskeeping.Functionality.Reused_functions.setLocale
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -141,4 +142,11 @@ object Utils {
         }
         return Pair(Pair(startTime, endTime), 1)
     }
+
+    fun applySavedLocale(context: Context) {
+        val prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        val languageCode = prefs.getString("app_language", "en") ?: "en"  // Default to English
+        setLocale(context, languageCode)
+    }
+
 }

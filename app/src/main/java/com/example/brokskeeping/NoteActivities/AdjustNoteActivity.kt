@@ -9,6 +9,7 @@ import android.widget.Toast
 import com.example.brokskeeping.DataClasses.HiveNotes
 import com.example.brokskeeping.DbFunctionality.DatabaseHelper
 import com.example.brokskeeping.DbFunctionality.NotesFunctionality
+import com.example.brokskeeping.R
 import com.example.brokskeeping.databinding.ActivityAdjustNoteBinding
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -53,7 +54,7 @@ class AdjustNoteActivity : AppCompatActivity() {
         saveButton.setOnClickListener {
             var text = noteText.text.toString()
             if (text == "" && date == Date(0)) {
-                Toast.makeText(this, "Invalid data", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.invalid_data), Toast.LENGTH_SHORT).show()
 
             } else { //some data are adjusted
                 var originalNote = NotesFunctionality.getNote(db, noteId)

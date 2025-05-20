@@ -8,6 +8,7 @@ import com.example.brokskeeping.DataClasses.Beehive
 import com.example.brokskeeping.DbFunctionality.DatabaseHelper
 import com.example.brokskeeping.DbFunctionality.HivesFunctionality
 import com.example.brokskeeping.DbFunctionality.StationsFunctionality
+import com.example.brokskeeping.R
 import com.example.brokskeeping.databinding.ActivityHiveBinding
 
 class HiveActivity : AppCompatActivity() {
@@ -26,7 +27,7 @@ class HiveActivity : AppCompatActivity() {
         // Get hive attributes, handle null case upfront
         val (hive, result) = HivesFunctionality.getHiveAttributesById(db, hiveId)
         if (result == 0 || hive == null) {
-            Toast.makeText(this, "Hive couldn't be retrieved from db", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.hive_couldn_t_be_retrieved_from_db), Toast.LENGTH_SHORT).show()
             finish()
             return
         }
@@ -39,32 +40,46 @@ class HiveActivity : AppCompatActivity() {
 
         binding.btnDeleteHive.setOnClickListener {
             HivesFunctionality.deleteHive(db, hive.stationId, hiveId)
-            Toast.makeText(this, "Hive deleted", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.hive_deleted), Toast.LENGTH_SHORT).show()
             finish()
         }
     }
+    override fun onResume() {
+        super.onResume()
+        reloadHiveData()
+    }
+
+    private fun reloadHiveData() {
+        val (hive, result) = HivesFunctionality.getHiveAttributesById(db, hiveId)
+        if (result == 0 || hive == null) {
+            Toast.makeText(this, getString(R.string.hive_couldn_t_be_retrieved_from_db), Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+        setValues(hive)
+    }
 
     private fun setValues(hive: Beehive) = with(binding) {
-        tvStationName.text = StationsFunctionality.getStationNameById(db, hive.stationId) ?: "Unknown"
-        tvHiveName.text = hive.nameTag ?: "No Name"
-        tvQrTag.text = hive.qrTag ?: "No QR Tag"
+        tvStationName.text = StationsFunctionality.getStationNameById(db, hive.stationId)
+        tvHiveName.text = hive.nameTag ?: getString(R.string.no_name)
+        tvQrTag.text = hive.qrTag ?: getString(R.string.no_qr_tag)
         tvBroodFrames.text = hive.broodFrames.toString()
         tvHoneyFrames.text = hive.honeyFrames.toString()
         tvFramesPerSuper.text = hive.framesPerSuper.toString()
         tvSupers.text = hive.supers.toString()
         tvDroneBroodFrames.text = hive.droneBroodFrames.toString()
         tvFreeSpaceFrames.text = hive.freeSpaceFrames.toString()
-        tvColonyOrigin.text = hive.colonyOrigin ?: "No Origin"
-        tvWinterReady.text = if (hive.winterReady) "Yes" else "No"
+        tvColonyOrigin.text = hive.colonyOrigin ?: getString(R.string.no_origin)
+        tvWinterReady.text = if (hive.winterReady) getString(R.string.yes) else getString(R.string.no)
         tvAggressivity.text = hive.aggressivity.toString()
         tvAttention.text = hive.attentionWorth.toString()
         if (hive.colonyEndState == 0) {
-            tvDead.text = "Yes"
+            tvDead.text = getString(R.string.yes)
         } else if (hive.colonyEndState == -1) {
-            tvDead.text = "No"
+            tvDead.text = getString(R.string.no)
         } else {
             val hiveName = HivesFunctionality.getHiveNameById(db, hive.colonyEndState)
-            tvDead.text = "Joined with $hiveName"
+            tvDead.text = getString(R.string.joined_with, hiveName)
         }
         tvStationOrder.text = hive.stationOrder.toString()
 

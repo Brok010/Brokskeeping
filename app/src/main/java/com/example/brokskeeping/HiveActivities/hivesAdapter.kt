@@ -40,7 +40,7 @@ class HivesAdapter(private val hivesList: MutableList<Beehive>,
             hivesBrowserActivity.startHiveActivity(currentHive.id)
             true
         }
-        holder.itemView.setOnLongClickListener() {
+        holder.itemView.setOnLongClickListener {
             showContextMenu(holder.itemView, currentHive)
             true
         }
@@ -78,7 +78,7 @@ class HivesAdapter(private val hivesList: MutableList<Beehive>,
                 R.id.menu_long_click_delete -> {
                     Utils.showConfirmationDialog(
                         view.context,
-                        "Are you sure you want to delete this hive?"
+                        view.context.getString(R.string.are_you_sure_you_want_to_delete_this_hive)
                     ) { confirmed ->
                         if (confirmed) {
                             // User confirmed the deletion

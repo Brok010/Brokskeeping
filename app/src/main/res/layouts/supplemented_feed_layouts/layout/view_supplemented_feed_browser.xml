@@ -22,7 +22,7 @@
 
             <!-- Station Info -->
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="horizontal">
@@ -30,12 +30,12 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/name"
-                    android:layout_marginEnd="8dp"
+                    android:text="@string/location"
+                    android:layout_marginEnd="4dp"
                     android:textColor="@color/basicTextColor" />
 
                 <TextView
-                    android:id="@+id/tv_hive_name"
+                    android:id="@+id/tv_location"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/place_holder"
@@ -44,47 +44,31 @@
 
             <!-- Status Info -->
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="end"
                 android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/free_space_frames"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginEnd="4dp"
+                    android:text="@string/supplemented_feed"
                     android:textColor="@color/basicTextColor" />
 
                 <TextView
-                    android:id="@+id/tv_free_frames"
+                    android:id="@+id/tv_honey_harvested"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/place_holder"
                     android:textColor="@color/basicTextColor" />
             </LinearLayout>
         </LinearLayout>
-
-        <!-- Second Row: Date -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/ll_dynamic">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/notes"
-                android:layout_marginEnd="8dp"
-                android:textColor="@color/basicTextColor" />
-
-            <TextView
-                android:id="@+id/tv_inspection_notes"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/place_holder"
-                android:textColor="@color/basicTextColor" />
         </LinearLayout>
-
     </LinearLayout>
 </LinearLayout>

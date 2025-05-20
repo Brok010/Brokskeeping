@@ -17,16 +17,17 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Inspection for hive: "
+            android:text="@string/inspection_for_hive"
             android:textSize="20sp"
             android:textStyle="bold"
+            android:paddingEnd="8dp"
             android:textColor="@color/basicTextColor" />
 
         <TextView
             android:id="@+id/tv_hive_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="name"
+            android:text="@string/place_holder"
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="@color/basicTextColor" />
@@ -39,14 +40,15 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Date: "
+            android:text="@string/date"
+            android:paddingEnd="8dp"
             android:textColor="@color/basicTextColor" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/tv_date"
-            android:text=" "
+            android:text="@string/place_holder"
             android:textSize="18sp"
             android:textColor="@color/basicTextColor" />
     </LinearLayout>
@@ -63,7 +65,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Frames per Super: "
+                android:text="@string/frames_per_super"
+                android:paddingEnd="8dp"
                 android:textColor="@color/basicTextColor" />
 
             <TextView
@@ -82,7 +85,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Supers"
+                android:text="@string/supers"
                 android:layout_marginRight="8dp"
                 android:textColor="@color/basicTextColor" />
 
@@ -107,7 +110,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Attention: "
+                android:text="@string/attention_worth"
                 android:paddingEnd="8dp"
                 android:textColor="@color/basicTextColor" />
 
@@ -128,7 +131,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Aggressivity: "
+                android:text="@string/aggressivity"
                 android:paddingEnd="8dp"
                 android:textColor="@color/basicTextColor" />
 
@@ -155,21 +158,21 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Brood frames:"
+            android:text="@string/brood_frames"
             android:textColor="@color/basicTextColor" />
 
         <TextView
             android:id="@+id/tv_brood_frames_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0"
+            android:text="@string/place_holder"
             android:layout_marginHorizontal="8dp"
             android:textSize="18sp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Adjusted"
+            android:text="@string/adjusted"
             android:textColor="@color/basicTextColor" />
 
         <ImageView
@@ -182,7 +185,7 @@
             android:id="@+id/tv_brood_change"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0"
+            android:text="@string/place_holder"
             android:textSize="18sp"
             android:textColor="@color/basicTextColor" />
 
@@ -198,21 +201,21 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Honey frames:"
+            android:text="@string/honey_frames"
             android:textColor="@color/basicTextColor" />
 
         <TextView
             android:id="@+id/tv_honey_frames_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0"
+            android:text="@string/place_holder"
             android:layout_marginHorizontal="8dp"
             android:textSize="18sp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Adjusted"
+            android:text="@string/adjusted"
             android:textColor="@color/basicTextColor" />
 
         <ImageView
@@ -226,7 +229,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"
-            android:text="0"
+            android:text="@string/place_holder"
             android:textColor="@color/basicTextColor" />
 
     </LinearLayout>
@@ -240,7 +243,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Drone frames:"
+            android:text="@string/drone_brood_frames"
             android:textColor="@color/basicTextColor" />
 
         <TextView
@@ -248,12 +251,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="8dp"
-            android:text="0"
+            android:text="@string/place_holder"
             android:textSize="18sp" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Adjusted"
+            android:text="@string/adjusted"
             android:textColor="@color/basicTextColor" />
 
         <ImageView
@@ -267,7 +270,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"
-            android:text="0"
+            android:text="@string/place_holder"
             android:textColor="@color/basicTextColor" />
 
     </LinearLayout>
@@ -277,7 +280,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Honey harvested:"
+            android:text="@string/honey_harvested"
             android:textColor="@color/basicTextColor" />
 
         <TextView
@@ -286,7 +289,7 @@
             android:id="@+id/tv_honey_frames_harvested"
             android:layout_marginHorizontal="8dp"
             android:textSize="18sp"
-            android:text="0"/>
+            android:text="@string/place_holder"/>
 
     </LinearLayout>
     <LinearLayout
@@ -296,7 +299,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Colony end state:"
+            android:text="@string/colony_end_state"
             android:textColor="@color/basicTextColor" />
 
         <TextView
@@ -305,7 +308,7 @@
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:layout_marginHorizontal="8dp"
-            android:text="0" />
+            android:text="@string/place_holder" />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -318,7 +321,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Supplemented feed"
+                android:text="@string/supplemented_feed"
                 android:textColor="@color/basicTextColor" />
 
             <ImageView
@@ -335,7 +338,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Winter ready"
+                android:text="@string/winter_ready"
                 android:textColor="@color/basicTextColor" />
 
             <ImageView
@@ -357,7 +360,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Separated:"
+                android:text="@string/separated"
                 android:textColor="@color/basicTextColor" />
 
             <ImageView
@@ -370,7 +373,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/tv_separated_count"
-                android:text="0"
+                android:text="@string/place_holder"
                 android:textSize="18sp"
                 android:textColor="@color/basicTextColor" />
         </LinearLayout>
@@ -383,7 +386,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Joined:"
+                android:text="@string/joined"
                 android:textColor="@color/basicTextColor" />
 
             <ImageView
@@ -396,7 +399,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/tv_joined_count"
-                android:text="0"
+                android:text="@string/place_holder"
                 android:textSize="18sp"
                 android:textColor="@color/basicTextColor" />
         </LinearLayout>
@@ -405,7 +408,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Notes:"
+        android:text="@string/notes"
         android:textColor="@color/basicTextColor" />
 
     <TextView

@@ -1,10 +1,12 @@
 package com.example.brokskeeping.DbFunctionality
 
 import android.content.ContentValues
+import android.content.Context
 import android.database.Cursor
 import android.util.Log
 import com.example.brokskeeping.DataClasses.Station
 import com.example.brokskeeping.Functionality.Utils
+import com.example.brokskeeping.R
 import java.time.LocalDateTime
 import java.util.Date
 
@@ -81,7 +83,7 @@ object StationsFunctionality {
 
 
 
-    fun saveStation(dbHelper: DatabaseHelper, newStation: Station, startingHives: Int? = null) {
+    fun saveStation(context: Context, dbHelper: DatabaseHelper, newStation: Station, startingHives: Int? = null) {
         val db = dbHelper.writableDatabase
         db.beginTransaction()
         var stationId = newStation.id
@@ -128,13 +130,13 @@ object StationsFunctionality {
             db.close()
 
             if (startingHives != null && stationId != -1) {
-                createHivesForStation(dbHelper, newStation, startingHives)
+                createHivesForStation(context, dbHelper, newStation, startingHives)
             }
         }
     }
 
 
-    fun createHivesForStation(dbHelper: DatabaseHelper, newStation: Station, hiveCount: Int) {
+    fun createHivesForStation(context: Context, dbHelper: DatabaseHelper, newStation: Station, hiveCount: Int) {
         val newStationName = newStation.name
         val currentTime = Date()
 
@@ -146,7 +148,8 @@ object StationsFunctionality {
             }
 
             val hiveValues = ContentValues().apply {
-                put(DatabaseHelper.COL_HIVE_NAME_TAG, "Hive $i for Station $newStationName")
+                put(DatabaseHelper.COL_HIVE_NAME_TAG,
+                    context.getString(R.string.hive_for_station, i, newStationName))
                 put(DatabaseHelper.COL_STATION_ID_FK_HIVES, newStation.id)
                 put(DatabaseHelper.COL_HIVE_COLONY_END_STATE, -1)
                 put(DatabaseHelper.COL_HIVE_CREATION_TIME, currentTime.time)

@@ -53,7 +53,7 @@ class NotesBrowserActivity : AppCompatActivity() {
             qrHiveId = HivesFunctionality.getHiveIdByQRString(db, qrString)
             if (qrHiveId == -1) {
                 // hive not found
-                Toast.makeText(this, "Hive not found", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.hive_not_found), Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, BarcodeScan::class.java)
                 Handler(Looper.getMainLooper()).postDelayed({   // TODO check
                     startActivity(intent)
@@ -64,7 +64,8 @@ class NotesBrowserActivity : AppCompatActivity() {
                 // TODO if user presses back it puts him into an empty notes activity
             } else if (hiveId == qrHiveId){
                 // we are on the correct hive
-                Toast.makeText(this, "U are on the correct hive", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this,
+                    getString(R.string.u_are_on_the_correct_hive), Toast.LENGTH_SHORT).show()
                 stationId = HivesFunctionality.getStationIdByHiveId(db, qrHiveId)
             } else {
                 //continue in routing to the next hive
@@ -84,13 +85,13 @@ class NotesBrowserActivity : AppCompatActivity() {
 
         // Set the text of the TextView to the stationName
         header = binding.tvCommonBrowserHeader
-        header.text = "Notes of [$stationName], [$hiveName]"
+        header.text = getString(R.string.notes_of_s_s, stationName, hiveName)
 
         // buttons
         btnLayout = binding.llCommonBrowserButtonLayout
         val addNoteButton = Button(this).apply {
             id = View.generateViewId()
-            text = "Add Note"
+            text = context.getString(R.string.add_note)
             setTextColor(ContextCompat.getColor(this@NotesBrowserActivity, R.color.buttonTextColor))
             backgroundTintList = ContextCompat.getColorStateList(this@NotesBrowserActivity, R.color.buttonColor)
         }
@@ -125,7 +126,7 @@ class NotesBrowserActivity : AppCompatActivity() {
         super.onResume()
         val (updatedNotesList, result) = NotesFunctionality.getAllNotes(db, hiveId, null, null, true)
         if (result == 0) {
-            Toast.makeText(this, "Couldn't retrieve notes", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.couldn_t_retrieve_notes), Toast.LENGTH_SHORT).show()
         }
         notesAdapter.updateData(updatedNotesList)
     }

@@ -15,14 +15,11 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.brokskeeping.DataClasses.Beehive
 import com.example.brokskeeping.DataClasses.DiscardedEntity
-import com.example.brokskeeping.DataClasses.Station
 import com.example.brokskeeping.DbFunctionality.DatabaseHelper
 import com.example.brokskeeping.DbFunctionality.HivesFunctionality
 import com.example.brokskeeping.DbFunctionality.StationsFunctionality
 import com.example.brokskeeping.HiveActivities.HiveActivity
-import com.example.brokskeeping.InspectionDataActivities.InspectionDataBrowserActivity
 import com.example.brokskeeping.R
 import com.example.brokskeeping.StationActivities.StationActivity
 import com.example.brokskeeping.databinding.CommonBrowserRecyclerBinding
@@ -36,7 +33,7 @@ class DiscardedEntitiesBrowserActivity : AppCompatActivity() {
     private var selectedCreationMonth: Int? = null
     private var selectedDeathYear: Int? = null
     private var selectedDeathMonth: Int? = null
-    private var selectedType: String = "All"
+    private var selectedType: String = ""
     private lateinit var header: TextView
     private lateinit var creationTimeFilterInput: EditText
     private lateinit var deathTimeFilterInput: EditText
@@ -49,10 +46,11 @@ class DiscardedEntitiesBrowserActivity : AppCompatActivity() {
 
         // Initialize the database helper and RecyclerView adapter
         db = DatabaseHelper(this)
+        selectedType = getString(R.string.all)
         discardedEntitiesAdapter = DiscardedEntitiesAdapter(mutableListOf(), db, this)
 
         header = binding.tvCommonBrowserHeader
-        header.text = "Discarded Entities"
+        header.text = getString(R.string.discarded_entities)
         // Set up the RecyclerView
         binding.commonRecyclerView.apply {
             layoutManager = LinearLayoutManager(this@DiscardedEntitiesBrowserActivity)
@@ -69,24 +67,26 @@ class DiscardedEntitiesBrowserActivity : AppCompatActivity() {
         val discardedEntities = mutableListOf<DiscardedEntity>()
 
         when (selectedType) {
-            "Station" -> {
+            getString(R.string.station) -> {
                 val (resultStations, result) = StationsFunctionality.getAllStations(
                     db, 0, selectedCreationYear, selectedCreationMonth, selectedDeathYear, selectedDeathMonth
                 )
                 if (result == 0) {
-                    Toast.makeText(this, "Stations couldn't be found", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this,
+                        getString(R.string.stations_couldn_t_be_found), Toast.LENGTH_SHORT).show()
                     finish()
                 } else {
                     discardedEntities.addAll(resultStations.map { DiscardedEntity.DiscardedStation(it) })
                 }
             }
 
-            "Hive" -> {
+            getString(R.string.hive) -> {
                 val (resultHives, result) = HivesFunctionality.getAllHives(
                     db, null, 1, selectedCreationYear, selectedCreationMonth, selectedDeathYear, selectedDeathMonth
                 )
                 if (result == 0) {
-                    Toast.makeText(this, "Hives couldn't be found", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this,
+                        getString(R.string.hives_couldn_t_be_found), Toast.LENGTH_SHORT).show()
                     finish()
                 } else {
                     discardedEntities.addAll(resultHives.map { DiscardedEntity.DiscardedHive(it) })
@@ -102,7 +102,8 @@ class DiscardedEntitiesBrowserActivity : AppCompatActivity() {
                 )
 
                 if (stationsResult == 0 || hivesResult == 0) {
-                    Toast.makeText(this, "Entities couldn't be found", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this,
+                        getString(R.string.entities_couldn_t_be_found), Toast.LENGTH_SHORT).show()
                     finish()
                 } else {
                     discardedEntities.addAll(resultStations.map { DiscardedEntity.DiscardedStation(it) })
@@ -158,9 +159,9 @@ class DiscardedEntitiesBrowserActivity : AppCompatActivity() {
         }
 
         // Create individual filter views
-        val typeLayout = createFilter("Type", "All", View.generateViewId())
-        val creationLayout = createFilter("Creation", "All Time", View.generateViewId())
-        val deathLayout = createFilter("Death", "All Time", View.generateViewId())
+        val typeLayout = createFilter(getString(R.string.type), getString(R.string.all), View.generateViewId())
+        val creationLayout = createFilter(getString(R.string.creation), getString(R.string.all_time), View.generateViewId())
+        val deathLayout = createFilter(getString(R.string.death), getString(R.string.all_time), View.generateViewId())
 
         // Save references if needed
         typeFilterInput = typeLayout.getChildAt(1) as EditText
@@ -180,24 +181,24 @@ class DiscardedEntitiesBrowserActivity : AppCompatActivity() {
 
 
     private fun showTimeFilterDialog(creation: Int) {
-        val options = arrayOf("Month", "Year", "All Time")
+        val options = arrayOf(getString(R.string.month), getString(R.string.year), getString(R.string.all_time))
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("Select Time Filter")
+        builder.setTitle(getString(R.string.select_time_filter))
         builder.setItems(options) { _, which ->
             when (options[which]) {
-                "Month" -> {
+                getString(R.string.month) -> {
                     showMonthYearPicker(creation)
                 }
-                "Year" -> {
+                getString(R.string.year) -> {
                     showYearPicker(creation)
                 }
-                "All Time" -> {
+                getString(R.string.all_time) -> {
                     if (creation == 1) {
-                        creationTimeFilterInput.setText("All Time")
+                        creationTimeFilterInput.setText(getString(R.string.all_time))
                         selectedCreationMonth = null
                         selectedCreationYear = null
                     } else {
-                        deathTimeFilterInput.setText("All Time")
+                        deathTimeFilterInput.setText(getString(R.string.all_time))
                         selectedDeathMonth = null
                         selectedDeathYear = null
                     }
@@ -219,13 +220,13 @@ class DiscardedEntitiesBrowserActivity : AppCompatActivity() {
 
         val yearPicker = Spinner(this)
         yearPicker.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, years)
-        layout.addView(TextView(this).apply { text = "Select Year" })
+        layout.addView(TextView(this).apply { text = context.getString(R.string.select_year) })
         layout.addView(yearPicker)
 
         AlertDialog.Builder(this)
-            .setTitle("Choose Year")
+            .setTitle(getString(R.string.choose_year))
             .setView(layout)
-            .setPositiveButton("OK") { _, _ ->
+            .setPositiveButton(getString(R.string.ok)) { _, _ ->
                 if (creation == 1) {
                     selectedCreationMonth = null
                     selectedCreationYear = yearPicker.selectedItem.toString().toIntOrNull()
@@ -237,7 +238,7 @@ class DiscardedEntitiesBrowserActivity : AppCompatActivity() {
                 }
                 onResume()
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(getString(R.string.cancel), null)
             .show()
     }
 
@@ -253,18 +254,18 @@ class DiscardedEntitiesBrowserActivity : AppCompatActivity() {
 
         val yearPicker = Spinner(this)
         yearPicker.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, years)
-        layout.addView(TextView(this).apply { text = "Select Year" })
+        layout.addView(TextView(this).apply { text = getString(R.string.select_year) })
         layout.addView(yearPicker)
 
         val monthPicker = Spinner(this)
         monthPicker.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, months)
-        layout.addView(TextView(this).apply { text = "Select Month" })
+        layout.addView(TextView(this).apply { text = context.getString(R.string.select_month) })
         layout.addView(monthPicker)
 
         AlertDialog.Builder(this)
-            .setTitle("Choose Month and Year")
+            .setTitle(getString(R.string.choose_month_and_year))
             .setView(layout)
-            .setPositiveButton("OK") { _, _ ->
+            .setPositiveButton(getString(R.string.ok)) { _, _ ->
                 if (creation == 1) {
                     selectedCreationMonth = monthPicker.selectedItem.toString().toIntOrNull()
                     selectedCreationYear = yearPicker.selectedItem.toString().toIntOrNull()
@@ -276,14 +277,14 @@ class DiscardedEntitiesBrowserActivity : AppCompatActivity() {
                 }
                 onResume()
             }
-            .setNegativeButton("Cancel", null)
+            .setNegativeButton(getString(R.string.cancel), null)
             .show()
     }
 
     private fun showTypeFilterDialog() {
-        val options = arrayOf("All", "Hive", "Station")
+        val options = arrayOf(getString(R.string.all), getString(R.string.hive), getString(R.string.station))
         AlertDialog.Builder(this)
-            .setTitle("Select Type Filter")
+            .setTitle(getString(R.string.select_type_filter))
             .setItems(options) { _, which ->
                 typeFilterInput.setText(options[which])
                 selectedType = options[which]

@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:textSize="18sp"
         android:textColor="@color/basicTextColor"
-        android:text="Station Name:" />
+        android:text="@string/station_name" />
 
     <EditText
         android:id="@+id/editTextStationName"
@@ -20,20 +20,20 @@
         android:inputType="textMultiLine"
         android:textColorHint="@color/hintColor"
         android:textColor="@color/basicTextColor"
-        android:hint="Enter Station Name" />
+        android:hint="@string/enter_station_name" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/basicTextColor"
         android:textSize="18sp"
-        android:text="Station Location:" />
+        android:text="@string/station_location" />
 
     <EditText
         android:id="@+id/editTextStationLocation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Station Location"
+        android:hint="@string/enter_station_location"
         android:textColor="@color/basicTextColor"
         android:textColorHint="@color/hintColor"
         android:inputType="textMultiLine" />
@@ -43,13 +43,13 @@
         android:layout_height="wrap_content"
         android:textColor="@color/basicTextColor"
         android:textSize="18sp"
-        android:text="Beehive Number:" />
+        android:text="@string/beehive_number" />
 
     <EditText
         android:id="@+id/editTextBeehiveNumber"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter Beehive Number"
+        android:hint="@string/enter_beehive_number"
         android:textColor="@color/basicTextColor"
         android:textColorHint="@color/hintColor"
         android:inputType="number" />
@@ -62,6 +62,6 @@
         android:layout_marginTop="16dp"
         android:backgroundTint="@color/buttonColor"
         android:textColor="@color/buttonTextColor"
-        android:text="Save Station" />
+        android:text="@string/save_station" />
 
 </LinearLayout>

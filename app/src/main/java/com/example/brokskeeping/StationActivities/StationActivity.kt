@@ -26,7 +26,8 @@ class StationActivity : AppCompatActivity() {
 
         val (station, result) = StationsFunctionality.getStationsAttributes(db, stationId)
         if (result == 0 || station == null) {
-            Toast.makeText(this, "Station couldn't be retrieved from db", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,
+                getString(R.string.station_couldn_t_be_retrieved_from_db), Toast.LENGTH_SHORT).show()
             finish()
             return
         }
@@ -41,7 +42,7 @@ class StationActivity : AppCompatActivity() {
 
         binding.btnDeleteStation.setOnClickListener {
             StationsFunctionality.deleteStation(db, stationId)
-            Toast.makeText(this, "Station deleted", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.station_deleted), Toast.LENGTH_SHORT).show()
             finish()
         }
     }

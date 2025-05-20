@@ -39,7 +39,7 @@ class AdjustStationActivity : AppCompatActivity() {
         // Load existing station data
         var (existingStation, stationResult) = StationsFunctionality.getStationsAttributes(db, stationId)
         if (existingStation == null || stationResult == 0) {
-            Toast.makeText(this, "Station is null $stationId", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.station_is_null, stationId), Toast.LENGTH_SHORT).show()
             finish()
         }
 
@@ -49,7 +49,7 @@ class AdjustStationActivity : AppCompatActivity() {
         etLocation.setText(existingStation.location)
         val (hiveCount, result) = StationsFunctionality.getHiveCount(db, stationId)
         if (result == 0) {
-            Toast.makeText(this, "Couldn't get hive count", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.couldn_t_get_hive_count), Toast.LENGTH_SHORT).show()
             finish()
         }
         beehiveNum = hiveCount
@@ -78,7 +78,7 @@ class AdjustStationActivity : AppCompatActivity() {
 
         if (newHiveCount != null && Utils.correctHiveCount(newHiveCount) && beehiveNum <= newHiveCount) {
             // Proceed with your logic when the conditions are met
-            val confirmationMessage = "Are you sure you want to proceed?"
+            val confirmationMessage = getString(R.string.are_you_sure_you_want_to_proceed)
 
             Utils.showConfirmationDialog(this, confirmationMessage) { confirmed ->
                 if (confirmed) {
@@ -86,11 +86,13 @@ class AdjustStationActivity : AppCompatActivity() {
                         val (hiveCount, stationResult) = StationsFunctionality.getHiveCount(db, existingStation.id)
                         when {
                             hiveCount > 0 -> {
-                                Toast.makeText(this, "Station has hives, can't discard", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this,
+                                    getString(R.string.station_has_hives_can_t_discard), Toast.LENGTH_SHORT).show()
                                 return@showConfirmationDialog
                             }
                             stationResult == 0 -> {
-                                Toast.makeText(this, "Cannot retrieve station", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this,
+                                    getString(R.string.cannot_retrieve_station), Toast.LENGTH_SHORT).show()
                                 return@showConfirmationDialog
                             }
                             else -> {
@@ -107,16 +109,17 @@ class AdjustStationActivity : AppCompatActivity() {
 
                     if (newHiveCount > beehiveNum) {
                         val newHives = newHiveCount - beehiveNum
-                        StationsFunctionality.createHivesForStation(db, updatedStation, newHives)
+                        StationsFunctionality.createHivesForStation(this, db, updatedStation, newHives)
                     }
-                    StationsFunctionality.saveStation(db, updatedStation)
+                    StationsFunctionality.saveStation(this, db, updatedStation)
                     finish()
                 } else {
                     return@showConfirmationDialog
                 }
             }
         } else {
-            Toast.makeText(this, "Invalid data or station not found", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,
+                getString(R.string.invalid_data_or_station_not_found), Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -11,7 +11,7 @@
         android:id="@+id/to_do_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter to do text"
+        android:hint="@string/enter_to_do_text"
         android:textColorHint="@color/hintColor"
         android:inputType="textMultiLine"
         android:minLines="5" />
@@ -30,7 +30,7 @@
             android:focusable="false"
             android:clickable="true"
             android:backgroundTint="@color/buttonColor"
-            android:text="Pick Date"/>
+            android:text="@string/pick_date"/>
 
         <TextView
             android:id="@+id/to_do_date_text"
@@ -38,7 +38,7 @@
             android:layout_height="match_parent"
             android:layout_margin="8dp"
             android:gravity="center"
-            android:text="date"
+            android:text="@string/place_holder"
             android:textSize="15dp">
 
         </TextView>
@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/buttonColor"
             android:layout_marginEnd="8dp"
-            android:text="Submit" />
+            android:text="@string/submit" />
 
     </LinearLayout>
 

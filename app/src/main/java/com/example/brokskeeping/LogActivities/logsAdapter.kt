@@ -40,7 +40,7 @@ class LogsAdapter(private val logsList: MutableList<HumTempData>,
             logsBrowserActivity.startLogActivity(currentHumTempData.id)
         }
 
-        holder.itemView.setOnLongClickListener() {
+        holder.itemView.setOnLongClickListener {
             showContextMenu(holder.itemView, currentHumTempData)
             true
         }
@@ -58,7 +58,11 @@ class LogsAdapter(private val logsList: MutableList<HumTempData>,
             val formattedFirstDate = dateFormat.format(log.firstDate)
             val formattedLastDate = dateFormat.format(log.lastDate)
 
-            tvLogsDateRange.text = "$formattedFirstDate to $formattedLastDate"
+            tvLogsDateRange.text = itemView.context.getString(
+                R.string.formatted_first_date_to_formatted_last_date,
+                formattedFirstDate,
+                formattedLastDate
+            )
         }
     }
     private fun showContextMenu(view: View, log: HumTempData) {
@@ -70,7 +74,7 @@ class LogsAdapter(private val logsList: MutableList<HumTempData>,
                 R.id.menu_delete -> {
                     Utils.showConfirmationDialog(
                         view.context,
-                        "Are you sure you want to delete this log?"
+                        view.context.getString(R.string.are_you_sure_you_want_to_delete_this_log)
                     ) { confirmed ->
                         if (confirmed) {
                             // User confirmed the deletion

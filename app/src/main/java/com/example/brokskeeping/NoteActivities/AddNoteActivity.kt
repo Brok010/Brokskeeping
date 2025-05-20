@@ -8,6 +8,7 @@ import android.widget.Toast
 import com.example.brokskeeping.DataClasses.HiveNotes
 import com.example.brokskeeping.DbFunctionality.DatabaseHelper
 import com.example.brokskeeping.DbFunctionality.NotesFunctionality
+import com.example.brokskeeping.R
 import com.example.brokskeeping.databinding.ActivityAddNoteBinding
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -40,9 +41,9 @@ class AddNoteActivity : AppCompatActivity() {
         }
 
         binding.buttonSubmitNote.setOnClickListener {
-            var noteText = etnoteText.text.toString()
+            val noteText = etnoteText.text.toString()
             if (noteText == "") {
-                Toast.makeText(this, "Invalid text", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.invalid_text), Toast.LENGTH_SHORT).show()
             } else {
                 val note = HiveNotes(hiveId = hiveId, stationId = stationId, noteText = noteText, noteDate = date)
                 NotesFunctionality.addNote(db, note)
@@ -75,6 +76,8 @@ class AddNoteActivity : AppCompatActivity() {
             val formattedDate = dateFormat.format(date)
             etnoteDate.setText(formattedDate)
         }, year, month, day)
+
+        datePickerDialog.datePicker.maxDate = calendar.timeInMillis
         datePickerDialog.show()
     }
 }

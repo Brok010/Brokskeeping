@@ -31,7 +31,7 @@
                 android:layout_weight="1"
                 android:maxLines="1"
                 android:paddingHorizontal="4dp"
-                android:text="Station Name:"
+                android:text="@string/station_name"
                 android:textSize="18dp" />
 
             <TextView
@@ -60,7 +60,7 @@
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="8dp"
                 android:layout_weight="1"
-                android:text="Location:"
+                android:text="@string/location"
                 android:textSize="18dp" />
 
             <TextView
@@ -88,7 +88,7 @@
                 android:id="@+id/tv_label_hive_count"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Hive count:"
+                android:text="@string/hive_count"
                 android:paddingHorizontal="8dp"
                 android:layout_weight="1"
                 android:textSize="18dp" />
