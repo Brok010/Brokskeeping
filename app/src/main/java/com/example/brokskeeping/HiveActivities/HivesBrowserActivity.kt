@@ -115,8 +115,6 @@ class HivesBrowserActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-
-
     fun startNotesBrowserActivity(stationId: Int, hiveId: Int) {
         val intent = Intent(this, NotesBrowserActivity::class.java)
         intent.putExtra("stationId", stationId)

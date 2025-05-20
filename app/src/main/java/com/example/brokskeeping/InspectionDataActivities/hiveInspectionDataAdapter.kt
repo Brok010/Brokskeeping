@@ -14,30 +14,30 @@ import com.example.brokskeeping.DbFunctionality.NotesFunctionality
 import com.example.brokskeeping.Functionality.Utils
 import com.example.brokskeeping.R
 
-class InspectionDataAdapter(private val inspectionDataList: MutableList<InspectionData>,
-                      private val inspectionId: Int,
-                      private val db: DatabaseHelper,
-                      private val inspectionDataBrowserActivity: InspectionDataBrowserActivity
-) : RecyclerView.Adapter<InspectionDataAdapter.InspectionDataViewHolder>() {
+class HiveInspectionDataAdapter(private val hiveInspectionDataList: MutableList<InspectionData>,
+                            private val hiveId: Int,
+                            private val db: DatabaseHelper,
+                            private val hiveInspectionDataBrowserActivity: HiveInspectionDataBrowserActivity
+) : RecyclerView.Adapter<HiveInspectionDataAdapter.HiveInspectionDataViewHolder>() {
 
-    fun updateData(newInspectionDataList: List<InspectionData>) {
-        inspectionDataList.clear()
-        inspectionDataList.addAll(newInspectionDataList)
+    fun updateData(newHiveInspectionDataList: List<InspectionData>) {
+        hiveInspectionDataList.clear()
+        hiveInspectionDataList.addAll(newHiveInspectionDataList)
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InspectionDataViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HiveInspectionDataViewHolder {
         val itemView = LayoutInflater.from(parent.context)
             .inflate(R.layout.view_inspection_data_browser, parent, false)
-        return InspectionDataViewHolder(itemView)
+        return HiveInspectionDataViewHolder(itemView)
     }
 
-    override fun onBindViewHolder(holder: InspectionDataViewHolder, position: Int) {
-        val currentInspectionData = inspectionDataList[position]
+    override fun onBindViewHolder(holder: HiveInspectionDataViewHolder, position: Int) {
+        val currentInspectionData = hiveInspectionDataList[position]
         holder.bind(currentInspectionData)
 
         holder.itemView.setOnClickListener {
-            inspectionDataBrowserActivity.startInspectionDataActivity(currentInspectionData.id, inspectionId)
+            hiveInspectionDataBrowserActivity.startInspectionDataActivity(currentInspectionData.id)
         }
         holder.itemView.setOnLongClickListener {
             showContextMenu(holder.itemView, currentInspectionData)
@@ -46,10 +46,10 @@ class InspectionDataAdapter(private val inspectionDataList: MutableList<Inspecti
     }
 
     override fun getItemCount(): Int {
-        return inspectionDataList.size
+        return hiveInspectionDataList.size
     }
 
-    inner class InspectionDataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class HiveInspectionDataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val tvHiveName = itemView.findViewById<TextView>(R.id.tv_hive_name)
         private val tvFreeFrames = itemView.findViewById<TextView>(R.id.tv_free_frames)
         private val tvInspectionNotes = itemView.findViewById<TextView>(R.id.tv_inspection_notes)
@@ -78,7 +78,7 @@ class InspectionDataAdapter(private val inspectionDataList: MutableList<Inspecti
                         if (confirmed) {
                             // User confirmed the deletion
                             InspectionsFunctionality.deleteInspectionData(db, inspectionData.id) // todo
-                            val (inspectionData, result) = InspectionsFunctionality.getAllInspectionDataForInspectionId(db, inspectionId)
+                            val (inspectionData, result) = InspectionsFunctionality.getAllInspectionDataForHiveId(db, hiveId)
                             if (result == 1) {
                                 updateData(inspectionData)
                             }
@@ -88,7 +88,7 @@ class InspectionDataAdapter(private val inspectionDataList: MutableList<Inspecti
                 }
                 R.id.menu_long_click_adjust -> {
                     // Handle adjust action
-                    inspectionDataBrowserActivity.startAdjustInspectionDataActivity()
+                    hiveInspectionDataBrowserActivity.startAdjustInspectionDataActivity()
                     true
                 }
                 else -> false

@@ -119,14 +119,16 @@ object InspectionsFunctionality {
 
         // Get inspections that match the time filters
         val (inspections, inspectionsResult) = getAllInspections(dbHelper, stationId, year, month, ordered)
-        if (inspectionsResult == 0 || inspections.isEmpty()) {
+        if (inspectionsResult == 0) {
             return Pair(emptyList(), 0)
+        } else if (inspections.isEmpty()) {
+            return Pair(emptyList(), 1)
         }
 
         // Extract inspection IDs
         val inspectionIds = inspections.map { it.id }
         if (inspectionIds.isEmpty()) {
-            return Pair(emptyList(), 0)
+            return Pair(emptyList(), 1)
         }
 
         // Prepare SQL query with IN clause
