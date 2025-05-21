@@ -57,13 +57,16 @@ class HivesAdapter(private val hivesList: MutableList<Beehive>,
         fun bind(hive: Beehive) {
             val context = itemView.context
             tvStationName.text = hive.nameTag
-            val colorResId = when (hive.attentionWorth) {
+            var colorResId = when (hive.attentionWorth) {
                 1 -> R.color.itemColorAttention1
                 2 -> R.color.itemColorAttention2
                 3 -> R.color.itemColorAttention3
                 4 -> R.color.itemColorAttention4
                 5 -> R.color.itemColorAttention5
                 else -> R.color.itemColor
+            }
+            if (hive.winterReady) {
+                colorResId = R.color.backgroundColor
             }
             rlHiveBrowser.setBackgroundColor(context.getColor(colorResId))
         }

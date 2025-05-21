@@ -238,5 +238,7 @@
     <string name="hive_for_station">Úl %1$d pro stanici %2$s</string>
     <string name="inspections_of_hive">Prohlídky úlu {%1$s}</string>
     <string name="cannot_save_hive">Není možné uložit úl</string>
+    <string name="english">Angličtina</string>
+    <string name="czech">Čeština</string>
 
 </resources>

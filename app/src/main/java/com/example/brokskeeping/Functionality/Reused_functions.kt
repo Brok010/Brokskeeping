@@ -44,7 +44,7 @@ object Reused_functions {
     }
 
     private fun showLanguageSelectionDialog(context: Context) {
-        val languages = arrayOf("English", "Czech")
+        val languages = arrayOf(context.getString(R.string.english), context.getString(R.string.czech))
         AlertDialog.Builder(context)
             .setTitle(context.getString(R.string.select_language))
             .setItems(languages) { _, which ->
